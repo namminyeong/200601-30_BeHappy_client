@@ -6,13 +6,12 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "eslint:recommended"
     ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
-    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -21,8 +20,7 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
-        "@typescript-eslint"
+        "react"
     ],
     "rules": {
     }
