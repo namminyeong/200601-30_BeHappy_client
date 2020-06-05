@@ -1,7 +1,7 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 // import { createStackNavigator } from '@react-navigation/stack'
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import MapMain from './Map/MapMain';
@@ -13,18 +13,19 @@ export default function Index() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Main"
-        activeColor="black"
-        inactiveColor="white"
-        barStyle={{backgroundColor: '#62CCAD'}}>
+        initialRouteName='Main'
+        activeColor='black'
+        inactiveColor='white'
+        barStyle={{ backgroundColor: '#62CCAD' }}
+      >
         <Tab.Screen
-          name="Main"
+          name='Main'
           component={MapMain}
           options={{
             tabBarLabel: 'Map',
-            tabBarIcon: ({color}) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
-                name="map-marker-radius"
+                name='map-marker-radius'
                 color={color}
                 size={26}
               />
@@ -32,12 +33,12 @@ export default function Index() {
           }}
         />
         <Tab.Screen
-          name="Mypage"
+          name='Mypage'
           component={Mypage}
           options={{
             tabBarLabel: 'Mypage',
-            tabBarIcon: ({color}) => (
-              <MaterialCommunityIcons name="account" color={color} size={26} />
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name='account' color={color} size={26} />
             ),
           }}
         />
