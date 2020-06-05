@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Map from './Map';
 
 export default function MapMain() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Map !</Text>
+      <Map />
     </View>
   );
 }
@@ -14,8 +15,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-  },
-  text: {
-    fontSize: 30,
   },
 });
