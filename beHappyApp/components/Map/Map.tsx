@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-// import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
 
 class Map extends React.Component {
   //   componentDidMount() {
@@ -43,18 +43,17 @@ class Map extends React.Component {
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <Text>map !!</Text>
-        {/* <MapView
+        <MapView
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
           initialRegion={{
-            latitude: 37.5326,
-            longitude: 127.024612,
-            latitudeDelta: 0.009,
-            longitudeDelta: 0.004,
+            latitude: 37.52,
+            longitude: 126.97,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
           }}
-          provider={PROVIDER_GOOGLE}
-        /> */}
+        />
       </View>
     );
   }
