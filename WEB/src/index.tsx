@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import App from './app';
+import Age from './components/Age';
 
-ReactDOM.render(<App color='Blue' />, document.getElementById('root'));
+ReactDOM.render(<Age />, document.getElementById('root'));
