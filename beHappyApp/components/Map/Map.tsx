@@ -3,42 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
 
 class Map extends React.Component {
-  //   componentDidMount() {
-  //     const askPermission = async () => {
-  //       try {
-  //         const result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-  //         check(PERMISSIONS.IOS.LOCATION_ALWAYS)
-  //           .then(result => {
-  //             switch (result) {
-  //               case RESULTS.UNAVAILABLE:
-  //                 console.log(
-  //                   'This feature is not available (on this device / in this context)',
-  //                 );
-  //                 break;
-  //               case RESULTS.DENIED:
-  //                 console.log(
-  //                   'The permission has not been requested / is denied but requestable',
-  //                 );
-  //                 break;
-  //               case RESULTS.GRANTED:
-  //                 console.log('The permission is granted');
-  //                 break;
-  //               case RESULTS.BLOCKED:
-  //                 console.log(
-  //                   'The permission is denied and not requestable anymore',
-  //                 );
-  //                 break;
-  //             }
-  //           })
-  //           .catch(error => {
-  //             // …
-  //           });
-  //       } catch (error) {
-  //         console.log('askPermission', error);
-  //       }
-  //     };
-  //   }
-
   render() {
     return (
       <View style={{ width: '100%', height: '100%' }}>
