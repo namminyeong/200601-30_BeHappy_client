@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 class Map extends React.Component {
@@ -17,9 +18,7 @@ class Map extends React.Component {
         console.log(location);
         let latitude = location.coords.latitude;
         let longitude = location.coords.longitude;
-        console.log('before', this.state);
         this.setState({ latitude, longitude });
-        console.log('after', this.state);
       }
     })();
   }
@@ -33,13 +32,19 @@ class Map extends React.Component {
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
-          initialRegion={{
+          region={{
             latitude: latitude,
             longitude: longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
-        />
+        >
+          <Marker
+            coordinate={{ latitude: latitude, longitude: longitude }}
+            pinColor='#000000'
+            image={require('../../assets/mylocation.png')}
+          />
+        </MapView>
       </View>
     );
   }
