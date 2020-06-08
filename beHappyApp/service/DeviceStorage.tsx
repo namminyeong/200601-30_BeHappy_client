@@ -20,11 +20,7 @@ const DeviceStorage = {
 
   async deleteJWT() {
     try {
-      await AsyncStorage.removeItem('id_token').then(() => {
-        this.setState({
-          jwt: '',
-        });
-      });
+      await AsyncStorage.removeItem('id_token')
     } catch (error) {
       console.log('AsyncStorage Error: ' + error.message);
     }

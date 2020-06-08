@@ -1,10 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import Home from '../components/Home'
+import { bindActionCreators } from 'redux'
 
-const HomeContainer = ({ isLogin }) => {
+import Home from '../components/Home'
+import { controlLogin } from '../modules(reducers)/auth'
+
+const HomeContainer = ({ isLogin, controlLogin }) => {
   return (
-    <Home isLogin={isLogin} />
+    <Home isLoginStatus={isLogin} controlLogin={controlLogin} />
   )
 }
 
@@ -12,4 +15,13 @@ const mapStateToProps = (state) => ({
   isLogin: state.handleLogin.isLogin
 })
 
-export default connect(mapStateToProps)(HomeContainer);
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(
+    {
+      controlLogin
+    },
+    dispatch
+  )
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeContainer);

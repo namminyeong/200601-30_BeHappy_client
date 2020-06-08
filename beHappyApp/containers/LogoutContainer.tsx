@@ -2,14 +2,14 @@ import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Logout from '../components/Mypage/Logout'
-import { isLogout } from '../modules(reducers)/auth'
+import { controlLogin } from '../modules(reducers)/auth'
 import { View } from 'react-native'
 
 
-const LogoutContainer = ({ isLogout }) => {
+const LogoutContainer = ({ controlLogin }) => {
   return (
     <View>
-      <Logout status={false} isLogout={isLogout} />
+      <Logout status={false} controlLogin={controlLogin} />
     </View>
   )
 }
@@ -17,7 +17,7 @@ const LogoutContainer = ({ isLogout }) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
-      isLogout
+      controlLogin
     },
     dispatch
   )

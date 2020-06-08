@@ -36,9 +36,17 @@ class Login extends Component {
         return response.json();
       })
       .then((payload) => {
-        console.log('payload: ', payload);
-        deviceStorage.saveKey('id_token', payload.token);
-        this.props.isLogin(this.props.status);
+        if (payload.errorCode) {
+          if (payload.errorCode === 1) {
+            alert('아이디를 확인해주세요.')
+          }
+          if (payload.errorCode === 2) {
+            alert('비밀번호를 확인해주세요.')
+          }
+        } else {
+          deviceStorage.saveKey('id_token', payload.token);
+          this.props.controlLogin(this.props.status);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -53,7 +61,6 @@ class Login extends Component {
       <Fragment>
         <View style={form}>
           <View style={section}>
-            <Text>Login 진입</Text>
             <Input
               placeholder='user@email.com'
               label='UserName'
@@ -84,6 +91,7 @@ const styles = {
     width: '100%',
     borderTopWidth: 1,
     borderColor: '#ddd',
+    top: 200
   },
   section: {
     flexDirection: 'row',
