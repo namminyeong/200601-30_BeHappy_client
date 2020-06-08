@@ -8,6 +8,7 @@ import { TextLink } from './LogIn/TextLink';
 import { Loading } from './LogIn/Loading';
 import { Button } from './LogIn/Button';
 import deviceStorage from '../service/DeviceStorage';
+// const fetch = require('node-fetch');
 
 class Login extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Login extends Component {
   loginUser() {
     const { username, password } = this.state;
 
-    fetch('http://127.0.0.1:4000/user/signin', {
+    fetch('http://13.209.16.103:4000/user/signin', {
       method: 'POST',
       credentials: 'include',
       headers: {

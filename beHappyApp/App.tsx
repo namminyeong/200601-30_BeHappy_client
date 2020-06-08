@@ -34,7 +34,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        {this.state.isLogin || deviceStorage.loadJWT() ? (
+        {this.state.isLogin ? (
           <Main />
         ) : (
           <Login changeIsLogin={this.changeIsLogin} />
