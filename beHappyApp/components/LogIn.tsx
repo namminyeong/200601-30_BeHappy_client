@@ -38,7 +38,7 @@ class Login extends Component {
       .then((payload) => {
         console.log('payload: ', payload);
         deviceStorage.saveKey('id_token', payload.token);
-        this.props.changeIsLogin(true);
+        this.props.isLogin(this.props.status);
       })
       .catch((error) => {
         console.log(error);

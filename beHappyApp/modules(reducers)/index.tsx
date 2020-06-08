@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import counter from './ex_counter'
+import handleLogin from './auth'
 
 const rootReducer = combineReducers({
-  counter
+  handleLogin
 })
 
 export default rootReducer

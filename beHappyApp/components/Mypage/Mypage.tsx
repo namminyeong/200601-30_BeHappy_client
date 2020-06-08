@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Entypo from 'react-native-vector-icons/Entypo';
-import { black } from 'react-native-paper/lib/typescript/src/styles/colors';
+import Logout from '../../containers/LogoutContainer'
 
 const username = 'minyeong';
 
@@ -11,9 +11,7 @@ class Mypage extends React.Component {
       <View style={styles.container}>
         <View style={styles.title}>
           <Text style={styles.mypageText}>MyPage</Text>
-          <TouchableOpacity onPress={() => alert('logout success')}>
-            <Text style={styles.logoutText}>logout</Text>
-          </TouchableOpacity>
+          <Logout />
         </View>
 
         <View style={styles.userInfo}>
@@ -65,12 +63,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     paddingTop: '2%',
-  },
-  logoutText: {
-    marginTop: 20,
-    color: '#62CCAD',
-    paddingRight: '6%',
-    fontWeight: 'bold',
   },
   userInfo: {
     marginBottom: 10,
