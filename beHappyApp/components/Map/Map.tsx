@@ -28,7 +28,7 @@ class Map extends React.Component {
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <Text>map !!</Text>
-        <MapView
+        {/* <MapView
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
@@ -44,7 +44,7 @@ class Map extends React.Component {
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
-        </MapView>
+        </MapView> */}
       </View>
     );
   }
