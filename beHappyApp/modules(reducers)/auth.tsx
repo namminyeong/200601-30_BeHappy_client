@@ -1,12 +1,7 @@
 const LOGIN = 'handleLogin_LOGIN'
-const LOGOUT = 'handleLogin_LOGOUT'
 
-export const isLogin = (status) => {
+export const controlLogin = (status) => {
   return { type: LOGIN, status }
-};
-
-export const isLogout = (status) => {
-  return { type: LOGOUT, status }
 };
 
 const initialState = {
@@ -18,10 +13,6 @@ function handleLogin(state = initialState, action) {
     case LOGIN:
       return {
         isLogin: action.status
-      }
-    case LOGOUT:
-      return {
-        isLogout: action.status
       }
     default:
       return state
