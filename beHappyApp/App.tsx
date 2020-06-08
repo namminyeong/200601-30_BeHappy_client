@@ -29,9 +29,9 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    if (deviceStorage.loadJWT()) {
-      this.changeIsLogin(true);
-    }
+    // if (deviceStorage.loadJWT()) {
+    //   this.changeIsLogin(true);
+    // }
   }
 
   render() {
@@ -40,8 +40,8 @@ export default class App extends React.Component {
         {this.state.isLogin ? (
           <Main />
         ) : (
-          <Login changeIsLogin={this.changeIsLogin} />
-        )}
+            <Login changeIsLogin={this.changeIsLogin} />
+          )}
       </Provider>
     );
   }
