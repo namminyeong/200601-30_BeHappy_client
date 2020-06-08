@@ -8,7 +8,7 @@ import IndexMypage from './Mypage/IndexMypage';
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function Index() {
+export default function Main() {
   return (
     <NavigationContainer>
       <Tab.Navigator
