@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { Content, List, ListItem, Left, Right } from 'native-base'
 import Entypo from 'react-native-vector-icons/Entypo';
 import { black } from 'react-native-paper/lib/typescript/src/styles/colors';
 
@@ -20,23 +19,23 @@ class Mypage extends React.Component {
         <View style={styles.userInfo}>
           <Text style={styles.user}>{username}</Text>
           <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20, }}>님</Text>
-          <TouchableOpacity onPress={() => alert('my info modify')}>
+          <TouchableOpacity onPress={() => { this.props.navigation.navigate('MyInfo') }}>
             {<Entypo name="chevron-right" size={26} color={'#62CCAD'} />}
           </TouchableOpacity>
         </View>
 
         <View style={styles.list}>
-          <TouchableOpacity style={styles.listItem} onPress={() => alert('boomarks')} >
+          <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('MyBookmarks') }} >
             <Text style={styles.itemText}>즐겨찾기</Text>
             {<Entypo name="chevron-right" size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => alert('reviews')} >
+          <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('MyReviews') }} >
             <Text style={styles.itemText}>리뷰관리</Text>
             {<Entypo name="chevron-right" size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => alert('bookings')} >
+          <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('MyBookings') }} >
             <Text style={styles.itemText}>예약관리</Text>
             {<Entypo name="chevron-right" size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
@@ -49,6 +48,7 @@ class Mypage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white'
   },
   title: {
     paddingTop: '12%',

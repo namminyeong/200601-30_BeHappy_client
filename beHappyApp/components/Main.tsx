@@ -5,7 +5,8 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import MapMain from './Map/MapMain';
-import Mypage from './Mypage/Mypage';
+//import Mypage from './Mypage/Mypage';
+import IndexMypage from './Mypage/IndexMypage';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -34,7 +35,7 @@ export default function Index() {
         />
         <Tab.Screen
           name='Mypage'
-          component={Mypage}
+          component={IndexMypage}
           options={{
             tabBarLabel: 'Mypage',
             tabBarIcon: ({ color }) => (
