@@ -18,9 +18,11 @@ const stackNav = createStackNavigator({
   },
   'MyBookmarks': {
     screen: MyBookmarks
-  }, 'MyReviews': {
+  },
+  'MyReviews': {
     screen: MyReviews
-  }, 'MyBookings': {
+  },
+  'MyBookings': {
     screen: MyBookings
   }
 }, {
@@ -29,7 +31,7 @@ const stackNav = createStackNavigator({
 
 const NavContainer = createAppContainer(stackNav)
 
-class Index extends React.Component {
+class IndexMypage extends React.Component {
   render() {
     return (
       <NavContainer />
@@ -37,4 +39,4 @@ class Index extends React.Component {
   }
 }
 
-export default Index;
+export default IndexMypage;
