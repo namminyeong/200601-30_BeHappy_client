@@ -3,8 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import MapMain from './Map/MapMain';
 import IndexMypage from './Mypage/IndexMypage';
+import MapStack from './Map/MapStack';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -19,7 +19,7 @@ export default function Main() {
       >
         <Tab.Screen
           name='Main'
-          component={MapMain}
+          component={MapStack}
           options={{
             tabBarLabel: 'Map',
             tabBarIcon: ({ color }) => (
