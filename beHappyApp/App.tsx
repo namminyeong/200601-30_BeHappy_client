@@ -1,4 +1,5 @@
 import React from 'react';
+import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import rootReducer from './modules(reducers)';
@@ -6,6 +7,8 @@ import deviceStorage from './service/DeviceStorage';
 
 import Login from './components/LogIn';
 import Main from './components/Main';
+import SignIn from './containers/SignIn';
+import Routes from './Routes';
 
 const store = createStore(rootReducer);
 
