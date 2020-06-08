@@ -1,17 +1,48 @@
 import React from 'react';
+import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import rootReducer from './modules(reducers)';
+import deviceStorage from './service/DeviceStorage';
 
+import Login from './components/LogIn';
 import Main from './components/Main';
+import SignIn from './containers/SignIn';
+import Routes from './Routes';
 
 const store = createStore(rootReducer);
 
-export default function App() {
-  return (
-    <Provider store={store}>
-      {/* 로그인 구현되면 <Login />로 바꾸고 Login.tsx 내에서 아래의 메인 불러오면 됩니다*/}
-      <Main />
-    </Provider>
-  );
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLogin: false,
+    };
+
+    this.changeIsLogin = this.changeIsLogin.bind(this);
+  }
+
+  changeIsLogin(loginState) {
+    this.setState({
+      isLogin: loginState,
+    });
+  }
+
+  componentDidMount() {
+    if (deviceStorage.loadJWT()) {
+      this.changeIsLogin(true);
+    }
+  }
+
+  render() {
+    return (
+      <Provider store={store}>
+        {this.state.isLogin ? (
+          <Main />
+        ) : (
+          <Login changeIsLogin={this.changeIsLogin} />
+        )}
+      </Provider>
+    );
+  }
 }
