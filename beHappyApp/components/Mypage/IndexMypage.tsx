@@ -11,7 +11,7 @@ import MyBookings from './MyBookings';
 const stackNav = createStackNavigator({
   'Mypage': {
     screen: Mypage,
-    navigationOptions: { header: null }
+    navigationOptions: { headerShown: false }
   },
   'MyInfo': {
     screen: MyInfo
