@@ -4,19 +4,27 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Map from './Map';
 import Search from './Search';
+import SearchGeo from './SearchGeo';
+import SearchGeoContainer from '../../containers/SearchGeoContainer';
 
 const stackNav = createStackNavigator(
   {
     Map: {
       screen: Map,
       navigationOptions: {
-        header: null,
+        headerShown: false,
       },
     },
     Search: {
       screen: Search,
       navigationOptions: {
-        header: null,
+        headerShown: false,
+      },
+    },
+    SearchGeoContainer: {
+      screen: SearchGeoContainer,
+      navigationOptions: {
+        headerShown: false,
       },
     },
   },
@@ -27,10 +35,8 @@ const stackNav = createStackNavigator(
 
 const NavContainer = createAppContainer(stackNav);
 
-class MapStack extends React.Component {
-  render() {
-    return <NavContainer />;
-  }
+function MapStack() {
+  return <NavContainer />;
 }
 
 export default MapStack;

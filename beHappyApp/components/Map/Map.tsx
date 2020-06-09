@@ -2,8 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { Header, Button, Icon, Item, Input } from 'native-base';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Header, Icon, Item, Button } from 'native-base';
 
 class Map extends React.Component {
   state = {
@@ -30,20 +29,26 @@ class Map extends React.Component {
       <View style={{ width: '100%', height: '100%' }}>
         <View style={styles.container}>
           <Header searchBar rounded style={{ backgroundColor: 'white' }}>
-            <Item style={{ width: '80%' }}>
+            <Item>
               <Icon active name='search' />
-              {/* <Input placeholder='검색어를 입력해주세요' /> */}
               <Button
                 transparent
+                style={styles.buttonGeo}
                 onPress={() => {
-                  alert('search');
+                  this.props.navigation.navigate('SearchGeoContainer');
+                }}
+              >
+                <Text>지역으로 검색</Text>
+              </Button>
+
+              <Button
+                transparent
+                style={styles.button}
+                onPress={() => {
                   this.props.navigation.navigate('Search');
                 }}
               >
-                <Text style={{ fontSize: 17, width: '100%' }}>
-                  검색어를 입력해주세요
-                </Text>
-                <Button />
+                <Text>이름으로 검색</Text>
               </Button>
             </Item>
           </Header>
@@ -104,6 +109,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     height: '13.5%',
+  },
+  buttonGeo: {
+    color: 'white',
+    width: '40%',
+  },
+  button: {
+    width: '40%',
   },
   hashtag: {
     fontSize: 15,

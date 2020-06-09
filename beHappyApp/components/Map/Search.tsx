@@ -3,8 +3,39 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Header, Button, Icon, Item, Input, Container } from 'native-base';
 
 class Search extends React.Component {
-  //   state = {
-  //   };
+  state = {
+    keyword: '',
+  };
+
+  //   componentDidMount() {
+  //     fetch('http://13.209.16.103:4000/user/signin', {
+  //         method: 'POST',
+  //         credentials: 'include',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ username, password }),
+  //       })
+  //         .then((response) => {
+  //           return response.json();
+  //         })
+  //         .then((payload) => {
+  //           if (payload.errorCode) {
+  //             if (payload.errorCode === 1) {
+  //               alert('아이디를 확인해주세요.')
+  //             }
+  //             if (payload.errorCode === 2) {
+  //               alert('비밀번호를 확인해주세요.')
+  //             }
+  //           } else {
+  //             deviceStorage.saveKey('id_token', payload.token);
+  //             this.props.controlLogin(this.props.status);
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //         });
+  //   }
 
   render() {
     return (
