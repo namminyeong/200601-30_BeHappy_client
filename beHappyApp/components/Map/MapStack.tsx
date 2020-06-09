@@ -3,8 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Map from './Map';
-import Search from './Search';
-import SearchGeo from './SearchGeo';
+import SearchName from './SearchName';
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
 
 const stackNav = createStackNavigator(
@@ -15,8 +14,8 @@ const stackNav = createStackNavigator(
         headerShown: false,
       },
     },
-    Search: {
-      screen: Search,
+    SearchName: {
+      screen: SearchName,
       navigationOptions: {
         headerShown: false,
       },

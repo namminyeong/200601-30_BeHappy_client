@@ -12,12 +12,14 @@ const SearchGeoContainer = ({
   coordinate,
   controlCoordinate,
   controlCenterData,
+  navigation,
 }) => {
   return (
     <SearchGeo
       coordinate={coordinate}
       controlCoordinate={controlCoordinate}
       controlCenterData={controlCenterData}
+      navigation={navigation}
     />
   );
 };

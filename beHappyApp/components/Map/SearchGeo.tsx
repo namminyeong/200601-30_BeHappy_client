@@ -5,6 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import getEnvVars from '../../environment';
 const { ec2, kakaoApi } = getEnvVars();
 import deviceStorage from '../../service/DeviceStorage';
+import { StackActions } from '@react-navigation/native';
 
 const cities = [
   '서울특별시',
@@ -316,6 +317,8 @@ class SearchGeo extends React.Component {
     this.selectCity = this.selectCity.bind(this);
     this.resetState = this.resetState.bind(this);
     this.getCoordinate = this.getCoordinate.bind(this);
+    this.getCenterWithCoordinate = this.getCenterWithCoordinate.bind(this);
+    this.goBack = this.goBack.bind(this);
   }
 
   getCoordinate() {
@@ -344,6 +347,7 @@ class SearchGeo extends React.Component {
           this.props.controlCoordinate(lon, lat);
         }
       });
+    this.getCenterWithCoordinate();
   }
 
   getCenterWithCoordinate() {
@@ -366,8 +370,14 @@ class SearchGeo extends React.Component {
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           this.props.controlCenterData(counseling, psychiatric);
+          this.goBack();
         }
       });
+  }
+
+  goBack() {
+    this.props.navigation.dispatch(StackActions.popToTop());
+    this.props.navigation.navigate('Map');
   }
 
   inputCity(value) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Header, Button, Icon, Item, Input, Container } from 'native-base';
 
-class Search extends React.Component {
+class SearchName extends React.Component {
   state = {
     keyword: '',
   };
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Search;
+export default SearchName;
