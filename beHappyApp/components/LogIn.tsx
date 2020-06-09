@@ -1,16 +1,13 @@
-/* eslint-disable react/prop-types */
-// /* eslint-disable react/no-unescaped-entities */
-// /* eslint-disable react/prop-types */
-import React, { Component, Fragment } from 'react';
-import { View, Text } from 'react-native';
-import { Input } from './LogIn/Input';
-import { TextLink } from './LogIn/TextLink';
-import { Loading } from './LogIn/Loading';
-import { Button } from './LogIn/Button';
-import deviceStorage from '../service/DeviceStorage';
-// const fetch = require('node-fetch');
+import React from 'react';
+import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
-class Login extends Component {
+import deviceStorage from '../service/DeviceStorage';
+import signUp from './SignUp';
+
+TouchableOpacity;
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,10 +35,10 @@ class Login extends Component {
       .then((payload) => {
         if (payload.errorCode) {
           if (payload.errorCode === 1) {
-            alert('아이디를 확인해주세요.')
+            alert('아이디를 확인해주세요.');
           }
           if (payload.errorCode === 2) {
-            alert('비밀번호를 확인해주세요.')
+            alert('비밀번호를 확인해주세요.');
           }
         } else {
           deviceStorage.saveKey('id_token', payload.token);
@@ -54,56 +51,124 @@ class Login extends Component {
   }
 
   render() {
+    console.log('Login 진입');
     const { username, password } = this.state;
-    const { form, section } = styles;
 
     return (
-      <Fragment>
-        <View style={form}>
-          <View style={section}>
-            <Input
-              placeholder='user@email.com'
-              label='UserName'
-              value={username}
-              onChangeText={(username) => this.setState({ username })}
-            />
-          </View>
-
-          <View style={section}>
-            <Input
-              secureTextEntry
-              placeholder='password'
-              label='Password'
-              value={password}
-              onChangeText={(password) => this.setState({ password })}
-            />
-          </View>
-
-          <Button onPress={this.loginUser}>Login</Button>
+      <View style={styles.container}>
+        <View style={styles.logo}>
+          <Image
+            style={{ width: 150, height: 60 }}
+            source={require('../assets/behappy.png')}
+          />
         </View>
-      </Fragment>
+        <View style={styles.form}>
+          <TextInput
+            style={styles.inputBox}
+            underlineColorAndroid='rgba(0, 0, 0, 0)'
+            placeholder='username'
+            placeholderTextColor='#ffffff'
+            value={username}
+            onChangeText={(username) => this.setState({ username })}
+          />
+          <TextInput
+            style={styles.inputBox}
+            underlineColorAndroid='rgba(0, 0, 0, 0)'
+            placeholder='password'
+            secureTextEntry={true}
+            placeholderTextColor='#ffffff'
+            value={password}
+            onChangeText={(password) => this.setState({ password })}
+          />
+          <TouchableOpacity style={styles.btn} onPress={this.loginUser}>
+            <Text style={styles.btnText}>로그인</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.signEntry}>
+          <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('signUp')}
+          >
+            <Text style={styles.signUpBtn}>회원가입</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 }
 
 const styles = {
-  form: {
-    width: '100%',
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-    top: 200
-  },
-  section: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
-    borderColor: '#ddd',
   },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 18,
-    color: 'red',
+  logo: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  form: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputBox: {
+    width: 300,
+    backgroundColor: '#000000',
+    borderRadius: 25,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#ffffff',
+    marginVertical: 10,
+  },
+  btn: {
+    width: 300,
+    backgroundColor: '#1c313a',
+    borderRadius: 25,
+    marginVertical: 10,
+    paddingVertical: 12,
+  },
+  btnText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  signEntry: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingVertical: 16,
+    flexDirection: 'row',
+  },
+  signUpText: {
+    color: '#000000',
+    fontSize: 16,
+  },
+  signUpBtn: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '500',
   },
 };
 
-export default Login;
+const signNavigator = createStackNavigator(
+  {
+    Login: {
+      screen: Login,
+      navigationOptions: { header: false },
+    },
+    signUp: {
+      screen: signUp,
+    },
+  },
+  {
+    initialRouteName: 'Login',
+  }
+);
+
+export default createAppContainer(signNavigator);
+
+// export default Login;
