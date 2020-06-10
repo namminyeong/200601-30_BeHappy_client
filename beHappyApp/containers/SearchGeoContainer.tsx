@@ -25,7 +25,7 @@ const SearchGeoContainer = ({
 };
 
 const mapStateToProps = (state) => ({
-  coordinate: state.handleSearchWithGeo.coordinate,
+  coordinate: state.handleCurrentOnMap.coordinate,
 });
 
 const mapDispatchToProps = (dispatch) => {

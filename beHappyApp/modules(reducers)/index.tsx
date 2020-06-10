@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import handleLogin from './auth';
-import handleSearchWithGeo from './currentOnMap';
+import handleCurrentOnMap from './currentOnMap';
 
 const rootReducer = combineReducers({
   handleLogin,
-  handleSearchWithGeo,
+  handleCurrentOnMap,
 });
 
 export default rootReducer;

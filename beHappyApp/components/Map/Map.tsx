@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Header, Icon, Item, Button } from 'native-base';
+import Markers from './Markers';
+import Details from './Details';
 
 class Map extends React.Component {
-  state = {
-    latitude: 37.52,
-    longitude: 126.97,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      latitude: 37.52,
+      longitude: 126.97,
+      showDetails: false,
+      showDetailsIndex: null,
+    };
+  }
 
   componentDidMount() {
     (async () => {
@@ -21,6 +29,13 @@ class Map extends React.Component {
         this.setState({ latitude, longitude });
       }
     })();
+  }
+
+  handleShowDetails(center, index) {
+    this.setState({
+      showDetails: center,
+      showDetailsIndex: index,
+    });
   }
 
   render() {
@@ -45,7 +60,7 @@ class Map extends React.Component {
                 transparent
                 style={styles.button}
                 onPress={() => {
-                  this.props.navigation.navigate('Search');
+                  this.props.navigation.navigate('SearchName');
                 }}
               >
                 <Text>이름으로 검색</Text>
@@ -53,27 +68,21 @@ class Map extends React.Component {
             </Item>
           </Header>
           <View style={{ flexDirection: 'row' }}>
-            <View style={{ flexDirection: 'row' }}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                <Text style={styles.hashtag}>#스트레스</Text>
-                <Text style={styles.hashtag}>#가족</Text>
-                <Text style={styles.hashtag}>#우울증</Text>
-                <Text style={styles.hashtag}>#식이</Text>
-                <Text style={styles.hashtag}>#부부</Text>
-                <Text style={styles.hashtag}>#불면증</Text>
-                <Text style={styles.hashtag}>#학교폭력</Text>
-                <Text style={styles.hashtag}>#아동</Text>
-                <Text style={styles.hashtag}>#불안</Text>
-                <Text style={styles.hashtag}>#강박</Text>
-              </ScrollView>
-            </View>
-            <Text style={{ right: 0 }}>
-              {/* <MaterialCommunityIcons name='filter-outline' size={26} /> */}
-              Filter
-            </Text>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              <Text style={styles.hashtag}>#스트레스</Text>
+              <Text style={styles.hashtag}>#가족</Text>
+              <Text style={styles.hashtag}>#우울증</Text>
+              <Text style={styles.hashtag}>#식이</Text>
+              <Text style={styles.hashtag}>#부부</Text>
+              <Text style={styles.hashtag}>#불면증</Text>
+              <Text style={styles.hashtag}>#학교폭력</Text>
+              <Text style={styles.hashtag}>#아동</Text>
+              <Text style={styles.hashtag}>#불안</Text>
+              <Text style={styles.hashtag}>#강박</Text>
+            </ScrollView>
           </View>
         </View>
         <MapView
@@ -92,7 +101,36 @@ class Map extends React.Component {
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
+          {this.props.counseling.map((ele, index) => (
+            <Markers
+              index={index}
+              latitude={ele.latitude}
+              longitude={ele.longitude}
+              color='red'
+              center='counseling'
+              handleShowDetails={this.handleShowDetails.bind(this)}
+            />
+          ))}
+          {this.props.psychiatric.map((ele, index) => (
+            <Markers
+              index={index}
+              latitude={ele.latitude}
+              longitude={ele.longitude}
+              color='green'
+              center='psychiatric'
+              handleShowDetails={this.handleShowDetails.bind(this)}
+            />
+          ))}
         </MapView>
+        <Details
+          showDetails={this.state.showDetails}
+          showDetailsIndex={this.state.showDetailsIndex}
+          centerInfo={{
+            counseling: this.props.counseling,
+            psychiatric: this.props.psychiatric,
+          }}
+          navigation={this.props.navigation}
+        />
       </View>
     );
   }

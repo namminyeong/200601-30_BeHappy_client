@@ -2,14 +2,15 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import Map from './Map';
+import MapContainer from '../../containers/MapContainer';
 import SearchName from './SearchName';
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
+import DetailsHome from './DetailsHome';
 
 const stackNav = createStackNavigator(
   {
-    Map: {
-      screen: Map,
+    MapContainer: {
+      screen: MapContainer,
       navigationOptions: {
         headerShown: false,
       },
@@ -26,9 +27,15 @@ const stackNav = createStackNavigator(
         headerShown: false,
       },
     },
+    DetailsHome: {
+      screen: DetailsHome,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
   },
   {
-    initialRouteName: 'Map',
+    initialRouteName: 'MapContainer',
   }
 );
 
