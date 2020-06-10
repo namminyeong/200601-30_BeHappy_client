@@ -3,9 +3,14 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Entypo from 'react-native-vector-icons/Entypo';
 import Logout from '../../containers/LogoutContainer'
 
-const username = 'minyeong';
-
 class Mypage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: 'test',
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -15,7 +20,7 @@ class Mypage extends React.Component {
         </View>
 
         <View style={styles.userInfo}>
-          <Text style={styles.user}>{username}</Text>
+          <Text style={styles.user}>{this.state.username}</Text>
           <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20, }}>님</Text>
           <TouchableOpacity onPress={() => { this.props.navigation.navigate('MyInfo') }}>
             {<Entypo name="chevron-right" size={26} color={'#62CCAD'} />}
@@ -46,7 +51,6 @@ class Mypage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
   },
   title: {
     paddingTop: '12%',

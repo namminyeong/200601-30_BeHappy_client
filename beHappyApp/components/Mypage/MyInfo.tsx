@@ -1,19 +1,18 @@
 import React from 'react'
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, ListView, FlatList, ScrollView } from 'react-native'
 
-const username = 'test'
-const usermobile = '010-1234-5678'
-const city = '서울시'
-const district = '강남구'
-
-
 class MyInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: 'test',
+      usermobile: '010-1234-5678',
+      city: '서울시',
+      district: '강남구',
       datas: ['스트레스', '가족', '식이', '부부', '우울증', '불면증', '학교폭력', '아동', '불안', '강박'],
     }
   }
+
   render() {
     return (
       <View style={styles.container} >
@@ -21,11 +20,11 @@ class MyInfo extends React.Component {
           <View>
             <View style={styles.nameStyle}>
               <Text style={styles.section}>이름</Text>
-              <Text style={styles.info}>{username}</Text>
+              <Text style={styles.info}>{this.state.username}</Text>
             </View>
             <View style={styles.mobileStyle}>
               <Text style={styles.section}>연락처</Text>
-              <Text style={styles.info}>{usermobile}</Text>
+              <Text style={styles.info}>{this.state.usermobile}</Text>
             </View>
           </View>
 
@@ -45,10 +44,10 @@ class MyInfo extends React.Component {
             <Text style={styles.preSection}>지역</Text>
             <View style={styles.area}>
               <TouchableOpacity style={styles.areaButton} onPress={() => { }}>
-                <Text style={{ color: 'white' }} >{city}</Text>
+                <Text style={{ color: 'white' }} >{this.state.city}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.favorButton} onPress={() => { }}>
-                <Text style={{ color: 'white' }} >{district}</Text>
+                <Text style={{ color: 'white' }} >{this.state.district}</Text>
               </TouchableOpacity>
             </View>
 
@@ -79,24 +78,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: '4%',
-
-    //backgroundColor: 'white'
   },
   section: {
     color: '#62CCAD',
     fontSize: 20,
     paddingRight: 20,
     fontWeight: 'bold',
-
-    //backgroundColor: 'black'
-
   },
   info: {
     fontSize: 18,
   },
   nameStyle: {
     marginTop: '2%',
-    //height: 40,
     flexDirection: 'row',
   },
   mobileStyle: {
