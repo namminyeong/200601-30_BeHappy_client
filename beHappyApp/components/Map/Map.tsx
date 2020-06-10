@@ -32,8 +32,6 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    console.log('coordinate,', this.props.coordinate);
-
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -46,6 +44,7 @@ class Map extends React.Component {
           myLatitude,
         });
         this.props.controlCoordinate(myLongitude, myLatitude);
+        this.findCentersFromCurrentLocation();
       }
     })();
   }
@@ -58,8 +57,6 @@ class Map extends React.Component {
   }
 
   findCentersFromCurrentLocation() {
-    console.log('findCentersFromCurrentLocation');
-
     const coordinate = this.props.coordinate;
     let url =
       ec2 +
@@ -84,7 +81,6 @@ class Map extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log(data.counseling[0]);
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           this.props.controlCenterData(counseling, psychiatric);
@@ -93,12 +89,10 @@ class Map extends React.Component {
   }
 
   goCurrentLocation() {
-    console.log('goCurrentLocation', this.state.myLongitude);
     this.props.controlCoordinate(this.state.myLongitude, this.state.myLatitude);
   }
 
   onRegionChangeComplete(lon, lat) {
-    console.log('onRegionChangeComplete', lon, lat);
     this.props.controlCoordinate(lon, lat);
   }
 
@@ -192,7 +186,7 @@ class Map extends React.Component {
           ) : (
             <Fragment />
           )}
-          {this.props.psychiatric ? (
+          {this.props ? (
             this.props.psychiatric.map((ele, index) => (
               <Markers
                 index={index}
