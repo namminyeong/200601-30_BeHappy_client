@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Fontisto from 'react-native-vector-icons/Fontisto'
 
 import CenterMain from './CenterMain';
-import CenterPage from './CenterPage';
+import IndexCenterPage from './IndexCenterPage';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -13,7 +13,7 @@ export default function EntryCenter() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName='CenterMain'
+        initialRouteName='CenterPage'
         activeColor='black'
         inactiveColor='white'
         barStyle={{ backgroundColor: '#62CCAD' }}
@@ -34,7 +34,7 @@ export default function EntryCenter() {
         />
         <Tab.Screen
           name='CenterPage'
-          component={CenterPage}
+          component={IndexCenterPage}
           options={{
             tabBarLabel: 'Mypage',
             tabBarIcon: ({ color }) => (
