@@ -5,7 +5,8 @@ import Map from './Map';
 export default function MapMain() {
   return (
     <View style={styles.container}>
-      <Map />
+      <Text>Map</Text>
+      {/* <Map /> */}
     </View>
   );
 }

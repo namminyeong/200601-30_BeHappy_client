@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function CenterMain() {
+export default function CenterPage() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>CenterMain</Text>
+      <Text style={styles.text}>CenterPage</Text>
     </View>
   )
 }
