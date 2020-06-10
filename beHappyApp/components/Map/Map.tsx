@@ -1,23 +1,31 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Header, Icon, Item, Button } from 'native-base';
 import Markers from './Markers';
 import Details from './Details';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
+import deviceStorage from '../../service/DeviceStorage';
 
 class Map extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      latitude: 37.52,
-      longitude: 126.97,
+      myLatitude: 37.52,
+      myLongitude: 126.97,
       showDetails: false,
       showDetailsIndex: null,
     };
 
     this.handleShowDetails = this.handleShowDetails.bind(this);
+    this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
+    this.findCentersFromCurrentLocation = this.findCentersFromCurrentLocation.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -26,12 +34,13 @@ class Map extends React.Component {
       if (status === 'granted') {
         let location = await Location.getCurrentPositionAsync({});
         console.log(location);
-        let latitude = location.coords.latitude;
-        let longitude = location.coords.longitude;
+        let myLatitude = location.coords.latitude;
+        let myLongitude = location.coords.longitude;
         this.setState({
-          latitude,
-          longitude,
+          myLatitude,
+          myLongitude,
         });
+        this.props.controlCoordinate(myLatitude, myLongitude);
       }
     })();
   }
@@ -43,18 +52,49 @@ class Map extends React.Component {
     });
   }
 
-  changeCoordinateWithMarker(latitude, longitude) {
-    this.setState({
-      latitude,
-      longitude,
-    });
+  findCentersFromCurrentLocation() {
+    console.log('findCentersFromCurrentLocation');
+    const { latitude, longitude } = this.props.coordinate;
+    let url =
+      ec2 +
+      '/search/location?radius=2000&latitude=' +
+      latitude +
+      '&longitude=' +
+      longitude;
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${deviceStorage.loadJWT()}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          console.log(370, 'data', data);
+          // let counseling = data.counseling;
+          // let psychiatric = data.psychiatric;
+          // this.props.controlCenterData(counseling, psychiatric);
+          // this.goBack();
+        }
+      });
+  }
+
+  onRegionChangeComplete(lon, lat) {
+    this.props.controlCoordinate(lon, lat);
   }
 
   render() {
-    const { latitude, longitude, myLatitude, myLongitude } = this.state;
-    console.log('alllllll', latitude, longitude, myLatitude, myLongitude);
+    const { latitude, longitude } = this.props.coordinate;
+    const { myLatitude, myLongitude } = this.state;
+
     return (
-      <View style={{ width: '100%', height: '100%' }}>
+      <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
           <Header searchBar rounded style={{ backgroundColor: 'white' }}>
             <Item>
@@ -102,15 +142,27 @@ class Map extends React.Component {
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
-          initialRegion={{
+          region={{
             latitude: latitude,
             longitude: longitude,
             latitudeDelta: 0.03,
             longitudeDelta: 0.02,
           }}
+          initialRegion={{
+            latitude: myLatitude,
+            longitude: myLongitude,
+            latitudeDelta: 0.03,
+            longitudeDelta: 0.02,
+          }}
+          onRegionChangeComplete={(e) => {
+            this.onRegionChangeComplete(
+              e.longitude.toFixed(6),
+              e.latitude.toFixed(6)
+            );
+          }}
         >
           <Marker
-            coordinate={{ latitude: latitude, longitude: longitude }}
+            coordinate={{ latitude: myLatitude, longitude: myLongitude }}
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
@@ -144,6 +196,17 @@ class Map extends React.Component {
           }}
           navigation={this.props.navigation}
         />
+        <View style={styles.searchNow}>
+          <Text
+            style={{ color: 'white' }}
+            onPress={this.findCentersFromCurrentLocation}
+          >
+            현 위치에서 검색하기
+          </Text>
+        </View>
+        <View style={styles.goCurrentLocation}>
+          <MaterialCommunityIcons name='crosshairs-gps' size={26} />
+        </View>
       </View>
     );
   }
@@ -179,6 +242,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#62CCAD',
     color: 'white',
     borderRadius: 10,
+  },
+  searchNow: {
+    backgroundColor: '#474747',
+    position: 'absolute',
+    left: 15,
+    top: 110,
+    padding: 5,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+  },
+  goCurrentLocation: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    right: 15,
+    top: 500,
+    padding: 5,
+    borderRadius: 10,
+    alignSelf: 'flex-end',
   },
 });
 

@@ -10,7 +10,7 @@ export const controlCenterData = (counseling, psychiatric) => {
 };
 
 const initialState = {
-  coordinate: [0, 0],
+  coordinate: [126, 37],
   counseling: [
     {
       id: 1,
