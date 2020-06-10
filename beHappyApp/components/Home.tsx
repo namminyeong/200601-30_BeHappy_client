@@ -1,28 +1,24 @@
 import React, { Fragment } from 'react';
 
 import Main from './Main';
-import LoginContainer from '../containers/LoginContainer';
 import DeviceStorage from '../service/DeviceStorage';
+import IndexSignPage from '../components/Sign/IndexSignPage';
 
 export default class Home extends React.Component {
   componentDidMount() {
     DeviceStorage.loadJWT().then((value) => {
       if (value) {
-        this.props.controlLogin(true)
+        this.props.controlLogin(true);
       } else {
-        this.props.controlLogin(false)
+        this.props.controlLogin(false);
       }
-    })
+    });
   }
 
   render() {
     return (
       <Fragment>
-        {this.props.isLoginStatus ? (
-          <Main />
-        ) : (
-            <LoginContainer />
-          )}
+        {this.props.isLoginStatus ? <Main /> : <IndexSignPage />}
       </Fragment>
     );
   }

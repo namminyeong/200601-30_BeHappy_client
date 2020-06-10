@@ -1,12 +1,8 @@
 import React from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
 
-import deviceStorage from '../service/DeviceStorage';
-import signUp from './SignUp';
+import deviceStorage from '../../service/DeviceStorage';
 
-TouchableOpacity;
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -52,6 +48,7 @@ class Login extends React.Component {
 
   render() {
     console.log('Login 진입');
+    console.log('this.props: ', this.props);
     const { username, password } = this.state;
 
     return (
@@ -59,7 +56,7 @@ class Login extends React.Component {
         <View style={styles.logo}>
           <Image
             style={{ width: 150, height: 60 }}
-            source={require('../assets/behappy.png')}
+            source={require('../../assets/behappy.png')}
           />
         </View>
         <View style={styles.form}>
@@ -87,7 +84,7 @@ class Login extends React.Component {
         <View style={styles.signEntry}>
           <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('signUp')}
+            onPress={() => this.props.navigation.navigate('Signup')}
           >
             <Text style={styles.signUpBtn}>회원가입</Text>
           </TouchableOpacity>
@@ -154,21 +151,4 @@ const styles = {
   },
 };
 
-const signNavigator = createStackNavigator(
-  {
-    Login: {
-      screen: Login,
-      navigationOptions: { header: false },
-    },
-    signUp: {
-      screen: signUp,
-    },
-  },
-  {
-    initialRouteName: 'Login',
-  }
-);
-
-export default createAppContainer(signNavigator);
-
-// export default Login;
+export default Login;

@@ -127,7 +127,6 @@ export default class SignUp extends React.Component {
         </View>
         {value === 0 ? (
           <View style={styles.inputForm}>
-            <Text>일반 사용자</Text>
             <TextInput
               style={styles.inputBox}
               underlineColorAndroid='rgba(255, 255, 255, 0)'
@@ -156,7 +155,6 @@ export default class SignUp extends React.Component {
           </View>
         ) : (
           <View style={styles.inputForm}>
-            <Text>center 사용자</Text>
             <TextInput
               style={styles.inputBox}
               underlineColorAndroid='rgba(255, 255, 255, 0)'
