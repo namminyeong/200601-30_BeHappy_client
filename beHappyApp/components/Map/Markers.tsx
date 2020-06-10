@@ -9,6 +9,9 @@ function Markers({
   center,
   handleShowDetails,
 }) {
+  const onPressEvent = () => {
+    handleShowDetails(center, index);
+  };
   return (
     <Marker
       key={index}
@@ -17,7 +20,7 @@ function Markers({
         longitude,
       }}
       pinColor={color}
-      onPress={() => handleShowDetails(center, index)}
+      onPress={onPressEvent}
     />
   );
 }

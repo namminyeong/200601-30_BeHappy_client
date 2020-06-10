@@ -16,6 +16,8 @@ class Map extends React.Component {
       showDetails: false,
       showDetailsIndex: null,
     };
+
+    this.handleShowDetails = this.handleShowDetails.bind(this);
   }
 
   componentDidMount() {
@@ -26,7 +28,10 @@ class Map extends React.Component {
         console.log(location);
         let latitude = location.coords.latitude;
         let longitude = location.coords.longitude;
-        this.setState({ latitude, longitude });
+        this.setState({
+          latitude,
+          longitude,
+        });
       }
     })();
   }
@@ -38,8 +43,16 @@ class Map extends React.Component {
     });
   }
 
+  changeCoordinateWithMarker(latitude, longitude) {
+    this.setState({
+      latitude,
+      longitude,
+    });
+  }
+
   render() {
-    const { latitude, longitude } = this.state;
+    const { latitude, longitude, myLatitude, myLongitude } = this.state;
+    console.log('alllllll', latitude, longitude, myLatitude, myLongitude);
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <View style={styles.container}>
@@ -89,7 +102,7 @@ class Map extends React.Component {
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
-          region={{
+          initialRegion={{
             latitude: latitude,
             longitude: longitude,
             latitudeDelta: 0.03,
@@ -108,7 +121,7 @@ class Map extends React.Component {
               longitude={ele.longitude}
               color='red'
               center='counseling'
-              handleShowDetails={this.handleShowDetails.bind(this)}
+              handleShowDetails={this.handleShowDetails}
             />
           ))}
           {this.props.psychiatric.map((ele, index) => (
@@ -118,7 +131,7 @@ class Map extends React.Component {
               longitude={ele.longitude}
               color='green'
               center='psychiatric'
-              handleShowDetails={this.handleShowDetails.bind(this)}
+              handleShowDetails={this.handleShowDetails}
             />
           ))}
         </MapView>
