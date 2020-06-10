@@ -11,10 +11,16 @@ import MyBookings from './MyBookings';
 const stackNav = createStackNavigator({
   'Mypage': {
     screen: Mypage,
-    navigationOptions: { header: null }
+    navigationOptions: { headerShown: false }
   },
   'MyInfo': {
-    screen: MyInfo
+    screen: MyInfo,
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#62CCAD'
+      },
+      headerTintColor: 'white',
+    }
   },
   'MyBookmarks': {
     screen: MyBookmarks
@@ -32,6 +38,7 @@ const stackNav = createStackNavigator({
 const NavContainer = createAppContainer(stackNav)
 
 class IndexMypage extends React.Component {
+  static navigationOptions = { header: null };
   render() {
     return (
       <NavContainer />

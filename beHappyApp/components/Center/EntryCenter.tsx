@@ -2,29 +2,30 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Fontisto from 'react-native-vector-icons/Fontisto'
 
-import IndexMypage from './Mypage/IndexMypage';
-import MapStack from './Map/MapStack';
+import CenterMain from './CenterMain';
+import CenterPage from './CenterPage';
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function Main() {
+export default function EntryCenter() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName='Main'
+        initialRouteName='CenterMain'
         activeColor='black'
         inactiveColor='white'
         barStyle={{ backgroundColor: '#62CCAD' }}
       >
         <Tab.Screen
-          name='Main'
-          component={MapStack}
+          name='CenterMain'
+          component={CenterMain}
           options={{
-            tabBarLabel: 'Map',
+            tabBarLabel: 'Main',
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name='map-marker-radius'
+              <Fontisto
+                name='nursing-home'
                 color={color}
                 size={26}
               />
@@ -32,12 +33,12 @@ export default function Main() {
           }}
         />
         <Tab.Screen
-          name='Mypage'
-          component={IndexMypage}
+          name='CenterPage'
+          component={CenterPage}
           options={{
             tabBarLabel: 'Mypage',
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name='account' color={color} size={26} />
+              <MaterialCommunityIcons name='calendar-check' color={color} size={26} />
             ),
           }}
         />

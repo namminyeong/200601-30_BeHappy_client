@@ -1,8 +1,10 @@
-import { combineReducers } from 'redux'
-import handleLogin from './auth'
+import { combineReducers } from 'redux';
+import handleLogin from './auth';
+import handleCurrentOnMap from './currentOnMap';
 
 const rootReducer = combineReducers({
-  handleLogin
-})
+  handleLogin,
+  handleCurrentOnMap,
+});
 
-export default rootReducer
+export default rootReducer;
