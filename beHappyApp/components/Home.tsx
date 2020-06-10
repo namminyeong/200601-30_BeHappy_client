@@ -8,21 +8,17 @@ export default class Home extends React.Component {
   componentDidMount() {
     DeviceStorage.loadJWT().then((value) => {
       if (value) {
-        this.props.controlLogin(true)
+        this.props.controlLogin(true, value);
       } else {
-        this.props.controlLogin(false)
+        this.props.controlLogin(false, null);
       }
-    })
+    });
   }
 
   render() {
     return (
       <Fragment>
-        {this.props.isLoginStatus ? (
-          <Main />
-        ) : (
-            <LoginContainer />
-          )}
+        {this.props.isLoginStatus ? <Main /> : <LoginContainer />}
       </Fragment>
     );
   }

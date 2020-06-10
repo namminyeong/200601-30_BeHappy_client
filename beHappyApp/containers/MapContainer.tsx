@@ -15,6 +15,7 @@ const MapContainer = ({
   controlCenterData,
   controlCoordinate,
   coordinate,
+  token,
 }) => {
   return (
     <Map
@@ -24,6 +25,7 @@ const MapContainer = ({
       controlCenterData={controlCenterData}
       controlCoordinate={controlCoordinate}
       coordinate={coordinate}
+      token={token}
     />
   );
 };
@@ -32,6 +34,7 @@ const mapStateToProps = (state) => ({
   counseling: state.handleCurrentOnMap.counseling,
   psychiatric: state.handleCurrentOnMap.psychiatric,
   coordinate: state.handleCurrentOnMap.coordinate,
+  token: state.handleLogin.token,
 });
 
 const mapDispatchToProps = (dispatch) => {

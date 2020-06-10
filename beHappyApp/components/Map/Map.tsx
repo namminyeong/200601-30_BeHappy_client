@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -17,6 +17,8 @@ class Map extends React.Component {
     this.state = {
       myLatitude: 37.52,
       myLongitude: 126.97,
+      myLatitudeDelta: 0.03,
+      myLongitudeDelta: 0.02,
       showDetails: false,
       showDetailsIndex: null,
     };
@@ -26,9 +28,12 @@ class Map extends React.Component {
     this.findCentersFromCurrentLocation = this.findCentersFromCurrentLocation.bind(
       this
     );
+    this.goCurrentLocation = this.goCurrentLocation.bind(this);
   }
 
   componentDidMount() {
+    console.log('coordinate,', this.props.coordinate);
+
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -37,10 +42,10 @@ class Map extends React.Component {
         let myLatitude = location.coords.latitude;
         let myLongitude = location.coords.longitude;
         this.setState({
-          myLatitude,
           myLongitude,
+          myLatitude,
         });
-        this.props.controlCoordinate(myLatitude, myLongitude);
+        this.props.controlCoordinate(myLongitude, myLatitude);
       }
     })();
   }
@@ -54,18 +59,21 @@ class Map extends React.Component {
 
   findCentersFromCurrentLocation() {
     console.log('findCentersFromCurrentLocation');
-    const { latitude, longitude } = this.props.coordinate;
+
+    const coordinate = this.props.coordinate;
     let url =
       ec2 +
-      '/search/location?radius=2000&latitude=' +
-      latitude +
+      '/search/location?radius=5000&latitude=' +
+      coordinate[1] +
       '&longitude=' +
-      longitude;
+      coordinate[0];
+    console.log(url);
     fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        Authorization: `Bearer ${deviceStorage.loadJWT()}`,
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -76,22 +84,29 @@ class Map extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log(370, 'data', data);
-          // let counseling = data.counseling;
-          // let psychiatric = data.psychiatric;
-          // this.props.controlCenterData(counseling, psychiatric);
-          // this.goBack();
+          console.log(data.counseling[0]);
+          let counseling = data.counseling;
+          let psychiatric = data.psychiatric;
+          this.props.controlCenterData(counseling, psychiatric);
         }
       });
   }
 
+  goCurrentLocation() {
+    console.log('goCurrentLocation', this.state.myLongitude);
+    this.props.controlCoordinate(this.state.myLongitude, this.state.myLatitude);
+  }
+
   onRegionChangeComplete(lon, lat) {
+    console.log('onRegionChangeComplete', lon, lat);
     this.props.controlCoordinate(lon, lat);
   }
 
   render() {
-    const { latitude, longitude } = this.props.coordinate;
+    const coordinate = this.props.coordinate;
     const { myLatitude, myLongitude } = this.state;
+
+    console.log('112!!!', Boolean(this.props.counseling));
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -143,14 +158,8 @@ class Map extends React.Component {
           showsUserLocation={false}
           zoomEnabled={true}
           region={{
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.03,
-            longitudeDelta: 0.02,
-          }}
-          initialRegion={{
-            latitude: myLatitude,
-            longitude: myLongitude,
+            latitude: coordinate[1],
+            longitude: coordinate[0],
             latitudeDelta: 0.03,
             longitudeDelta: 0.02,
           }}
@@ -160,32 +169,43 @@ class Map extends React.Component {
               e.latitude.toFixed(6)
             );
           }}
+          onPress={() => {
+            this.handleShowDetails(false, null);
+          }}
         >
           <Marker
             coordinate={{ latitude: myLatitude, longitude: myLongitude }}
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
-          {this.props.counseling.map((ele, index) => (
-            <Markers
-              index={index}
-              latitude={ele.latitude}
-              longitude={ele.longitude}
-              color='red'
-              center='counseling'
-              handleShowDetails={this.handleShowDetails}
-            />
-          ))}
-          {this.props.psychiatric.map((ele, index) => (
-            <Markers
-              index={index}
-              latitude={ele.latitude}
-              longitude={ele.longitude}
-              color='green'
-              center='psychiatric'
-              handleShowDetails={this.handleShowDetails}
-            />
-          ))}
+          {this.props.counseling ? (
+            this.props.counseling.map((ele, index) => (
+              <Markers
+                index={index}
+                latitude={ele.latitude}
+                longitude={ele.longitude}
+                color='red'
+                center='counseling'
+                handleShowDetails={this.handleShowDetails}
+              />
+            ))
+          ) : (
+            <Fragment />
+          )}
+          {this.props.psychiatric ? (
+            this.props.psychiatric.map((ele, index) => (
+              <Markers
+                index={index}
+                latitude={ele.latitude}
+                longitude={ele.longitude}
+                color='green'
+                center='psychiatric'
+                handleShowDetails={this.handleShowDetails}
+              />
+            ))
+          ) : (
+            <Fragment />
+          )}
         </MapView>
         <Details
           showDetails={this.state.showDetails}
@@ -197,15 +217,23 @@ class Map extends React.Component {
           navigation={this.props.navigation}
         />
         <View style={styles.searchNow}>
-          <Text
-            style={{ color: 'white' }}
+          <Button
+            small
+            dark
+            rounded
             onPress={this.findCentersFromCurrentLocation}
           >
-            현 위치에서 검색하기
-          </Text>
+            <Text style={{ padding: 10, color: 'white' }}>
+              현 위치에서 검색하기
+            </Text>
+          </Button>
         </View>
         <View style={styles.goCurrentLocation}>
-          <MaterialCommunityIcons name='crosshairs-gps' size={26} />
+          <MaterialCommunityIcons
+            name='crosshairs-gps'
+            size={26}
+            onPress={this.goCurrentLocation}
+          />
         </View>
       </View>
     );
@@ -244,7 +272,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   searchNow: {
-    backgroundColor: '#474747',
+    height: 10,
     position: 'absolute',
     left: 15,
     top: 110,
@@ -256,7 +284,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     right: 15,
-    top: 500,
+    bottom: 30,
     padding: 5,
     borderRadius: 10,
     alignSelf: 'flex-end',
