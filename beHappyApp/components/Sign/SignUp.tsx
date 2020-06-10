@@ -12,6 +12,8 @@ import RadioForm, {
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
 
+import Postcode from 'react-native-daum-postcode';
+
 let radio_props = [
   { label: '일반 사용자', value: 0 },
   { label: 'center 사용자', value: 1 },
@@ -56,6 +58,12 @@ export default class SignUp extends React.Component {
         console.log(res);
         if (res.errorCode === 3) {
           alert('이미 존재하는 username입니다.');
+        } else if (password === '') {
+          alert('비밀번호를 입력해주세요.');
+        } else if (password.length < 8) {
+          alert('비밀번호는 8자리 이상이어야 합니다.');
+        } else {
+          alert('회원가입에 성공했습니다.');
         }
       })
       .catch((err) => {
@@ -94,9 +102,21 @@ export default class SignUp extends React.Component {
       })
       .then((res) => {
         console.log(res);
+        if (username === '') {
+          alert('username을 입력해주세요.');
+        } else if (password === '') {
+          alert('비밀번호를 입력해주세요.');
+        } else if (password.length < 8) {
+          alert('비밀번호는 8자리 이상이어야 합니다.');
+        } else if (businessNumber === '') {
+          alert('사업자 번호를 입력해주세요.');
+        } else {
+          alert('회원가입에 성공했습니다.');
+        }
       })
       .catch((err) => {
         console.log(err);
+        alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
       });
   }
 
@@ -114,6 +134,11 @@ export default class SignUp extends React.Component {
 
     return (
       <View style={styles.container}>
+        <Postcode
+          jsOptions={{ animation: true }}
+          onSelected={(data) => alert(JSON.stringify(data))}
+          onError={(data) => alert(JSON.stringify(data))}
+        />
         <View style={styles.radioForm}>
           <RadioForm
             radio_props={radio_props}
@@ -186,7 +211,10 @@ export default class SignUp extends React.Component {
                 this.setState({ businessNumber })
               }
             />
-            <TextInput
+            {/* <TouchableOpacity onPress>
+              <Text>주소 찾기</Text>
+            </TouchableOpacity> */}
+            {/* <TextInput
               style={styles.inputBox}
               underlineColorAndroid='rgba(255, 255, 255, 0)'
               placeholder='위도'
@@ -199,7 +227,7 @@ export default class SignUp extends React.Component {
               placeholder='경도'
               placeholderTextColor='#ffffff'
               onChangeText={(longitude) => this.setState({ longitude })}
-            />
+            /> */}
             <TouchableOpacity onPress={this.centerSignup}>
               <Text>회원 가입</Text>
             </TouchableOpacity>
