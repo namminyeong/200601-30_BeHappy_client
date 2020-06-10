@@ -5,7 +5,6 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
   const onPressEvent = () => {
     navigation.navigate('DetailsHome');
   };
-  console.log('DEtailssssssss', centerInfo, showDetails, showDetailsIndex);
   return showDetails !== false ? (
     <View style={styles.container}>
       <Text style={styles.text} onPress={onPressEvent}>
@@ -26,6 +25,7 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
+    zIndex: 1,
   },
   text: {
     fontSize: 20,

@@ -367,10 +367,11 @@ class SearchGeo extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
+          console.log(370, 'data', data);
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           this.props.controlCenterData(counseling, psychiatric);
-          this.goBack();
+          // this.goBack();
         }
       });
   }

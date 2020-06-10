@@ -9,11 +9,11 @@ export default class Home extends React.Component {
   componentDidMount() {
     DeviceStorage.loadJWT().then((value) => {
       if (value) {
-        this.props.controlLogin(true)
+        this.props.controlLogin(true, value);
       } else {
-        this.props.controlLogin(false)
+        this.props.controlLogin(false, null);
       }
-    })
+    });
   }
 
   render() {
@@ -21,11 +21,11 @@ export default class Home extends React.Component {
       <Fragment>
         {this.props.isLoginStatus ? (
           <Main />
+        ) : (
           // ! login한 사람이 center인지 구분 필요
           // <EntryCenter />
-        ) : (
-            <LoginContainer />
-          )}
+          <LoginContainer />
+        )}
       </Fragment>
     );
   }

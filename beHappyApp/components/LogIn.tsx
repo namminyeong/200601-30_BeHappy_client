@@ -38,14 +38,14 @@ class Login extends Component {
       .then((payload) => {
         if (payload.errorCode) {
           if (payload.errorCode === 1) {
-            alert('아이디를 확인해주세요.')
+            alert('아이디를 확인해주세요.');
           }
           if (payload.errorCode === 2) {
-            alert('비밀번호를 확인해주세요.')
+            alert('비밀번호를 확인해주세요.');
           }
         } else {
           deviceStorage.saveKey('id_token', payload.token);
-          this.props.controlLogin(this.props.status);
+          this.props.controlLogin(this.props.status, payload.token);
         }
       })
       .catch((error) => {
@@ -91,7 +91,7 @@ const styles = {
     width: '100%',
     borderTopWidth: 1,
     borderColor: '#ddd',
-    top: 200
+    top: 200,
   },
   section: {
     flexDirection: 'row',

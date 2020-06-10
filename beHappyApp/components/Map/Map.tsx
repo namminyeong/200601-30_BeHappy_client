@@ -5,19 +5,30 @@ import * as Location from 'expo-location';
 import { Header, Icon, Item, Button } from 'native-base';
 import Markers from './Markers';
 import Details from './Details';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
+import deviceStorage from '../../service/DeviceStorage';
 
 class Map extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      latitude: 37.52,
-      longitude: 126.97,
+      myLatitude: 37.52,
+      myLongitude: 126.97,
+      myLatitudeDelta: 0.03,
+      myLongitudeDelta: 0.02,
       showDetails: false,
       showDetailsIndex: null,
     };
 
     this.handleShowDetails = this.handleShowDetails.bind(this);
+    this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
+    this.findCentersFromCurrentLocation = this.findCentersFromCurrentLocation.bind(
+      this
+    );
+    this.goCurrentLocation = this.goCurrentLocation.bind(this);
   }
 
   componentDidMount() {
@@ -26,12 +37,14 @@ class Map extends React.Component {
       if (status === 'granted') {
         let location = await Location.getCurrentPositionAsync({});
         console.log(location);
-        let latitude = location.coords.latitude;
-        let longitude = location.coords.longitude;
+        let myLatitude = location.coords.latitude;
+        let myLongitude = location.coords.longitude;
         this.setState({
-          latitude,
-          longitude,
+          myLongitude,
+          myLatitude,
         });
+        this.props.controlCoordinate(myLongitude, myLatitude);
+        this.findCentersFromCurrentLocation();
       }
     })();
   }
@@ -43,18 +56,54 @@ class Map extends React.Component {
     });
   }
 
-  changeCoordinateWithMarker(latitude, longitude) {
-    this.setState({
-      latitude,
-      longitude,
-    });
+  findCentersFromCurrentLocation() {
+    const coordinate = this.props.coordinate;
+    let url =
+      ec2 +
+      '/search/location?radius=5000&latitude=' +
+      coordinate[1] +
+      '&longitude=' +
+      coordinate[0];
+    console.log(url);
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          let counseling = data.counseling;
+          let psychiatric = data.psychiatric;
+          this.props.controlCenterData(counseling, psychiatric);
+        }
+      });
+  }
+
+  goCurrentLocation() {
+    this.props.controlCoordinate(this.state.myLongitude, this.state.myLatitude);
+  }
+
+  onRegionChangeComplete(lon, lat) {
+    this.props.controlCoordinate(lon, lat);
   }
 
   render() {
-    const { latitude, longitude, myLatitude, myLongitude } = this.state;
-    console.log('alllllll', latitude, longitude, myLatitude, myLongitude);
+    const coordinate = this.props.coordinate;
+    const { myLatitude, myLongitude } = this.state;
+
+    console.log('112!!!', Boolean(this.props.counseling));
+
     return (
-      <View style={{ width: '100%', height: '100%' }}>
+      <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
           <Header searchBar rounded style={{ backgroundColor: 'white' }}>
             <Item>
@@ -102,38 +151,55 @@ class Map extends React.Component {
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
-          initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
+          region={{
+            latitude: coordinate[1],
+            longitude: coordinate[0],
             latitudeDelta: 0.03,
             longitudeDelta: 0.02,
           }}
+          onRegionChangeComplete={(e) => {
+            this.onRegionChangeComplete(
+              e.longitude.toFixed(6),
+              e.latitude.toFixed(6)
+            );
+          }}
+          onPress={() => {
+            this.handleShowDetails(false, null);
+          }}
         >
           <Marker
-            coordinate={{ latitude: latitude, longitude: longitude }}
+            coordinate={{ latitude: myLatitude, longitude: myLongitude }}
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
-          {this.props.counseling.map((ele, index) => (
-            <Markers
-              index={index}
-              latitude={ele.latitude}
-              longitude={ele.longitude}
-              color='red'
-              center='counseling'
-              handleShowDetails={this.handleShowDetails}
-            />
-          ))}
-          {this.props.psychiatric.map((ele, index) => (
-            <Markers
-              index={index}
-              latitude={ele.latitude}
-              longitude={ele.longitude}
-              color='green'
-              center='psychiatric'
-              handleShowDetails={this.handleShowDetails}
-            />
-          ))}
+          {this.props.counseling ? (
+            this.props.counseling.map((ele, index) => (
+              <Markers
+                index={index}
+                latitude={ele.latitude}
+                longitude={ele.longitude}
+                color='red'
+                center='counseling'
+                handleShowDetails={this.handleShowDetails}
+              />
+            ))
+          ) : (
+            <Fragment />
+          )}
+          {this.props ? (
+            this.props.psychiatric.map((ele, index) => (
+              <Markers
+                index={index}
+                latitude={ele.latitude}
+                longitude={ele.longitude}
+                color='green'
+                center='psychiatric'
+                handleShowDetails={this.handleShowDetails}
+              />
+            ))
+          ) : (
+            <Fragment />
+          )}
         </MapView>
         <Details
           showDetails={this.state.showDetails}
@@ -144,6 +210,25 @@ class Map extends React.Component {
           }}
           navigation={this.props.navigation}
         />
+        <View style={styles.searchNow}>
+          <Button
+            small
+            dark
+            rounded
+            onPress={this.findCentersFromCurrentLocation}
+          >
+            <Text style={{ padding: 10, color: 'white' }}>
+              현 위치에서 검색하기
+            </Text>
+          </Button>
+        </View>
+        <View style={styles.goCurrentLocation}>
+          <MaterialCommunityIcons
+            name='crosshairs-gps'
+            size={26}
+            onPress={this.goCurrentLocation}
+          />
+        </View>
       </View>
     );
   }
@@ -179,6 +264,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#62CCAD',
     color: 'white',
     borderRadius: 10,
+  },
+  searchNow: {
+    height: 10,
+    position: 'absolute',
+    left: 15,
+    top: 110,
+    padding: 5,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+  },
+  goCurrentLocation: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    right: 15,
+    bottom: 30,
+    padding: 5,
+    borderRadius: 10,
+    alignSelf: 'flex-end',
   },
 });
 
