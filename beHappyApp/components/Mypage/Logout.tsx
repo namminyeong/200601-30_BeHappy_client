@@ -1,15 +1,15 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import deviceStorage from '../../service/DeviceStorage';
 
-export default function Logout({ status, controlLogin }) {
+export default function Logout({ status, controlLogin, token }) {
   let logoutUser = () => {
     fetch('http://13.209.16.103:4000/user/signout', {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${deviceStorage.loadJWT()}`
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
@@ -17,14 +17,14 @@ export default function Logout({ status, controlLogin }) {
       })
       .then((payload) => {
         if (payload.token === '') {
-          controlLogin(status)
+          controlLogin(status, null);
           deviceStorage.deleteJWT();
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -32,17 +32,17 @@ export default function Logout({ status, controlLogin }) {
         <Text style={styles.logoutText}>logout</Text>
       </TouchableOpacity>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   logoutText: {
     marginTop: 20,
     color: '#62CCAD',
     paddingRight: '10%',
     fontWeight: 'bold',
-  }
-})
+  },
+});

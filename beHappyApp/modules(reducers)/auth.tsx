@@ -1,22 +1,24 @@
-const LOGIN = 'handleLogin_LOGIN'
+const LOGIN = 'handleLogin_LOGIN';
 
-export const controlLogin = (status) => {
-  return { type: LOGIN, status }
+export const controlLogin = (status, token) => {
+  return { type: LOGIN, status, token };
 };
 
 const initialState = {
-  isLogin: false
-}
+  isLogin: false,
+  token: null,
+};
 
 function handleLogin(state = initialState, action) {
   switch (action.type) {
     case LOGIN:
-      return {
-        isLogin: action.status
-      }
+      return Object.assign({}, state, {
+        isLogin: action.status,
+        token: action.token,
+      });
     default:
-      return state
+      return state;
   }
 }
 
-export default handleLogin
+export default handleLogin;
