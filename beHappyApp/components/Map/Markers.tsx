@@ -12,12 +12,14 @@ function Markers({
   const onPressEvent = () => {
     handleShowDetails(center, index);
   };
+  const lat = parseFloat(latitude);
+  const lon = parseFloat(longitude);
   return (
     <Marker
-      key={index}
+      key={latitude}
       coordinate={{
-        latitude,
-        longitude,
+        latitude: lat,
+        longitude: lon,
       }}
       pinColor={color}
       onPress={onPressEvent}

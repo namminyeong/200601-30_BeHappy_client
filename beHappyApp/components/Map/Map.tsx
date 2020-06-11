@@ -44,6 +44,7 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount');
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -99,11 +100,16 @@ class Map extends React.Component {
   }
 
   goCurrentLocation() {
-    this.props.controlCoordinate(this.state.myLongitude, this.state.myLatitude);
+    this.props.controlCoordinate(
+      this.state.myLongitude,
+      this.state.myLatitude,
+      this.state.myLatitudeDelta,
+      this.state.myLongitudeDelta
+    );
   }
 
-  onRegionChangeComplete(lon, lat) {
-    this.props.controlCoordinate(lon, lat);
+  onRegionChangeComplete(lon, lat, lonDelta, latDelta) {
+    this.props.controlCoordinate(lon, lat, lonDelta, latDelta);
   }
 
   render() {
@@ -130,7 +136,7 @@ class Map extends React.Component {
                 transparent
                 style={styles.button}
                 onPress={() => {
-                  this.props.navigation.navigate('SearchName');
+                  this.props.navigation.navigate('SearchNameContainer');
                 }}
               >
                 <Text>이름으로 검색</Text>
@@ -160,13 +166,15 @@ class Map extends React.Component {
           region={{
             latitude: coordinate[1],
             longitude: coordinate[0],
-            latitudeDelta: 0.03,
-            longitudeDelta: 0.02,
+            latitudeDelta: coordinate[3],
+            longitudeDelta: coordinate[2],
           }}
           onRegionChangeComplete={(e) => {
             this.onRegionChangeComplete(
               e.longitude.toFixed(6),
-              e.latitude.toFixed(6)
+              e.latitude.toFixed(6),
+              e.longitudeDelta.toFixed(6),
+              e.latitudeDelta.toFixed(6)
             );
           }}
           onPress={() => {
