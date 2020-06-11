@@ -1,17 +1,11 @@
 import React from 'react';
 import { Marker } from 'react-native-maps';
 
-function Markers({
-  index,
-  latitude,
-  longitude,
-  color,
-  center,
-  handleShowDetails,
-}) {
+function Markers({ center, index, latitude, longitude, handleShowDetails }) {
   const onPressEvent = () => {
     handleShowDetails(center, index);
   };
+
   const lat = parseFloat(latitude);
   const lon = parseFloat(longitude);
   return (
@@ -21,10 +15,11 @@ function Markers({
         latitude: lat,
         longitude: lon,
       }}
-      pinColor={color}
+      title='Reviews'
+      description='5.0'
+      pinColor={'orange'}
       onPress={onPressEvent}
     />
   );
 }
-
 export default Markers;

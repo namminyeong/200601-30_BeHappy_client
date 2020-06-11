@@ -21,6 +21,7 @@ class Map extends React.Component {
       myLongitudeDelta: 0.02,
       showDetails: false,
       showDetailsIndex: null,
+      countTags: 10,
       tags: [
         ['스트레스', true],
         ['가족', true],
@@ -33,6 +34,7 @@ class Map extends React.Component {
         ['불안', true],
         ['강박', true],
       ],
+      centerTags: [['정신과', true], ['심리센터', true]],
     };
 
     this.handleShowDetails = this.handleShowDetails.bind(this);
@@ -41,10 +43,63 @@ class Map extends React.Component {
       this
     );
     this.goCurrentLocation = this.goCurrentLocation.bind(this);
+    this.changeFilter = this.changeFilter.bind(this);
+    this.countTags = this.countTags.bind(this);
+    this.changeAllFilter = this.changeAllFilter.bind(this);
+    this.pressAll = this.pressAll.bind(this);
+    this.checkTagsForUrl = this.checkTagsForUrl.bind(this);
+    this.changeCenterFilter = this.changeCenterFilter.bind(this);
+  }
+
+  changeFilter(index) {
+    let newState = this.state.tags;
+    let present = newState[index][1];
+    newState[index][1] = !present;
+    this.countTags(!present);
+    this.setState({
+      tags: newState,
+    });
+  }
+
+  changeCenterFilter(index) {
+    let newState = this.state.centerTags;
+    let present = newState[index][1];
+    newState[index][1] = !present;
+    this.setState({
+      centerTags: newState,
+    });
+  }
+
+  changeAllFilter(status) {
+    let newState = this.state.tags;
+    newState = newState.map((ele) => [ele[0], status]);
+    this.countTags(null, status);
+    this.setState({
+      tags: newState,
+    });
+  }
+
+  countTags(status, allStatus) {
+    if (status === true) {
+      this.state.countTags += 1;
+    } else if (status === false) {
+      this.state.countTags -= 1;
+    } else if (allStatus === true) {
+      this.state.countTags = 10;
+    } else {
+      this.state.countTags = 0;
+    }
+  }
+
+  pressAll() {
+    if (this.state.countTags === 10) {
+      this.changeAllFilter(false);
+    } else {
+      this.changeAllFilter(true);
+    }
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -68,14 +123,30 @@ class Map extends React.Component {
     });
   }
 
+  checkTagsForUrl() {
+    if (this.state.countTags === (this.state.tags.length || 0)) {
+      return '';
+    }
+    let allTags = this.state.tags.reduce((acc, cur) => {
+      if (cur[1] === true) {
+        acc.push(cur[0]);
+        return acc;
+      }
+      return acc;
+    }, []);
+    return '&tags='.concat(allTags);
+  }
+
   findCentersFromCurrentLocation() {
     const coordinate = this.props.coordinate;
+    let tags = this.checkTagsForUrl();
     let url =
       ec2 +
       '/search/location?radius=5000&latitude=' +
       coordinate[1] +
       '&longitude=' +
-      coordinate[0];
+      coordinate[0] +
+      tags;
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -131,7 +202,6 @@ class Map extends React.Component {
               >
                 <Text>지역으로 검색</Text>
               </Button>
-
               <Button
                 transparent
                 style={styles.button}
@@ -150,16 +220,42 @@ class Map extends React.Component {
             >
               {this.state.tags.map((tagArr, index) => (
                 <TagFilters
-                  key={index}
+                  key={tagArr[0]}
                   tag={tagArr[0]}
                   index={index}
+                  changeFilter={this.changeFilter}
                   selected={tagArr[1]}
                 />
               ))}
             </ScrollView>
+            <Button transparent onPress={this.pressAll}>
+              <Text style={styles.allText}>All</Text>
+            </Button>
+          </View>
+          <View
+            style={{
+              left: 10,
+              width: '95%',
+              borderBottomWidth: 1,
+              borderColor: 'lightgrey',
+            }}
+          />
+          <View style={{ flexDirection: 'row' }}>
+            {this.state.centerTags.map((tagArr, index) => (
+              <Button
+                key={tagArr[0]}
+                transparent
+                onPress={() => this.changeCenterFilter(index)}
+              >
+                <Text style={tagArr[1] ? styles.selected : styles.notSelected}>
+                  {tagArr[0]}
+                </Text>
+              </Button>
+            ))}
           </View>
         </View>
         <MapView
+          moveOnMarkerPress={false}
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
@@ -186,14 +282,13 @@ class Map extends React.Component {
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
-          {this.props.counseling ? (
+          {this.props.counseling && this.state.centerTags[1][1] ? (
             this.props.counseling.map((ele, index) => (
               <Markers
                 key={ele.latitude}
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
-                color='red'
                 center='counseling'
                 handleShowDetails={this.handleShowDetails}
               />
@@ -201,14 +296,13 @@ class Map extends React.Component {
           ) : (
             <Fragment />
           )}
-          {this.props ? (
+          {this.props.psychiatric && this.state.centerTags[0][1] ? (
             this.props.psychiatric.map((ele, index) => (
               <Markers
                 key={ele.latitude}
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
-                color='green'
                 center='psychiatric'
                 handleShowDetails={this.handleShowDetails}
               />
@@ -260,7 +354,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: 'white',
-    height: '13.5%',
+    height: '20%',
   },
   buttonGeo: {
     color: 'white',
@@ -282,10 +376,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   searchNow: {
-    height: 10,
+    height: 0,
     position: 'absolute',
-    left: 15,
-    top: 110,
+    left: 6,
+    top: 150,
     padding: 5,
     borderRadius: 10,
     alignSelf: 'flex-start',
@@ -298,6 +392,41 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 10,
     alignSelf: 'flex-end',
+  },
+  allText: {
+    marginTop: -2,
+    marginLeft: 10,
+    marginRight: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  selected: {
+    backgroundColor: '#62ccad',
+    marginTop: -2,
+    borderRadius: 12,
+    padding: 3,
+    marginLeft: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  notSelected: {
+    backgroundColor: '#cdf7eb',
+    marginTop: -2,
+    borderRadius: 12,
+    padding: 3,
+    marginLeft: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    color: '#5c5c5c',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
