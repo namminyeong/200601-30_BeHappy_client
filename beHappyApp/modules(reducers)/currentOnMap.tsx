@@ -1,8 +1,13 @@
 const COORDINATE = 'handleCurrentOnMap_COORDINATE';
 const CENTERDATA = 'handleCurrentOnMap_CENTERDATA';
 
-export const controlCoordinate = (lon, lat) => {
-  return { type: COORDINATE, lon, lat };
+export const controlCoordinate = (
+  lon,
+  lat,
+  lonDelta = 0.03,
+  latDelta = 0.02
+) => {
+  return { type: COORDINATE, lon, lat, lonDelta, latDelta };
 };
 
 export const controlCenterData = (counseling, psychiatric) => {
@@ -10,7 +15,7 @@ export const controlCenterData = (counseling, psychiatric) => {
 };
 
 const initialState = {
-  coordinate: [0, 0],
+  coordinate: [0, 0, 0.03, 0.02],
   counseling: [],
   psychiatric: [],
 };
@@ -19,7 +24,12 @@ function handleCurrentOnMap(state = initialState, action) {
   switch (action.type) {
     case COORDINATE:
       return Object.assign({}, state, {
-        coordinate: [action.lon, action.lat],
+        coordinate: [
+          parseFloat(action.lon),
+          parseFloat(action.lat),
+          parseFloat(action.lonDelta),
+          parseFloat(action.latDelta),
+        ],
       });
     case CENTERDATA:
       return Object.assign({}, state, {

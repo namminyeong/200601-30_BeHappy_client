@@ -4,8 +4,6 @@ import { Header, Button, Icon, Item, Input, Container } from 'native-base';
 import RNPickerSelect from 'react-native-picker-select';
 import getEnvVars from '../../environment';
 const { ec2, kakaoApi } = getEnvVars();
-import deviceStorage from '../../service/DeviceStorage';
-import { StackActions } from '@react-navigation/native';
 
 const cities = [
   '서울특별시',
@@ -342,21 +340,28 @@ class SearchGeo extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          let lon = Number(data.documents[0].address.x).toFixed(6);
-          let lat = Number(data.documents[0].address.y).toFixed(6);
+          let lon = parseFloat(data.documents[0].address.x).toFixed(6);
+          let lat = parseFloat(data.documents[0].address.y).toFixed(6);
           this.props.controlCoordinate(lon, lat);
+          this.getCenterWithCoordinate(lon, lat);
         }
       });
-    this.getCenterWithCoordinate();
   }
 
-  getCenterWithCoordinate() {
-    let url = ec2 + '/search/location';
+  getCenterWithCoordinate(lon, lat) {
+    console.log('token', this.props.token);
+    let url =
+      ec2 +
+      '/search/location?radius=5000&latitude=' +
+      lat +
+      '&longitude=' +
+      lon;
     fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
-        Authorization: `Bearer ${deviceStorage.loadJWT()}`,
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -367,18 +372,17 @@ class SearchGeo extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log(370, 'data', data);
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           this.props.controlCenterData(counseling, psychiatric);
-          // this.goBack();
         }
       });
+    this.goBack();
   }
 
   goBack() {
-    this.props.navigation.dispatch(StackActions.popToTop());
-    this.props.navigation.navigate('Map');
+    console.log('goBack');
+    this.props.navigation.navigate('MapContainer');
   }
 
   inputCity(value) {

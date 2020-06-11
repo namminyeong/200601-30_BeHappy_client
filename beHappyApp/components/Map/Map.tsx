@@ -8,7 +8,6 @@ import Details from './Details';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
-import deviceStorage from '../../service/DeviceStorage';
 
 class Map extends React.Component {
   constructor(props) {
@@ -32,11 +31,11 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount');
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
         let location = await Location.getCurrentPositionAsync({});
-        console.log(location);
         let myLatitude = location.coords.latitude;
         let myLongitude = location.coords.longitude;
         this.setState({
@@ -64,7 +63,6 @@ class Map extends React.Component {
       coordinate[1] +
       '&longitude=' +
       coordinate[0];
-    console.log(url);
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -89,18 +87,21 @@ class Map extends React.Component {
   }
 
   goCurrentLocation() {
-    this.props.controlCoordinate(this.state.myLongitude, this.state.myLatitude);
+    this.props.controlCoordinate(
+      this.state.myLongitude,
+      this.state.myLatitude,
+      this.state.myLatitudeDelta,
+      this.state.myLongitudeDelta
+    );
   }
 
-  onRegionChangeComplete(lon, lat) {
-    this.props.controlCoordinate(lon, lat);
+  onRegionChangeComplete(lon, lat, lonDelta, latDelta) {
+    this.props.controlCoordinate(lon, lat, lonDelta, latDelta);
   }
 
   render() {
     const coordinate = this.props.coordinate;
     const { myLatitude, myLongitude } = this.state;
-
-    console.log('112!!!', Boolean(this.props.counseling));
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -122,7 +123,7 @@ class Map extends React.Component {
                 transparent
                 style={styles.button}
                 onPress={() => {
-                  this.props.navigation.navigate('SearchName');
+                  this.props.navigation.navigate('SearchNameContainer');
                 }}
               >
                 <Text>이름으로 검색</Text>
@@ -154,13 +155,15 @@ class Map extends React.Component {
           region={{
             latitude: coordinate[1],
             longitude: coordinate[0],
-            latitudeDelta: 0.03,
-            longitudeDelta: 0.02,
+            latitudeDelta: coordinate[3],
+            longitudeDelta: coordinate[2],
           }}
           onRegionChangeComplete={(e) => {
             this.onRegionChangeComplete(
               e.longitude.toFixed(6),
-              e.latitude.toFixed(6)
+              e.latitude.toFixed(6),
+              e.longitudeDelta.toFixed(6),
+              e.latitudeDelta.toFixed(6)
             );
           }}
           onPress={() => {
