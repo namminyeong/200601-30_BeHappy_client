@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import Age from './components/Age';
+import Home from './components/Home';
 
-ReactDOM.render(<Age />, document.getElementById('root'));
+ReactDOM.render(<Home />, document.getElementById('root'));

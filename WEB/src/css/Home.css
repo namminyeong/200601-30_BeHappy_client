@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #263343;
+  padding: 8px 12px;
+  position: sticky;
+}
+
+.logo {
+  width: 30px;
+  height: 10px;
+}
