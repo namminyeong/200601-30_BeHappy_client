@@ -5,10 +5,10 @@ import * as Location from 'expo-location';
 import { Header, Icon, Item, Button } from 'native-base';
 import Markers from './Markers';
 import Details from './Details';
+import TagFilters from './TagFilters';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
-import deviceStorage from '../../service/DeviceStorage';
 
 class Map extends React.Component {
   constructor(props) {
@@ -21,6 +21,18 @@ class Map extends React.Component {
       myLongitudeDelta: 0.02,
       showDetails: false,
       showDetailsIndex: null,
+      tags: [
+        ['스트레스', true],
+        ['가족', true],
+        ['우울증', true],
+        ['식이', true],
+        ['부부', true],
+        ['불면증', true],
+        ['학교폭력', true],
+        ['아동', true],
+        ['불안', true],
+        ['강박', true],
+      ],
     };
 
     this.handleShowDetails = this.handleShowDetails.bind(this);
@@ -36,7 +48,6 @@ class Map extends React.Component {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
         let location = await Location.getCurrentPositionAsync({});
-        console.log(location);
         let myLatitude = location.coords.latitude;
         let myLongitude = location.coords.longitude;
         this.setState({
@@ -64,7 +75,6 @@ class Map extends React.Component {
       coordinate[1] +
       '&longitude=' +
       coordinate[0];
-    console.log(url);
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -100,8 +110,6 @@ class Map extends React.Component {
     const coordinate = this.props.coordinate;
     const { myLatitude, myLongitude } = this.state;
 
-    console.log('112!!!', Boolean(this.props.counseling));
-
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
@@ -134,16 +142,14 @@ class Map extends React.Component {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
-              <Text style={styles.hashtag}>#스트레스</Text>
-              <Text style={styles.hashtag}>#가족</Text>
-              <Text style={styles.hashtag}>#우울증</Text>
-              <Text style={styles.hashtag}>#식이</Text>
-              <Text style={styles.hashtag}>#부부</Text>
-              <Text style={styles.hashtag}>#불면증</Text>
-              <Text style={styles.hashtag}>#학교폭력</Text>
-              <Text style={styles.hashtag}>#아동</Text>
-              <Text style={styles.hashtag}>#불안</Text>
-              <Text style={styles.hashtag}>#강박</Text>
+              {this.state.tags.map((tagArr, index) => (
+                <TagFilters
+                  key={index}
+                  tag={tagArr[0]}
+                  index={index}
+                  selected={tagArr[1]}
+                />
+              ))}
             </ScrollView>
           </View>
         </View>
@@ -175,6 +181,7 @@ class Map extends React.Component {
           {this.props.counseling ? (
             this.props.counseling.map((ele, index) => (
               <Markers
+                key={ele.latitude}
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
@@ -189,6 +196,7 @@ class Map extends React.Component {
           {this.props ? (
             this.props.psychiatric.map((ele, index) => (
               <Markers
+                key={ele.latitude}
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
