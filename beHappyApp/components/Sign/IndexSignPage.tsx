@@ -4,7 +4,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import LoginContainer from '../../containers/LoginContainer';
 import Login from './LogIn';
-import SignupContainer from '../../containers/SignupContainer';
 import Signup from './SignUp';
 
 const signNavigator = createStackNavigator(
@@ -15,10 +14,6 @@ const signNavigator = createStackNavigator(
     },
     Login: {
       screen: Login,
-      navigationOptions: { header: false },
-    },
-    SignupContainer: {
-      screen: SignupContainer,
       navigationOptions: { header: false },
     },
     Signup: {

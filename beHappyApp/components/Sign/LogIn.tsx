@@ -18,7 +18,7 @@ class Login extends React.Component {
   loginUser() {
     const { username, password } = this.state;
 
-    fetch('http://13.209.16.103:4000/user/signin', {
+    fetch('http://13.209.16.103:4000/user/login', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -27,19 +27,21 @@ class Login extends React.Component {
       body: JSON.stringify({ username, password }),
     })
       .then((response) => {
-        return response.json();
+        if (response.status === 200 || response.status === 403) {
+          return response.json();
+        }
+        return '';
       })
       .then((payload) => {
-        if (payload.errorCode) {
-          if (payload.errorCode === 1) {
+        if (typeof payload === 'object') {
+          if (!payload.errorCode) {
+            deviceStorage.saveKey('id_token', payload.token);
+            this.props.controlLogin(this.props.status, payload.token);
+          } else if (payload.errorCode === 1) {
             alert('아이디를 확인해주세요.');
-          }
-          if (payload.errorCode === 2) {
+          } else if (payload.errorCode === 2) {
             alert('비밀번호를 확인해주세요.');
           }
-        } else {
-          deviceStorage.saveKey('id_token', payload.token);
-          this.props.controlLogin(this.props.status);
         }
       })
       .catch((error) => {
@@ -83,7 +85,7 @@ class Login extends React.Component {
         <View style={styles.signEntry}>
           <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('SignupContainer')}
+            onPress={() => this.props.navigation.navigate('Signup')}
           >
             <Text style={styles.signUpBtn}>회원가입</Text>
           </TouchableOpacity>

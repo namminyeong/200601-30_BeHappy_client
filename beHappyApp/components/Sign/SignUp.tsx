@@ -6,13 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import RadioForm, {
-  RadioButton,
-  RadioButtonInput,
-  RadioButtonLabel,
-} from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 import RNPickerSelect from 'react-native-picker-select';
-import { StackActions } from '@react-navigation/native';
 import getEnvVars from '../../environment';
 
 import CenterList from './centerList';
@@ -321,7 +316,6 @@ const states = {
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       username: '',
       password: '',
@@ -378,16 +372,21 @@ export default class SignUp extends React.Component {
       redirect: 'follow',
     })
       .then((res) => {
-        return res.text();
+        if (res.status === 200 || res.status === 409) {
+          return res.json();
+        }
+        return '';
       })
-      .then((res) => {
-        if (res.errorCode) {
-          if (res.errorCode === 3) {
-            alert('이미 존재하는 username입니다.');
+      .then((payload) => {
+        if (typeof payload === 'object') {
+          if (payload.errorCode) {
+            if (payload.errorCode === 3) {
+              alert('이미 존재하는 username입니다.');
+            }
+          } else {
+            alert('회원가입에 성공했습니다.');
+            this.goBack();
           }
-        } else {
-          alert('회원가입에 성공했습니다.');
-          this.goBack();
         }
       })
       .catch((err) => {
@@ -414,6 +413,7 @@ export default class SignUp extends React.Component {
       headers: {
         'Content-Type': 'application/json',
       },
+
       body: JSON.stringify({
         username,
         password,
@@ -427,23 +427,29 @@ export default class SignUp extends React.Component {
       }),
     })
       .then((res) => {
-        return res.text();
-      })
-      .then((res) => {
-        if (res.errorCode) {
-          if (res.errorCode === 3) {
-            alert('이미 존재하는 username입니다.');
-          } else if (res.errorCode === 4) {
-            alert('이미 존재하는 center입니다.');
-          } else if (res.errorCode === 5) {
-            alert('이미 존재하는 사업자 번호입니다.');
-          }
-        } else {
+        if (res.status === 409) {
+          return res.json();
+        } else if (res.status === 200) {
           alert('회원가입에 성공했습니다.');
           this.goBack();
         }
+        return '';
+      })
+      .then((payload) => {
+        if (typeof payload === 'object') {
+          if (payload.errorCode) {
+            if (payload.errorCode === 3) {
+              alert('이미 존재하는 username입니다.');
+            } else if (payload.errorCode === 4) {
+              alert('이미 존재하는 center입니다.');
+            } else if (payload.errorCode === 5) {
+              alert('이미 존재하는 사업자 번호입니다.');
+            }
+          }
+        }
       })
       .catch((err) => {
+        console.log('err: ', err);
         alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
       });
   }
@@ -486,7 +492,6 @@ export default class SignUp extends React.Component {
         if (typeof data === 'object') {
           let lon = Number(data.documents[0].address.x).toFixed(6);
           let lat = Number(data.documents[0].address.y).toFixed(6);
-          this.props.controlCoordinate(lat, lon);
 
           const info = await this.getCenterInfo(lat, lon);
           this.setState({
@@ -559,13 +564,13 @@ export default class SignUp extends React.Component {
 
   setLatitude(lat) {
     this.setState({
-      latitude: lat,
+      latitude: Number(lat).toFixed(6),
     });
   }
 
   setLongitude(lon) {
     this.setState({
-      longitude: lon,
+      longitude: Number(lon).toFixed(6),
     });
   }
 
