@@ -43,22 +43,20 @@ class SearchName extends React.Component {
         if (typeof data === 'object') {
           let keys = Object.keys(data);
           if (data.counseling.length + data.psychiatric.length === 0) {
+            alert('검색 결과가 없습니다');
           } else if (data.counseling.length + data.psychiatric.length === 1) {
             if (data.counseling.length === 1) {
               this.props.controlCoordinate(
                 data.counseling[0].longitude,
-                data.counseling[0].latitude,
-                0.03,
-                0.02
+                data.counseling[0].latitude
               );
             } else {
               this.props.controlCoordinate(
                 data.psychiatric[0].longitude,
-                data.psychiatric[0].latitude,
-                0.03,
-                0.02
+                data.psychiatric[0].latitude
               );
             }
+            this.goBack();
           } else {
             let lat = [];
             let lon = [];
@@ -99,14 +97,14 @@ class SearchName extends React.Component {
             this.props.controlCoordinate(
               (maxLon + minLon) / 2,
               (maxLat + minLat) / 2,
-              (maxLon - minLon) * 1.5,
-              (maxLat - minLat) * 1.4
+              (maxLon - minLon) * 0.97,
+              (maxLat - minLat) * 0.97
             );
           }
           this.props.controlCenterData(data.counseling, data.psychiatric);
+          this.goBack();
         }
       });
-    this.goBack();
   }
 
   goBack() {
