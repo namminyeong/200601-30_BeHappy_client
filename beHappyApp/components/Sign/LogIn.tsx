@@ -35,8 +35,13 @@ class Login extends React.Component {
       .then((payload) => {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
+            alert('로그인이 완료됐습니다.');
+            if (payload.adminState === (0 || -1)) {
+              this.props.controlLogin(0, payload.token);
+            } else if (payload.adminState === 1) {
+              this.props.controlLogin(1, payload.token);
+            }
             deviceStorage.saveKey('id_token', payload.token);
-            this.props.controlLogin(this.props.status, payload.token);
           } else if (payload.errorCode === 1) {
             alert('아이디를 확인해주세요.');
           } else if (payload.errorCode === 2) {
