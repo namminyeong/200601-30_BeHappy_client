@@ -2,20 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import SearchGeo from '../components/Map/SearchGeo';
+import SearchName from '../components/Map/SearchName';
 import {
   controlCoordinate,
   controlCenterData,
 } from '../modules(reducers)/currentOnMap';
 
-const SearchGeoContainer = ({
+const SearchNameContainer = ({
   controlCoordinate,
   controlCenterData,
   navigation,
   token,
 }) => {
+  console.log('SearchNameContainer');
   return (
-    <SearchGeo
+    <SearchName
       controlCoordinate={controlCoordinate}
       controlCenterData={controlCenterData}
       navigation={navigation}
@@ -41,4 +42,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchGeoContainer);
+)(SearchNameContainer);

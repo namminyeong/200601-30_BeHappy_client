@@ -3,7 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import MapContainer from '../../containers/MapContainer';
-import SearchName from './SearchName';
+import SearchNameContainer from '../../containers/SearchNameContainer';
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
 import DetailsHome from './DetailsHome';
 
@@ -15,8 +15,8 @@ const stackNav = createStackNavigator(
         headerShown: false,
       },
     },
-    SearchName: {
-      screen: SearchName,
+    SearchNameContainer: {
+      screen: SearchNameContainer,
       navigationOptions: {
         headerShown: false,
       },
