@@ -34,7 +34,6 @@ class SearchName extends React.Component {
       },
     })
       .then((res) => {
-        console.log('res', res.status);
         if (res.status === 200) {
           return res.json();
         }
@@ -42,11 +41,6 @@ class SearchName extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log('data', data);
-          let obj = {};
-          obj['counseling'] = JSON.parse(JSON.stringify(data));
-          obj['psychiatric'] = [];
-          data = JSON.parse(JSON.stringify(obj));
           let keys = Object.keys(data);
           if (data.counseling.length + data.psychiatric.length === 0) {
           } else if (data.counseling.length + data.psychiatric.length === 1) {
@@ -105,8 +99,8 @@ class SearchName extends React.Component {
             this.props.controlCoordinate(
               (maxLon + minLon) / 2,
               (maxLat + minLat) / 2,
-              maxLon - minLon + 1,
-              maxLat - minLat + 2
+              (maxLon - minLon) * 1.5,
+              (maxLat - minLat) * 1.4
             );
           }
           this.props.controlCenterData(data.counseling, data.psychiatric);
@@ -116,7 +110,6 @@ class SearchName extends React.Component {
   }
 
   goBack() {
-    console.log('goBack');
     this.props.navigation.navigate('MapContainer');
   }
 
