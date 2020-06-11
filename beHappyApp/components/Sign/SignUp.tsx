@@ -372,10 +372,14 @@ export default class SignUp extends React.Component {
       redirect: 'follow',
     })
       .then((res) => {
-        if (res.status === 200 || res.status === 409) {
+        if (res.status === 409) {
           return res.json();
+        } else if (res.status === 200) {
+          alert('회원가입에 성공했습니다.');
+          this.goBack();
+        } else {
+          return '';
         }
-        return '';
       })
       .then((payload) => {
         if (typeof payload === 'object') {
@@ -383,9 +387,6 @@ export default class SignUp extends React.Component {
             if (payload.errorCode === 3) {
               alert('이미 존재하는 username입니다.');
             }
-          } else {
-            alert('회원가입에 성공했습니다.');
-            this.goBack();
           }
         }
       })

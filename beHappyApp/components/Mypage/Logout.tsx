@@ -19,7 +19,7 @@ export default function Logout({ status, controlLogin, token }) {
       })
       .then((payload) => {
         if (payload.token === '') {
-          controlLogin(status, null);
+          controlLogin(-1, null);
           deviceStorage.deleteJWT();
         }
       })
