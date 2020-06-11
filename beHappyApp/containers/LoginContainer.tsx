@@ -1,26 +1,25 @@
 import React from 'react';
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import Login from '../components/LogIn'
-import { controlLogin } from '../modules(reducers)/auth'
-import { View } from 'react-native'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import Login from '../components/Sign/LogIn';
+import { controlLogin } from '../modules(reducers)/auth';
 
-
-const LoginContainer = ({ controlLogin }) => {
+const LoginContainer = ({ controlLogin, navigation }) => {
   return (
-    <View>
-      <Login status={true} controlLogin={controlLogin} />
-    </View>
-  )
-}
+    <Login status={true} controlLogin={controlLogin} navigation={navigation} />
+  );
+};
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
-      controlLogin
+      controlLogin,
     },
     dispatch
-  )
-}
+  );
+};
 
-export default connect(null, mapDispatchToProps)(LoginContainer);
+export default connect(
+  null,
+  mapDispatchToProps
+)(LoginContainer);

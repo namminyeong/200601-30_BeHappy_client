@@ -4,7 +4,8 @@ import deviceStorage from '../../service/DeviceStorage';
 
 export default function Logout({ status, controlLogin, token }) {
   let logoutUser = () => {
-    fetch('http://13.209.16.103:4000/user/signout', {
+    console.log(token);
+    fetch('http://13.209.16.103:4000/user/logout', {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -13,6 +14,7 @@ export default function Logout({ status, controlLogin, token }) {
       },
     })
       .then((response) => {
+        console.log(response);
         return response.json();
       })
       .then((payload) => {
