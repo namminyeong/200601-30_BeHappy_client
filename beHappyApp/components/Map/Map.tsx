@@ -42,7 +42,7 @@ class Map extends React.Component {
           myLongitude,
           myLatitude,
         });
-        this.props.controlCoordinate(myLongitude, myLatitude, 0.03, 0.02);
+        this.props.controlCoordinate(myLongitude, myLatitude);
         this.findCentersFromCurrentLocation();
       }
     })();

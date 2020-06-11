@@ -1,7 +1,12 @@
 const COORDINATE = 'handleCurrentOnMap_COORDINATE';
 const CENTERDATA = 'handleCurrentOnMap_CENTERDATA';
 
-export const controlCoordinate = (lon, lat, lonDelta, latDelta) => {
+export const controlCoordinate = (
+  lon,
+  lat,
+  lonDelta = 0.03,
+  latDelta = 0.02
+) => {
   return { type: COORDINATE, lon, lat, lonDelta, latDelta };
 };
 

@@ -342,7 +342,7 @@ class SearchGeo extends React.Component {
         if (typeof data === 'object') {
           let lon = parseFloat(data.documents[0].address.x).toFixed(6);
           let lat = parseFloat(data.documents[0].address.y).toFixed(6);
-          this.props.controlCoordinate(lon, lat, 0.03, 0.02);
+          this.props.controlCoordinate(lon, lat);
           this.getCenterWithCoordinate(lon, lat);
         }
       });
