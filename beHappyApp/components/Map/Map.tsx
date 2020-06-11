@@ -148,7 +148,7 @@ class Map extends React.Component {
             </ScrollView>
           </View>
         </View>
-        <MapView
+        {/* <MapView
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
@@ -203,7 +203,7 @@ class Map extends React.Component {
           ) : (
             <Fragment />
           )}
-        </MapView>
+        </MapView> */}
         <Details
           showDetails={this.state.showDetails}
           showDetailsIndex={this.state.showDetailsIndex}

@@ -7,21 +7,11 @@ import Signup from '../components/Sign/SignUp';
 import {
   controlCoordinate,
   controlCenterData,
-} from '../modules(reducers)/currentOnMap2';
+} from '../modules(reducers)/currentOnMap';
 
-const SignupContainer = ({
-  coordinate,
-  controlCoordinate,
-  controlCenterData,
-  navigation,
-}) => {
+const SignupContainer = ({ controlCoordinate, navigation }) => {
   return (
-    <Signup
-      coordinate={coordinate}
-      controlCoordinate={controlCoordinate}
-      controlCenterData={controlCenterData}
-      navigation={navigation}
-    />
+    <Signup controlCoordinate={controlCoordinate} navigation={navigation} />
   );
 };
 
