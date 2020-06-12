@@ -1,16 +1,14 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import IndexMypage from './Mypage/IndexMypage';
 import MapStack from './Map/MapStack';
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function Main() {
-  return (
-    <NavigationContainer>
+class Main extends React.Component {
+  render() {
+    return (
       <Tab.Navigator
         initialRouteName='Main'
         activeColor='black'
@@ -42,6 +40,8 @@ export default function Main() {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
-  );
+    );
+  }
 }
+
+export default Main;

@@ -349,7 +349,6 @@ class SearchGeo extends React.Component {
   }
 
   getCenterWithCoordinate(lon, lat) {
-    console.log('token', this.props.token);
     let url =
       ec2 +
       '/search/location?radius=5000&latitude=' +
@@ -381,7 +380,6 @@ class SearchGeo extends React.Component {
   }
 
   goBack() {
-    console.log('goBack');
     this.props.navigation.navigate('MapContainer');
   }
 

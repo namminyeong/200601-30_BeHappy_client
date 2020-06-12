@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
@@ -8,41 +8,42 @@ import MyBookmarks from './MyBookmarks';
 import MyReviews from './MyReviews';
 import MyBookings from './MyBookings';
 
-const stackNav = createStackNavigator({
-  'Mypage': {
-    screen: Mypage,
-    navigationOptions: { headerShown: false }
-  },
-  'MyInfo': {
-    screen: MyInfo,
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor: '#62CCAD'
+const stackNav = createStackNavigator(
+  {
+    Mypage: {
+      screen: Mypage,
+      navigationOptions: { headerShown: false },
+    },
+    MyInfo: {
+      screen: MyInfo,
+      navigationOptions: {
+        headerStyle: {
+          backgroundColor: '#62CCAD',
+        },
+        headerTintColor: 'white',
       },
-      headerTintColor: 'white',
-    }
+    },
+    MyBookmarks: {
+      screen: MyBookmarks,
+    },
+    MyReviews: {
+      screen: MyReviews,
+    },
+    MyBookings: {
+      screen: MyBookings,
+    },
   },
-  'MyBookmarks': {
-    screen: MyBookmarks
-  },
-  'MyReviews': {
-    screen: MyReviews
-  },
-  'MyBookings': {
-    screen: MyBookings
+  {
+    initialRouteName: 'Mypage',
   }
-}, {
-  initialRouteName: 'Mypage'
-})
+);
 
-const NavContainer = createAppContainer(stackNav)
+const NavContainer = createAppContainer(stackNav);
 
 class IndexMypage extends React.Component {
   static navigationOptions = { header: null };
   render() {
-    return (
-      <NavContainer />
-    )
+    return <NavContainer />;
   }
 }
 

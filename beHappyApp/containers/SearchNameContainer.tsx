@@ -14,7 +14,6 @@ const SearchNameContainer = ({
   navigation,
   token,
 }) => {
-  console.log('SearchNameContainer');
   return (
     <SearchName
       controlCoordinate={controlCoordinate}

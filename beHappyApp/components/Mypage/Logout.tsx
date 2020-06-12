@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import deviceStorage from '../../service/DeviceStorage';
 
-export default function Logout({ status, controlLogin, token }) {
+export default function Logout({ controlLogin, token }) {
   let logoutUser = () => {
     console.log(token);
     fetch('http://13.209.16.103:4000/user/logout', {
@@ -14,7 +14,6 @@ export default function Logout({ status, controlLogin, token }) {
       },
     })
       .then((response) => {
-        console.log(response);
         return response.json();
       })
       .then((payload) => {
@@ -24,7 +23,7 @@ export default function Logout({ status, controlLogin, token }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log('error', error);
       });
   };
 
@@ -40,6 +39,7 @@ export default function Logout({ status, controlLogin, token }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    right: -130,
   },
   logoutText: {
     marginTop: 20,
