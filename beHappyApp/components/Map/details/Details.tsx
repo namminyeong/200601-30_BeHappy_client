@@ -1,24 +1,28 @@
 import React, { Fragment } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
   const onPressEvent = () => {
-    navigation.navigate('DetailsHome');
+    navigation.navigate('DetailsHome', {
+      theCenterInfo: centerInfo[showDetails][showDetailsIndex],
+    });
   };
   return showDetails !== false ? (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={onPressEvent}>
-        {centerInfo[showDetails][showDetailsIndex].centerName}
-      </Text>
-      <Text style={styles.text}>
-        {centerInfo[showDetails][showDetailsIndex].roadAddressName}
-        <Text style={styles.distance}>
-          {`(`}
-          {centerInfo[showDetails][showDetailsIndex].distance.toString()}m{`)`}
+      <TouchableOpacity activeOpacity={1} onPress={onPressEvent}>
+        <Text style={styles.text}>
+          {centerInfo[showDetails][showDetailsIndex].centerName}
         </Text>
-      </Text>
-
+        <Text style={styles.text}>
+          {centerInfo[showDetails][showDetailsIndex].roadAddressName}
+          <Text style={styles.distance}>
+            {`(`}
+            {centerInfo[showDetails][showDetailsIndex].distance.toString()}m
+            {`)`}
+          </Text>
+        </Text>
+      </TouchableOpacity>
       {/* <Text style={styles.text}>
         {centerInfo[showDetails][showDetailsIndex].phone}
       </Text> */}

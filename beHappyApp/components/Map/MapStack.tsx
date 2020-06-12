@@ -1,48 +1,36 @@
 import React from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import MapContainer from '../../containers/MapContainer';
 import SearchNameContainer from '../../containers/SearchNameContainer';
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
 import DetailsHome from './details/DetailsHome';
 
-const stackNav = createStackNavigator(
-  {
-    MapContainer: {
-      screen: MapContainer,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-    SearchNameContainer: {
-      screen: SearchNameContainer,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-    SearchGeoContainer: {
-      screen: SearchGeoContainer,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-    DetailsHome: {
-      screen: DetailsHome,
-      navigationOptions: {
-        headerShown: false,
-      },
-    },
-  },
-  {
-    initialRouteName: 'MapContainer',
-  }
-);
-
-const NavContainer = createAppContainer(stackNav);
+const Stack = createStackNavigator();
 
 function MapStack() {
-  return <NavContainer />;
+  return (
+    <NavigationContainer independent={true}>
+      <Stack.Navigator
+        initialRouteName='MapContainer'
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name='MapContainer' component={MapContainer} />
+        <Stack.Screen
+          name='SearchNameContainer'
+          component={SearchNameContainer}
+        />
+        <Stack.Screen
+          name='SearchGeoContainer'
+          component={SearchGeoContainer}
+        />
+        <Stack.Screen name='DetailsHome' component={DetailsHome} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 export default MapStack;
