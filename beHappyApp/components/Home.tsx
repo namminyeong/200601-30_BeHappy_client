@@ -1,15 +1,13 @@
-import React, { Fragment } from 'react';
-
-import Main from './Main';
+import React from 'react';
 import DeviceStorage from '../service/DeviceStorage';
-import IndexSignPage from '../components/Sign/IndexSignPage';
-import EntryCenter from '../components/Center/EntryCenter';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
 
     this.checkUser = this.checkUser.bind(this);
+    this.homeRoute = this.homeRoute.bind(this);
   }
 
   componentDidMount() {
@@ -45,26 +43,41 @@ export default class Home extends React.Component {
             this.props.controlLogin(-1, null);
           }
         }
+        this.homeRoute();
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
+  homeRoute() {
+    console.log('homeRoute', this.props.authState);
+    if (this.props.authState === 1) {
+      this.props.navigation.navigate('EntryCenter');
+    } else if (this.props.authState === 0) {
+      this.props.navigation.navigate('Main');
+    } else {
+      this.props.navigation.navigate('LoginContainer');
+    }
+  }
+
   render() {
-    console.log('authState: ', this.props.authState);
     return (
-      <Fragment>
-        {this.props.authState >= 0 ? (
-          this.props.authState === 0 ? (
-            <Main />
-          ) : (
-            <EntryCenter />
-          )
-        ) : (
-          <IndexSignPage />
-        )}
-      </Fragment>
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size='large' color='#0000ff' />
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+});

@@ -1,14 +1,14 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Logout from '../../containers/LogoutContainer'
+import LogoutContainer from '../../containers/LogoutContainer';
 
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: 'test',
-    }
+    };
   }
 
   render() {
@@ -16,31 +16,52 @@ class Mypage extends React.Component {
       <View style={styles.container}>
         <View style={styles.title}>
           <Text style={styles.mypageText}>MyPage</Text>
-          <Logout />
+          <LogoutContainer navigation={this.props.navigation} />
         </View>
 
         <View style={styles.userInfo}>
           <Text style={styles.user}>{this.state.username}</Text>
-          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20, }}>님</Text>
-          <TouchableOpacity onPress={() => { this.props.navigation.navigate('MyInfo') }}>
-            {<Entypo name="chevron-right" size={26} color={'#62CCAD'} />}
+          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>
+            님
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('MyInfo');
+            }}
+          >
+            {<Entypo name='chevron-right' size={26} color={'#62CCAD'} />}
           </TouchableOpacity>
         </View>
 
         <View style={styles.list}>
-          <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('MyBookmarks') }} >
+          <TouchableOpacity
+            style={styles.listItem}
+            onPress={() => {
+              this.props.navigation.navigate('MyBookmarks');
+            }}
+          >
             <Text style={styles.itemText}>즐겨찾기</Text>
-            {<Entypo name="chevron-right" size={40} color={'#62CCAD'} />}
+            {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('MyReviews') }} >
+          <TouchableOpacity
+            style={styles.listItem}
+            onPress={() => {
+              this.props.navigation.navigate('MyReviews');
+            }}
+          >
             <Text style={styles.itemText}>리뷰관리</Text>
-            {<Entypo name="chevron-right" size={40} color={'#62CCAD'} />}
+            {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listItem} onPress={() => { this.props.navigation.navigate('MyBookings') }} >
+          <TouchableOpacity
+            style={styles.listItem}
+            onPress={() => {
+              this.props.navigation.navigate('MyBookings');
+            }}
+          >
             <Text style={styles.itemText}>예약관리</Text>
-            {<Entypo name="chevron-right" size={40} color={'#62CCAD'} />}
+            {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
         </View>
       </View>
@@ -96,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#62CCAD',
-  }
+  },
 });
 
 export default Mypage;
