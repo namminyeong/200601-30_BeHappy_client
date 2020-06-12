@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LogoutContainer from '../../containers/LogoutContainer';
+import indexMypage from './IndexMypage';
 
 class Mypage extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class Mypage extends React.Component {
       <View style={styles.container}>
         <View style={styles.title}>
           <Text style={styles.mypageText}>MyPage</Text>
-          <LogoutContainer navigation={this.props.navigation} />
+          <LogoutContainer />
         </View>
 
         <View style={styles.userInfo}>

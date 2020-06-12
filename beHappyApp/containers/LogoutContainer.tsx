@@ -4,10 +4,8 @@ import { connect } from 'react-redux';
 import Logout from '../components/Mypage/Logout';
 import { controlLogin } from '../modules(reducers)/auth';
 
-const LogoutContainer = ({ controlLogin, token, navigation }) => {
-  return (
-    <Logout controlLogin={controlLogin} token={token} navigation={navigation} />
-  );
+const LogoutContainer = ({ controlLogin, token }) => {
+  return <Logout controlLogin={controlLogin} token={token} />;
 };
 
 const mapStateToProps = (state) => ({

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import deviceStorage from '../../service/DeviceStorage';
 
-export default function Logout({ controlLogin, token, navigation }) {
+export default function Logout({ controlLogin, token }) {
   let logoutUser = () => {
     console.log(token);
     fetch('http://13.209.16.103:4000/user/logout', {
@@ -18,15 +18,12 @@ export default function Logout({ controlLogin, token, navigation }) {
       })
       .then((payload) => {
         if (payload.token === '') {
-          console.log('logout', navigatxion);
-
           controlLogin(-1, null);
           deviceStorage.deleteJWT();
-          navigation.navigate('HomeContainer');
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log('error', error);
       });
   };
 

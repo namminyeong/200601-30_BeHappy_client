@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
-import { StackActions } from 'react-navigation';
 
 import deviceStorage from '../../service/DeviceStorage';
 
@@ -14,8 +13,6 @@ class Login extends React.Component {
     };
 
     this.loginUser = this.loginUser.bind(this);
-    this.goCenterMain = this.goCenterMain.bind(this);
-    this.goUserMain = this.goUserMain.bind(this);
   }
 
   loginUser() {
@@ -39,14 +36,10 @@ class Login extends React.Component {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
             alert('로그인이 완료됐습니다.');
-            console.log('payload.adminState', payload.adminState);
             if (payload.adminState === 0 || payload.adminState === -1) {
-              console.log('yes it is 0 or -1');
-              this.goUserMain();
               this.props.controlLogin(0, payload.token);
             } else if (payload.adminState === 1) {
               this.props.controlLogin(1, payload.token);
-              this.goCenterMain();
             }
             deviceStorage.saveKey('id_token', payload.token);
           } else if (payload.errorCode === 1) {
@@ -59,18 +52,6 @@ class Login extends React.Component {
       .catch((error) => {
         console.log(error);
       });
-  }
-
-  goCenterMain() {
-    console.log('goCenterMain');
-    this.props.navigation.dispatch(StackActions.popToTop());
-    this.props.navigation.navigate('HomeContainer');
-  }
-
-  goUserMain() {
-    console.log('goUserMain', this.props.navigation.navigate);
-    this.props.navigation.dispatch(StackActions.popToTop());
-    this.props.navigation.navigate('Main');
   }
 
   render() {
