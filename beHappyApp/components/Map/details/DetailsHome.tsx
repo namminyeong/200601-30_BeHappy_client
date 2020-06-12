@@ -13,18 +13,20 @@ const rateAvg = '4.0';
 
 class DetailsHome extends React.Component {
   render() {
+    console.log('log,,,,,', this.props.navigation.state.params);
+
     return (
       <Fragment>
         <View style={styles.container}>
           <Text style={styles.centerName}>
-            {this.props.route.params.theCenterInfo.centerName}
+            {this.props.navigation.state.params.theCenterInfo.centerName}
           </Text>
           <View
             style={{
               flexDirection: 'row',
             }}
           >
-            {/* {this.props.route.params.theCenterInfo.tags.map((tag) => (
+            {/* {this.props.navigation.state.params.theCenterInfo.tags.map((tag) => (
             <Text>#{tag.name}</Text>
           ))} */}
             {tags.map((tag) => (
@@ -36,7 +38,7 @@ class DetailsHome extends React.Component {
           <Text style={styles.review}>
             평점{' '}
             <Text>
-              {/* {this.props.route.params.theCenterInfo.rateAvg} */}
+              {/* {this.props.navigation.state.params.theCenterInfo.rateAvg} */}
               {rateAvg}
             </Text>
           </Text>
@@ -85,7 +87,7 @@ class DetailsHome extends React.Component {
           <Tab.Screen
             name='홈'
             component={DetailHomeBody}
-            initialParams={this.props.route.params.theCenterInfo}
+            initialParams={this.props.navigation.state.params.theCenterInfo}
           />
           <Tab.Screen name='리뷰' component={DetailReviews} />
           <Tab.Screen name='예약' component={Booking} />
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
   },
   centerName: {
     top: 20,
-    fontSize: 30,
+    fontSize: 28,
     height: 70,
   },
   tag: {
