@@ -8,8 +8,6 @@ const Tab = createMaterialBottomTabNavigator();
 
 class Main extends React.Component {
   render() {
-    console.log('main 11 componentDidMount', this.props);
-
     return (
       <Tab.Navigator
         initialRouteName='Main'
