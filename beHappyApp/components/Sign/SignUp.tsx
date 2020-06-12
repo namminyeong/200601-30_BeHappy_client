@@ -376,7 +376,7 @@ export default class SignUp extends React.Component {
           return res.json();
         } else if (res.status === 200) {
           alert('회원가입에 성공했습니다.');
-          this.goBack();
+          this.props.navigation.navigate('UserPreference');
         } else {
           return '';
         }
@@ -432,7 +432,7 @@ export default class SignUp extends React.Component {
           return res.json();
         } else if (res.status === 200) {
           alert('회원가입에 성공했습니다.');
-          this.goBack();
+          this.props.navigation.navigate('SpecialtyPreference');
         }
         return '';
       })

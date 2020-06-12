@@ -90,7 +90,7 @@ class Login extends React.Component {
         <View style={styles.signEntry}>
           <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Signup')}
+            onPress={() => this.props.navigation.navigate('UserPreference')}
           >
             <Text style={styles.signUpBtn}>회원가입</Text>
           </TouchableOpacity>
