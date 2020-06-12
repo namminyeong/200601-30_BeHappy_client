@@ -5,7 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import MapContainer from '../../containers/MapContainer';
 import SearchNameContainer from '../../containers/SearchNameContainer';
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
-import DetailsHome from './DetailsHome';
+import DetailsHome from './details/DetailsHome';
 
 const stackNav = createStackNavigator(
   {
