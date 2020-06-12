@@ -15,12 +15,15 @@ const stackNav = createStackNavigator(
     },
     SearchNameContainer: {
       screen: SearchNameContainer,
+      navigationOptions: { headerShown: false },
     },
     SearchGeoContainer: {
       screen: SearchGeoContainer,
+      navigationOptions: { headerShown: false },
     },
     DetailsHome: {
       screen: DetailsHome,
+      navigationOptions: { headerShown: false },
     },
   },
   {

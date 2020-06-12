@@ -1,4 +1,6 @@
 import React from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+
 import DeviceStorage from '../service/DeviceStorage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -12,13 +14,23 @@ const Stack = createStackNavigator();
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      isLoading: true,
+    };
     this.checkUser = this.checkUser.bind(this);
+    this.changeLoading = this.changeLoading.bind(this);
   }
 
   componentDidMount() {
+    this.changeLoading(true);
     DeviceStorage.loadJWT().then((value) => {
       this.checkUser(value);
+    });
+  }
+
+  changeLoading(status) {
+    this.setState({
+      isLoading: status,
     });
   }
 
@@ -49,6 +61,7 @@ export default class Home extends React.Component {
             this.props.controlLogin(-1, null);
           }
         }
+        this.changeLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -57,24 +70,42 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {this.props.authState === -1 ? (
-            <>
-              <Stack.Screen name='LoginContainer' component={LoginContainer} />
-              <Stack.Screen name='Signup' component={Signup} />
-            </>
-          ) : this.props.authState === 0 ? (
-            <Stack.Screen name='Main' component={Main} />
-          ) : (
-            <Stack.Screen name='EntryCenter' component={EntryCenter} />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <>
+        {this.state.isLoading ? (
+          <View style={styles.container}>
+            <ActivityIndicator size='large' color='#0000ff' />
+          </View>
+        ) : (
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              {this.props.authState === -1 ? (
+                <>
+                  <Stack.Screen
+                    name='LoginContainer'
+                    component={LoginContainer}
+                  />
+                  <Stack.Screen name='Signup' component={Signup} />
+                </>
+              ) : this.props.authState === 0 ? (
+                <Stack.Screen name='Main' component={Main} />
+              ) : (
+                <Stack.Screen name='EntryCenter' component={EntryCenter} />
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        )}
+      </>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+});

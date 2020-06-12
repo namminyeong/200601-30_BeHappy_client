@@ -16,11 +16,16 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
         </Text>
         <Text style={styles.text}>
           {centerInfo[showDetails][showDetailsIndex].roadAddressName}
-          <Text style={styles.distance}>
-            {`(`}
-            {centerInfo[showDetails][showDetailsIndex].distance.toString()}m
-            {`)`}
-          </Text>
+          {centerInfo[showDetails][showDetailsIndex].distance ? (
+            <Text style={styles.distance}>
+              {'  '}
+              {`(`}
+              {centerInfo[showDetails][showDetailsIndex].distance.toString()}m
+              {`)`}
+            </Text>
+          ) : (
+            ''
+          )}
         </Text>
       </TouchableOpacity>
       {/* <Text style={styles.text}>
