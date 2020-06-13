@@ -5,6 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import DetailHomeBody from './DetailHomeBody';
 import DetailReviews from './DetailReviews';
 import Booking from './Booking';
+import * as Linking from 'expo-linking';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,6 +13,12 @@ const tags = [{ name: '불면증' }, { name: '스트레스' }];
 const rateAvg = '4.0';
 
 class DetailsHome extends React.Component {
+  call() {
+    Linking.openURL(
+      `tel:${this.props.navigation.state.params.theCenterInfo.phone}`
+    );
+  }
+
   render() {
     console.log('log,,,,,', this.props.navigation.state.params);
 
@@ -51,7 +58,12 @@ class DetailsHome extends React.Component {
             }}
           >
             <View style={styles.iconSet}>
-              <MaterialCommunityIcons name='phone' color='black' size={40} />
+              <MaterialCommunityIcons
+                name='phone'
+                color='black'
+                size={40}
+                onPress={this.call.bind(this)}
+              />
               <Text
                 style={{
                   textAlign: 'center',
