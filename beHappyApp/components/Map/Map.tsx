@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Header, Icon, Item, Button } from 'native-base';
 import Markers from './Markers';
-import Details from './Details';
+import Details from './details/Details';
 import TagFilters from './TagFilters';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import getEnvVars from '../../environment';

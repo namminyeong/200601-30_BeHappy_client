@@ -36,7 +36,7 @@ class Login extends React.Component {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
             alert('로그인이 완료됐습니다.');
-            if (payload.adminState === (0 || -1)) {
+            if (payload.adminState === 0 || payload.adminState === -1) {
               this.props.controlLogin(0, payload.token);
             } else if (payload.adminState === 1) {
               this.props.controlLogin(1, payload.token);

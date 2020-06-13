@@ -1,10 +1,14 @@
-import React, { Fragment } from 'react';
+import React from 'react';
+import DeviceStorage from '../service/DeviceStorage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import Main from './Main';
-import DeviceStorage from '../service/DeviceStorage';
-import IndexSignPage from '../components/Sign/IndexSignPage';
+import LoginContainer from '../containers/LoginContainer';
+import Signup from '../components/Sign/SignUp';
 import EntryCenter from '../components/Center/EntryCenter';
 
+const Stack = createStackNavigator();
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -52,19 +56,25 @@ export default class Home extends React.Component {
   }
 
   render() {
-    console.log('authState: ', this.props.authState);
     return (
-      <Fragment>
-        {this.props.authState >= 0 ? (
-          this.props.authState === 0 ? (
-            <Main />
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          {this.props.authState === -1 ? (
+            <>
+              <Stack.Screen name='LoginContainer' component={LoginContainer} />
+              <Stack.Screen name='Signup' component={Signup} />
+            </>
+          ) : this.props.authState === 0 ? (
+            <Stack.Screen name='Main' component={Main} />
           ) : (
-            <EntryCenter />
-          )
-        ) : (
-          <IndexSignPage />
-        )}
-      </Fragment>
+            <Stack.Screen name='EntryCenter' component={EntryCenter} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 }
