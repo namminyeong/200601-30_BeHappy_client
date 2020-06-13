@@ -2,16 +2,16 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Fontisto from 'react-native-vector-icons/Fontisto'
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
-import CenterMain from './CenterMain';
+import CenterMainContainer from '../../containers/CenterMainContainer';
 import IndexCenterPage from './IndexCenterPage';
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function EntryCenter() {
   return (
-    <NavigationContainer>
+    <NavigationContainer independent={true}>
       <Tab.Navigator
         initialRouteName='CenterPage'
         activeColor='black'
@@ -20,15 +20,11 @@ export default function EntryCenter() {
       >
         <Tab.Screen
           name='CenterMain'
-          component={CenterMain}
+          component={CenterMainContainer}
           options={{
             tabBarLabel: 'Main',
             tabBarIcon: ({ color }) => (
-              <Fontisto
-                name='nursing-home'
-                color={color}
-                size={26}
-              />
+              <Fontisto name='nursing-home' color={color} size={26} />
             ),
           }}
         />
@@ -38,7 +34,11 @@ export default function EntryCenter() {
           options={{
             tabBarLabel: 'Mypage',
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name='calendar-check' color={color} size={26} />
+              <MaterialCommunityIcons
+                name='calendar-check'
+                color={color}
+                size={26}
+              />
             ),
           }}
         />
