@@ -8,7 +8,6 @@ import Details from './details/Details';
 import TagFilters from './TagFilters';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import getEnvVars from '../../environment';
-import { white } from 'react-native-paper/lib/typescript/src/styles/colors';
 const { ec2 } = getEnvVars();
 
 class Map extends React.Component {
@@ -50,6 +49,10 @@ class Map extends React.Component {
     this.pressAll = this.pressAll.bind(this);
     this.checkTagsForUrl = this.checkTagsForUrl.bind(this);
     this.changeCenterFilter = this.changeCenterFilter.bind(this);
+    this.saveBookmarkInState = this.saveBookmarkInState.bind(this);
+    this.getBookmark = this.getBookmark.bind(this);
+    this.handleBookmarkState = this.handleBookmarkState.bind(this);
+    this.postBookmark = this.postBookmark.bind(this);
   }
 
   changeFilter(index) {
@@ -113,6 +116,7 @@ class Map extends React.Component {
         });
         this.props.controlCoordinate(myLongitude, myLatitude);
         this.findCentersFromCurrentLocation();
+        this.getBookmark();
       }
     })();
   }
@@ -184,9 +188,77 @@ class Map extends React.Component {
     this.props.controlCoordinate(lon, lat, lonDelta, latDelta);
   }
 
+  getBookmark() {
+    fetch(ec2 + '/bookmark', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          this.saveBookmarkInState(data.centers);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
+  saveBookmarkInState(dataArr) {
+    const bookmarkState = {};
+    dataArr.map((obj) => {
+      bookmarkState[`${obj.id}`] = true;
+    });
+    this.props.controlBookmark(bookmarkState);
+  }
+
+  postBookmark(method, centerId) {
+    fetch(ec2 + '/bookmark', {
+      method,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+      body: JSON.stringify({ centerId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          this.handleBookmarkState(`${centerId}`);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
+  handleBookmarkState(id) {
+    let newBookmarkState = Object.assign({}, this.props.bookmark);
+    if (this.props.bookmark[id]) {
+      delete newBookmarkState[id];
+    } else {
+      newBookmarkState[id] = true;
+    }
+    this.props.controlBookmark(newBookmarkState);
+  }
+
   render() {
     const coordinate = this.props.coordinate;
-    const { myLatitude, myLongitude } = this.state;
+    const {
+      myLatitude,
+      myLongitude,
+      showDetails,
+      showDetailsIndex,
+    } = this.state;
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -312,15 +384,17 @@ class Map extends React.Component {
             <Fragment />
           )}
         </MapView>
-        <Details
-          showDetails={this.state.showDetails}
-          showDetailsIndex={this.state.showDetailsIndex}
-          centerInfo={{
-            counseling: this.props.counseling,
-            psychiatric: this.props.psychiatric,
-          }}
-          navigation={this.props.navigation}
-        />
+        {this.state.showDetails ? (
+          <Details
+            centerInfo={this.props[showDetails][showDetailsIndex]}
+            navigation={this.props.navigation}
+            bookmark={this.props.bookmark}
+            postBookmark={this.postBookmark}
+          />
+        ) : (
+          <></>
+        )}
+
         <View style={styles.searchNowContainer}>
           <Button
             small

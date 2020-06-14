@@ -5,6 +5,7 @@ import { createAppContainer } from 'react-navigation';
 import MapContainer from '../../containers/MapContainer';
 import SearchNameContainer from '../../containers/SearchNameContainer';
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
+import Details from './details/Details';
 import DetailsHome from './details/DetailsHome';
 
 const stackNav = createStackNavigator(
@@ -19,6 +20,10 @@ const stackNav = createStackNavigator(
     },
     SearchGeoContainer: {
       screen: SearchGeoContainer,
+      navigationOptions: { headerShown: false },
+    },
+    Details: {
+      screen: Details,
       navigationOptions: { headerShown: false },
     },
     DetailsHome: {

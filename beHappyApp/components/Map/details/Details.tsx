@@ -1,64 +1,89 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Linking from 'expo-linking';
 
-function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
-  const onPressEvent = () => {
-    navigation.navigate('DetailsHome', {
-      theCenterInfo: centerInfo[showDetails][showDetailsIndex],
+class Details extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // this.handleBookmark = this.handleBookmark.bind(this);
+    this.showDetailHome = this.showDetailHome.bind(this);
+    this.call = this.call.bind(this);
+    this.postDeletebookmark = this.postDeletebookmark.bind(this);
+  }
+
+  // handleBookmark() {
+  //   this.setState({
+  //     bookmark: !this.state.bookmark,
+  //   });
+  // }
+
+  showDetailHome() {
+    this.props.navigation.navigate('DetailsHome', {
+      theCenterInfo: this.props.centerInfo,
     });
-  };
+  }
 
-  const call = () => {
-    Linking.openURL(`tel:${centerInfo[showDetails][showDetailsIndex].phone}`);
-  };
+  call() {
+    Linking.openURL(`tel:${this.props.centerInfo.phone}`);
+  }
 
-  return showDetails !== false ? (
-    <View style={styles.container}>
-      <TouchableOpacity activeOpacity={1} onPress={onPressEvent}>
-        <Text style={styles.text}>
-          {centerInfo[showDetails][showDetailsIndex].centerName}
-        </Text>
-        <Text style={styles.text}>
-          {centerInfo[showDetails][showDetailsIndex].roadAddressName}
-          {centerInfo[showDetails][showDetailsIndex].distance ? (
-            <Text style={styles.distance}>
-              {'  '}
-              {`(`}
-              {centerInfo[showDetails][showDetailsIndex].distance.toString()}m
-              {`)`}
-            </Text>
-          ) : (
-            ''
-          )}
-        </Text>
-      </TouchableOpacity>
-      {/* <Text style={styles.text}>
-        {centerInfo[showDetails][showDetailsIndex].phone}
+  postDeletebookmark() {
+    const { bookmark, postBookmark, centerInfo } = this.props;
+    if (bookmark[centerInfo.id]) {
+      postBookmark('DELETE', centerInfo.id);
+    } else {
+      postBookmark('POST', centerInfo.id);
+    }
+    // this.handleBookmark();
+  }
+
+  render() {
+    const { centerInfo, bookmark } = this.props;
+
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity activeOpacity={1} onPress={this.showDetailHome}>
+          <Text style={styles.text}>{centerInfo.centerName}</Text>
+          <Text style={styles.text}>
+            {centerInfo.roadAddressName}
+            {centerInfo.distance ? (
+              <Text style={styles.distance}>
+                {'  '}
+                {`(`}
+                {centerInfo.distance.toString()}m{`)`}
+              </Text>
+            ) : (
+              ''
+            )}
+          </Text>
+        </TouchableOpacity>
+        {/* <Text style={styles.text}>
+        {centerInfo.phone}
       </Text> */}
-      <View style={{ flexDirection: 'row' }}>
-        <MaterialCommunityIcons
-          name='bookmark-outline'
-          color='black'
-          size={50}
-          style={{ left: 20 }}
-        />
-        <MaterialCommunityIcons
-          name='phone'
-          color='black'
-          size={50}
-          style={{ left: 30 }}
-          onPress={call}
-        />
-        <Text style={styles.review}>
-          평점 <Text>{centerInfo[showDetails][showDetailsIndex].rateAvg}</Text>
-        </Text>
+        <View style={{ flexDirection: 'row' }}>
+          <MaterialCommunityIcons
+            name='bookmark'
+            color={bookmark[centerInfo.id] ? 'black' : 'lightgrey'}
+            size={50}
+            style={{ left: 20 }}
+            onPress={this.postDeletebookmark}
+          />
+          <MaterialCommunityIcons
+            name='phone'
+            color='black'
+            size={50}
+            style={{ left: 30 }}
+            onPress={this.call}
+          />
+          <Text style={styles.review}>
+            평점 <Text>{centerInfo.rateAvg}</Text>
+          </Text>
+        </View>
       </View>
-    </View>
-  ) : (
-    <Fragment />
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({

@@ -20,8 +20,6 @@ class DetailsHome extends React.Component {
   }
 
   render() {
-    console.log('log,,,,,', this.props.navigation.state.params);
-
     return (
       <Fragment>
         <View style={styles.container}>
