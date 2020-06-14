@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
-// import CityInfo from '../../cityInfo.json';
-
 const cities = [
   '서울특별시',
   '부산광역시',

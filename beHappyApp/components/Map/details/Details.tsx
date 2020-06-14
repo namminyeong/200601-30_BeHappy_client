@@ -1,24 +1,39 @@
 import React, { Fragment } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as Linking from 'expo-linking';
 
 function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
   const onPressEvent = () => {
-    navigation.navigate('DetailsHome');
+    navigation.navigate('DetailsHome', {
+      theCenterInfo: centerInfo[showDetails][showDetailsIndex],
+    });
   };
+
+  const call = () => {
+    Linking.openURL(`tel:${centerInfo[showDetails][showDetailsIndex].phone}`);
+  };
+
   return showDetails !== false ? (
     <View style={styles.container}>
-      <Text style={styles.text} onPress={onPressEvent}>
-        {centerInfo[showDetails][showDetailsIndex].centerName}
-      </Text>
-      <Text style={styles.text}>
-        {centerInfo[showDetails][showDetailsIndex].roadAddressName}
-        <Text style={styles.distance}>
-          {`(`}
-          {centerInfo[showDetails][showDetailsIndex].distance.toString()}m{`)`}
+      <TouchableOpacity activeOpacity={1} onPress={onPressEvent}>
+        <Text style={styles.text}>
+          {centerInfo[showDetails][showDetailsIndex].centerName}
         </Text>
-      </Text>
-
+        <Text style={styles.text}>
+          {centerInfo[showDetails][showDetailsIndex].roadAddressName}
+          {centerInfo[showDetails][showDetailsIndex].distance ? (
+            <Text style={styles.distance}>
+              {'  '}
+              {`(`}
+              {centerInfo[showDetails][showDetailsIndex].distance.toString()}m
+              {`)`}
+            </Text>
+          ) : (
+            ''
+          )}
+        </Text>
+      </TouchableOpacity>
       {/* <Text style={styles.text}>
         {centerInfo[showDetails][showDetailsIndex].phone}
       </Text> */}
@@ -34,6 +49,7 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
           color='black'
           size={50}
           style={{ left: 30 }}
+          onPress={call}
         />
         <Text style={styles.review}>
           평점 <Text>{centerInfo[showDetails][showDetailsIndex].rateAvg}</Text>
@@ -47,6 +63,11 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 7,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '20%',
     backgroundColor: 'white',
     zIndex: 1,
   },

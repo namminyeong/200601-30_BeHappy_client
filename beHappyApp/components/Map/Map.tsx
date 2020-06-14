@@ -8,6 +8,7 @@ import Details from './details/Details';
 import TagFilters from './TagFilters';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import getEnvVars from '../../environment';
+import { white } from 'react-native-paper/lib/typescript/src/styles/colors';
 const { ec2 } = getEnvVars();
 
 class Map extends React.Component {
@@ -320,16 +321,13 @@ class Map extends React.Component {
           }}
           navigation={this.props.navigation}
         />
-        <View style={styles.searchNow}>
+        <View style={styles.searchNowContainer}>
           <Button
             small
-            dark
-            rounded
+            transparent
             onPress={this.findCentersFromCurrentLocation}
           >
-            <Text style={{ padding: 10, color: 'white' }}>
-              현 위치에서 검색하기
-            </Text>
+            <Text style={styles.searchNow}>현 위치에서 검색하기</Text>
           </Button>
         </View>
         <View style={styles.goCurrentLocation}>
@@ -347,7 +345,11 @@ class Map extends React.Component {
 const styles = StyleSheet.create({
   map: {
     flex: 1,
+    zIndex: -1,
+    width: '100%',
     height: '80%',
+    top: '20%',
+    position: 'absolute',
   },
   text: {
     fontSize: 30,
@@ -375,14 +377,18 @@ const styles = StyleSheet.create({
     color: 'white',
     borderRadius: 10,
   },
-  searchNow: {
-    height: 0,
+  searchNowContainer: {
     position: 'absolute',
     left: 6,
     top: 150,
     padding: 5,
-    borderRadius: 10,
     alignSelf: 'flex-start',
+  },
+  searchNow: {
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 3,
+    backgroundColor: 'white',
   },
   goCurrentLocation: {
     backgroundColor: 'white',
