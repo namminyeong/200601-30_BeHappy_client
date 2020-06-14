@@ -8,7 +8,7 @@ const List = ({ reqList, userId centerName }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId,isAcceptance: true }),
     })
       .then((res) => {
         console.log('acceptReq res: ', res);
