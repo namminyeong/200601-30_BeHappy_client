@@ -316,6 +316,7 @@ const states = {
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       username: '',
       password: '',
@@ -361,38 +362,47 @@ export default class SignUp extends React.Component {
 
   userSignup() {
     const { username, password, nickname, phone } = this.state;
-
-    fetch('http://13.209.16.103:4000/user/signup', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password, nickname, phone }),
-      redirect: 'follow',
-    })
-      .then((res) => {
-        if (res.status === 409) {
-          return res.json();
-        } else if (res.status === 200) {
-          alert('회원가입에 성공했습니다.');
-          this.props.navigation.navigate('UserPreference');
-        } else {
-          return '';
-        }
+    if (username === '') {
+      alert('username을 입력해주세요.');
+    } else if (password === '') {
+      alert('비밀번호를 입력해주세요.');
+    } else if (password.length < 8) {
+      alert('비밀번호는 8자리 이상이어야 합니다.');
+    } else if (nickname === '') {
+      alert('닉네임을 입력해주세요.');
+    } else if (phone === '') {
+      alert('핸드폰 번호를 입력해주세요.');
+    } else {
+      fetch('http://13.209.16.103:4000/user/signup', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password, nickname, phone }),
       })
-      .then((payload) => {
-        if (typeof payload === 'object') {
-          if (payload.errorCode) {
-            if (payload.errorCode === 3) {
+        .then((res) => {
+          if (res.status === 200 || res.status === 409) {
+            return res.json();
+          }
+          return '';
+        })
+        .then((payload) => {
+          if (typeof payload === 'object') {
+            if (!payload.errorCode) {
+              alert('회원가입에 성공했습니다.');
+              this.props.navigation.navigate('UserPreference', {
+                userId: payload.userId,
+              });
+            } else if (payload.errorCode === 3) {
               alert('이미 존재하는 username입니다.');
             }
           }
-        }
-      })
-      .catch((err) => {
-        alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
-      });
+        })
+        .catch((err) => {
+          alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        });
+    }
   }
 
   centerSignup() {
@@ -408,38 +418,50 @@ export default class SignUp extends React.Component {
       roadAddressName,
     } = this.state;
 
-    fetch('http://13.209.16.103:4000/user/signup/center', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify({
-        username,
-        password,
-        latitude,
-        longitude,
-        centerName,
-        phone,
-        businessNumber,
-        addressName,
-        roadAddressName,
-      }),
-    })
-      .then((res) => {
-        if (res.status === 409) {
-          return res.json();
-        } else if (res.status === 200) {
-          alert('회원가입에 성공했습니다.');
-          this.props.navigation.navigate('SpecialtyPreference');
-        }
-        return '';
+    if (username === '') {
+      alert('username을 입력해주세요.');
+    } else if (password === '') {
+      alert('비밀번호를 입력해주세요.');
+    } else if (password.length < 8) {
+      alert('비밀번호는 8자리 이상이어야 합니다.');
+    } else if (businessNumber === '') {
+      alert('사업자 번호를 입력해주세요.');
+    } else if (centerName === '') {
+      alert('주소를 검색해주세요.');
+    } else {
+      fetch('http://13.209.16.103:4000/user/signup/center', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          latitude,
+          longitude,
+          centerName,
+          phone,
+          businessNumber,
+          addressName,
+          roadAddressName,
+        }),
       })
-      .then((payload) => {
-        if (typeof payload === 'object') {
-          if (payload.errorCode) {
-            if (payload.errorCode === 3) {
+        .then((res) => {
+          if (res.status === 200 || res.status === 409) {
+            return res.json();
+          }
+          return '';
+        })
+        .then((payload) => {
+          console.log('payload: ', payload);
+          if (typeof payload === 'object') {
+            if (!payload.errorCode) {
+              alert('회원가입에 성공했습니다.');
+              this.props.navigation.navigate('SpecialtyPreference', {
+                centerId: payload.centerId,
+              });
+            } else if (payload.errorCode === 3) {
               alert('이미 존재하는 username입니다.');
             } else if (payload.errorCode === 4) {
               alert('이미 존재하는 center입니다.');
@@ -447,12 +469,11 @@ export default class SignUp extends React.Component {
               alert('이미 존재하는 사업자 번호입니다.');
             }
           }
-        }
-      })
-      .catch((err) => {
-        console.log('err: ', err);
-        alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
-      });
+        })
+        .catch((err) => {
+          alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        });
+    }
   }
 
   getCenterInfo(lat, lon) {

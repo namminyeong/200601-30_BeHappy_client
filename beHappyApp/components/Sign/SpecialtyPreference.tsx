@@ -7,7 +7,8 @@ class SpecialtyPreference extends React.Component {
     super(props);
 
     this.state = {
-      specialtyInfo: [],
+      centerId: this.props.route.params.centerId,
+      specialties: [],
       specialtyDatas: [
         '스트레스',
         '가족',
@@ -22,30 +23,49 @@ class SpecialtyPreference extends React.Component {
       ],
     };
 
+    this.submitPreference = this.submitPreference.bind(this);
     this.inputSpecialty = this.inputSpecialty.bind(this);
     this.deleteSpecialty = this.deleteSpecialty.bind(this);
   }
 
+  submitPreference() {
+    const { centerId, specialties } = this.state;
+
+    fetch('http://13.209.16.103:4000/preference/center', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ centerId, specialties }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          alert('제출에 성공했습니다.');
+          this.props.navigation.navigate('LoginContainer');
+        }
+      })
+      .catch((error) => {
+        alert('제출에 실패했습니다.');
+      });
+  }
+
   inputSpecialty(value) {
-    console.log('inputSpecialty 진입');
     this.setState({
-      specialtyInfo: [...this.state.specialtyInfo, value],
+      specialties: [...this.state.specialties, value],
     });
-    console.log('specialtyInfo: ', this.state.specialtyInfo);
   }
 
   deleteSpecialty(value) {
-    console.log('deleteSpecialty 진입');
-    const { specialtyInfo } = this.state;
+    const { specialties } = this.state;
 
     this.setState({
-      specialtyInfo: specialtyInfo.filter((specialty) => specialty !== value),
+      specialties: specialties.filter((specialty) => specialty !== value),
     });
-    console.log('specialtyInfo: ', this.state.specialtyInfo);
   }
 
   render() {
-    const { specialtyInfo, specialtyDatas } = this.state;
+    const { specialties, specialtyDatas } = this.state;
 
     return (
       <View style={styles.container}>
@@ -73,7 +93,7 @@ class SpecialtyPreference extends React.Component {
 
             <Text style={styles.preSection}>내가 선택한 전문 분야</Text>
             <View style={styles.attention}>
-              {specialtyInfo.map((data) => (
+              {specialties.map((data) => (
                 <TouchableOpacity
                   style={styles.selectedHashtagButton}
                   onPress={() => this.deleteSpecialty(data)}
@@ -102,7 +122,10 @@ class SpecialtyPreference extends React.Component {
                   스킵
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.submitBtn} onPress={() => {}}>
+              <TouchableOpacity
+                style={styles.submitBtn}
+                onPress={this.submitPreference}
+              >
                 <Text
                   style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}
                 >

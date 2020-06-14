@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
+// import CityInfo from '../../cityInfo.json';
+
 const cities = [
   '서울특별시',
   '부산광역시',
@@ -307,13 +309,14 @@ class UserPreference extends React.Component {
     super(props);
 
     this.state = {
+      userId: this.props.route.params.userId,
       city: '',
       state: '',
       citySelected: false,
       stateSelecdted: false,
-      favorCity: [],
+      favorCity: '',
       favorCenter: [],
-      specialtyInfo: [],
+      specialties: [],
       favorCenterDatas: ['정신과', '심리센터'],
       specialtyDatas: [
         '스트레스',
@@ -329,6 +332,7 @@ class UserPreference extends React.Component {
       ],
     };
 
+    this.submitPreference = this.submitPreference.bind(this);
     this.selectCity = this.selectCity.bind(this);
     this.inputCity = this.inputCity.bind(this);
     this.selectState = this.selectState.bind(this);
@@ -343,6 +347,30 @@ class UserPreference extends React.Component {
     this.deleteFavorCenter = this.deleteFavorCenter.bind(this);
     this.inputFavorCenterDatas = this.inputFavorCenterDatas.bind(this);
     this.deleteSpecialtyDatas = this.deleteSpecialtyDatas.bind(this);
+  }
+
+  submitPreference() {
+    const { userId, specialties, favorCenter, favorCity } = this.state;
+    let kindOfCenters = favorCenter;
+    let city = favorCity;
+
+    fetch('http://13.209.16.103:4000/preference', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, specialties, kindOfCenters, city }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('제출에 성공했습니다.');
+          this.props.navigation.navigate('LoginContainer');
+        }
+      })
+      .catch((error) => {
+        alert('제출에 실패했습니다.');
+      });
   }
 
   selectCity(status) {
@@ -388,102 +416,73 @@ class UserPreference extends React.Component {
   }
 
   inputSpecialty(value) {
-    console.log('inputSpecialty 진입');
     this.setState({
-      specialtyInfo: [...this.state.specialtyInfo, value],
+      specialties: [...this.state.specialties, value],
     });
-    console.log('specialtyInfo: ', this.state.specialtyInfo);
     this.deleteSpecialtyDatas(value);
   }
 
   deleteSpecialty(value) {
-    console.log('deleteSpecialty 진입');
-    const { specialtyInfo } = this.state;
+    const { specialties } = this.state;
 
     this.setState({
-      specialtyInfo: specialtyInfo.filter((specialty) => specialty !== value),
+      specialties: specialties.filter((specialty) => specialty !== value),
     });
-    console.log('specialtyInfo: ', specialtyInfo);
     this.inputSpecialtyDatas(value);
   }
 
   inputSpecialtyDatas(value) {
-    console.log('inputSpecialtyDatas 진입');
-
     const { specialtyDatas } = this.state;
 
     this.setState({
       specialtyDatas: [...this.state.specialtyDatas, value],
     });
-
-    console.log('specialtyDatas: ', specialtyDatas);
   }
 
   deleteSpecialtyDatas(value) {
-    console.log('deleteSpecialtyDatas 진입');
-
     const { specialtyDatas } = this.state;
 
     this.setState({
       specialtyDatas: specialtyDatas.filter((specialty) => specialty !== value),
     });
-
-    console.log('specialtyDatas: ', specialtyDatas);
   }
 
   inputFavorCity() {
-    console.log('inputFavorCity 진입');
     this.setState({
-      favorCity: [
-        ...this.state.favorCity,
-        { city: this.state.city, state: this.state.state },
-      ],
+      favorCity: this.state.city + ' ' + this.state.state,
     });
-    console.log('this.state.favorCity: ', this.state.favorCity);
   }
 
   inputFavorCenter(value) {
-    console.log('inputFavorCenter 진입');
     this.setState({
       favorCenter: [...this.state.favorCenter, value],
     });
-    console.log('this.state.favorCenter: ', this.state.favorCenter);
     this.deleteFavorCenterDatas(value);
   }
 
   deleteFavorCenter(value) {
-    console.log('deleteFavorCenter 진입');
     const { favorCenter } = this.state;
 
     this.setState({
       favorCenter: favorCenter.filter((center) => center !== value),
     });
-    console.log('favorCenter: ', favorCenter);
     this.inputFavorCenterDatas(value);
   }
 
   inputFavorCenterDatas(value) {
-    console.log('inputFavorCenterDatas 진입');
-
     const { favorCenterDatas } = this.state;
 
     this.setState({
       favorCenterDatas: [...favorCenterDatas, value],
     });
-
-    console.log('favorCenterDatas: ', favorCenterDatas);
   }
 
   deleteFavorCenterDatas(value) {
-    console.log('deleteSpecialtyDatas 진입');
-
     const { favorCenterDatas } = this.state;
 
     this.setState({
       favorCenterDatas: favorCenterDatas.filter((center) => center !== value),
     });
-
-    console.log('favorCenterDatas: ', favorCenterDatas);
   }
 
   render() {
@@ -494,7 +493,7 @@ class UserPreference extends React.Component {
       favorCity,
       favorCenter,
       favorCenterDatas,
-      specialtyInfo,
+      specialties,
     } = this.state;
 
     return (
@@ -523,7 +522,7 @@ class UserPreference extends React.Component {
 
             <Text style={styles.preSection}>내가 선택한 전문 분야</Text>
             <View style={styles.attention}>
-              {specialtyInfo.map((data) => (
+              {specialties.map((data) => (
                 <TouchableOpacity
                   style={styles.selectedHashtagButton}
                   onPress={() => this.deleteSpecialty(data)}
@@ -579,13 +578,13 @@ class UserPreference extends React.Component {
                 <Text>추가</Text>
               </TouchableOpacity>
             </View>
-            <View>
-              {favorCity.map((city, index) => (
+            <Text>{favorCity}</Text>
+
+            {/* {favorCity.map((city, index) => (
                 <Text key={index}>
                   {city.city} {city.state}
                 </Text>
-              ))}
-            </View>
+              ))} */}
 
             <Text style={styles.preSection}>선호센터</Text>
             <View style={styles.favor}>
@@ -634,7 +633,10 @@ class UserPreference extends React.Component {
                   스킵
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.submitBtn} onPress={() => {}}>
+              <TouchableOpacity
+                style={styles.submitBtn}
+                onPress={this.submitPreference}
+              >
                 <Text
                   style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}
                 >
@@ -655,7 +657,7 @@ const styles = {
     margin: '4%',
   },
   section: {
-    color: '#62CCAD',
+    color: '#000000',
     fontSize: 20,
     paddingRight: 20,
     fontWeight: 'bold',
@@ -677,7 +679,7 @@ const styles = {
   preSection: {
     marginTop: '2%',
     paddingLeft: 6,
-    color: '#62CCAD',
+    color: '#000000',
     fontSize: 16,
     fontWeight: 'bold',
   },
