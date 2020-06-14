@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as Linking from 'expo-linking';
 
 function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
   const onPressEvent = () => {
@@ -8,6 +9,11 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
       theCenterInfo: centerInfo[showDetails][showDetailsIndex],
     });
   };
+
+  const call = () => {
+    Linking.openURL(`tel:${centerInfo[showDetails][showDetailsIndex].phone}`);
+  };
+
   return showDetails !== false ? (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={1} onPress={onPressEvent}>
@@ -43,6 +49,7 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
           color='black'
           size={50}
           style={{ left: 30 }}
+          onPress={call}
         />
         <Text style={styles.review}>
           평점 <Text>{centerInfo[showDetails][showDetailsIndex].rateAvg}</Text>
@@ -56,6 +63,11 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 7,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '20%',
     backgroundColor: 'white',
     zIndex: 1,
   },

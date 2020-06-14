@@ -13,7 +13,7 @@ class Main extends React.Component {
         initialRouteName='Main'
         activeColor='black'
         inactiveColor='white'
-        barStyle={{ backgroundColor: '#62CCAD' }}
+        barStyle={{ backgroundColor: '#62CCAD', height: 55 }}
       >
         <Tab.Screen
           name='Main'
