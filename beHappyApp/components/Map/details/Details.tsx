@@ -1,33 +1,38 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Linking from 'expo-linking';
 
-function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
-  const onPressEvent = () => {
+function Details({ navigation, centerInfo, bookmark, postBookmark }) {
+  const showDetailHome = () => {
     navigation.navigate('DetailsHome', {
-      theCenterInfo: centerInfo[showDetails][showDetailsIndex],
+      theCenterInfo: centerInfo,
     });
   };
 
   const call = () => {
-    Linking.openURL(`tel:${centerInfo[showDetails][showDetailsIndex].phone}`);
+    Linking.openURL(`tel:${centerInfo.phone}`);
   };
 
-  return showDetails !== false ? (
+  const postDeletebookmark = () => {
+    if (bookmark[centerInfo.id]) {
+      postBookmark('DELETE', centerInfo.id);
+    } else {
+      postBookmark('POST', centerInfo.id);
+    }
+  };
+
+  return (
     <View style={styles.container}>
-      <TouchableOpacity activeOpacity={1} onPress={onPressEvent}>
+      <TouchableOpacity activeOpacity={1} onPress={showDetailHome}>
+        <Text style={styles.text}>{centerInfo.centerName}</Text>
         <Text style={styles.text}>
-          {centerInfo[showDetails][showDetailsIndex].centerName}
-        </Text>
-        <Text style={styles.text}>
-          {centerInfo[showDetails][showDetailsIndex].roadAddressName}
-          {centerInfo[showDetails][showDetailsIndex].distance ? (
+          {centerInfo.roadAddressName}
+          {centerInfo.distance ? (
             <Text style={styles.distance}>
               {'  '}
               {`(`}
-              {centerInfo[showDetails][showDetailsIndex].distance.toString()}m
-              {`)`}
+              {centerInfo.distance.toString()}m{`)`}
             </Text>
           ) : (
             ''
@@ -35,14 +40,15 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
         </Text>
       </TouchableOpacity>
       {/* <Text style={styles.text}>
-        {centerInfo[showDetails][showDetailsIndex].phone}
+        {centerInfo.phone}
       </Text> */}
       <View style={{ flexDirection: 'row' }}>
         <MaterialCommunityIcons
-          name='bookmark-outline'
-          color='black'
+          name='bookmark'
+          color={bookmark[centerInfo.id] ? 'black' : 'lightgrey'}
           size={50}
           style={{ left: 20 }}
+          onPress={postDeletebookmark}
         />
         <MaterialCommunityIcons
           name='phone'
@@ -52,12 +58,10 @@ function Details({ centerInfo, showDetails, showDetailsIndex, navigation }) {
           onPress={call}
         />
         <Text style={styles.review}>
-          평점 <Text>{centerInfo[showDetails][showDetailsIndex].rateAvg}</Text>
+          평점 <Text>{centerInfo.rateAvg}</Text>
         </Text>
       </View>
     </View>
-  ) : (
-    <Fragment />
   );
 }
 
