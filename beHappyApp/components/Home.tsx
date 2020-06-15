@@ -9,6 +9,8 @@ import Main from './Main';
 import LoginContainer from '../containers/LoginContainer';
 import Signup from '../components/Sign/SignUp';
 import EntryCenter from '../components/Center/EntryCenter';
+import UserPreference from '../components/Sign/UserPreference';
+import SpecialtyPreference from '../components/Sign/SpecialtyPreference';
 
 const Stack = createStackNavigator();
 export default class Home extends React.Component {
@@ -89,6 +91,14 @@ export default class Home extends React.Component {
                     component={LoginContainer}
                   />
                   <Stack.Screen name='Signup' component={Signup} />
+                  <Stack.Screen
+                    name='UserPreference'
+                    component={UserPreference}
+                  />
+                  <Stack.Screen
+                    name='SpecialtyPreference'
+                    component={SpecialtyPreference}
+                  />
                 </>
               ) : this.props.authState === 0 ? (
                 <Stack.Screen name='Main' component={Main} />

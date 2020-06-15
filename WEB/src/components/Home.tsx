@@ -22,7 +22,9 @@ class Home extends React.Component {
       method: 'GET',
       credentials: 'include',
     })
-      .then((res) => res.json())
+      .then((res) => {
+        return res.json();
+      })
       .then((res) => {
         console.log('res: ', res);
         this.setState({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 const CenterList = ({
@@ -17,7 +17,7 @@ const CenterList = ({
   selectCenter,
   setCenterName,
 }) => (
-  <View>
+  <Fragment>
     <Text>{centerName}</Text>
     <Text>{latitude}</Text>
     <Text>{longitude}</Text>
@@ -37,7 +37,7 @@ const CenterList = ({
     >
       <Text>선택</Text>
     </TouchableOpacity>
-  </View>
+  </Fragment>
 );
 
 export default CenterList;

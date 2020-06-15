@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TextInput,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import RNPickerSelect from 'react-native-picker-select';
@@ -316,6 +317,7 @@ const states = {
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       username: '',
       password: '',
@@ -327,7 +329,7 @@ export default class SignUp extends React.Component {
       longitude: 0,
       addressName: '',
       roadAddressName: '',
-      value: 0,
+      value: 1,
       city: '',
       state: '',
       citySelected: false,
@@ -361,38 +363,47 @@ export default class SignUp extends React.Component {
 
   userSignup() {
     const { username, password, nickname, phone } = this.state;
-
-    fetch('http://13.209.16.103:4000/user/signup', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password, nickname, phone }),
-      redirect: 'follow',
-    })
-      .then((res) => {
-        if (res.status === 409) {
-          return res.json();
-        } else if (res.status === 200) {
-          alert('회원가입에 성공했습니다.');
-          this.goBack();
-        } else {
-          return '';
-        }
+    if (username === '') {
+      alert('username을 입력해주세요.');
+    } else if (password === '') {
+      alert('비밀번호를 입력해주세요.');
+    } else if (password.length < 8) {
+      alert('비밀번호는 8자리 이상이어야 합니다.');
+    } else if (nickname === '') {
+      alert('닉네임을 입력해주세요.');
+    } else if (phone === '') {
+      alert('핸드폰 번호를 입력해주세요.');
+    } else {
+      fetch('http://13.209.16.103:4000/user/signup', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password, nickname, phone }),
       })
-      .then((payload) => {
-        if (typeof payload === 'object') {
-          if (payload.errorCode) {
-            if (payload.errorCode === 3) {
+        .then((res) => {
+          if (res.status === 200 || res.status === 409) {
+            return res.json();
+          }
+          return '';
+        })
+        .then((payload) => {
+          if (typeof payload === 'object') {
+            if (!payload.errorCode) {
+              alert('회원가입에 성공했습니다.');
+              this.props.navigation.navigate('UserPreference', {
+                userId: payload.userId,
+              });
+            } else if (payload.errorCode === 3) {
               alert('이미 존재하는 username입니다.');
             }
           }
-        }
-      })
-      .catch((err) => {
-        alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
-      });
+        })
+        .catch((err) => {
+          alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        });
+    }
   }
 
   centerSignup() {
@@ -408,38 +419,50 @@ export default class SignUp extends React.Component {
       roadAddressName,
     } = this.state;
 
-    fetch('http://13.209.16.103:4000/user/signup/center', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify({
-        username,
-        password,
-        latitude,
-        longitude,
-        centerName,
-        phone,
-        businessNumber,
-        addressName,
-        roadAddressName,
-      }),
-    })
-      .then((res) => {
-        if (res.status === 409) {
-          return res.json();
-        } else if (res.status === 200) {
-          alert('회원가입에 성공했습니다.');
-          this.goBack();
-        }
-        return '';
+    if (username === '') {
+      alert('username을 입력해주세요.');
+    } else if (password === '') {
+      alert('비밀번호를 입력해주세요.');
+    } else if (password.length < 8) {
+      alert('비밀번호는 8자리 이상이어야 합니다.');
+    } else if (businessNumber === '') {
+      alert('사업자 번호를 입력해주세요.');
+    } else if (centerName === '') {
+      alert('주소를 검색해주세요.');
+    } else {
+      fetch('http://13.209.16.103:4000/user/signup/center', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          latitude,
+          longitude,
+          centerName,
+          phone,
+          businessNumber,
+          addressName,
+          roadAddressName,
+        }),
       })
-      .then((payload) => {
-        if (typeof payload === 'object') {
-          if (payload.errorCode) {
-            if (payload.errorCode === 3) {
+        .then((res) => {
+          if (res.status === 200 || res.status === 409) {
+            return res.json();
+          }
+          return '';
+        })
+        .then((payload) => {
+          console.log('payload: ', payload);
+          if (typeof payload === 'object') {
+            if (!payload.errorCode) {
+              alert('회원가입에 성공했습니다.');
+              this.props.navigation.navigate('SpecialtyPreference', {
+                centerId: payload.centerId,
+              });
+            } else if (payload.errorCode === 3) {
               alert('이미 존재하는 username입니다.');
             } else if (payload.errorCode === 4) {
               alert('이미 존재하는 center입니다.');
@@ -447,12 +470,11 @@ export default class SignUp extends React.Component {
               alert('이미 존재하는 사업자 번호입니다.');
             }
           }
-        }
-      })
-      .catch((err) => {
-        console.log('err: ', err);
-        alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
-      });
+        })
+        .catch((err) => {
+          alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        });
+    }
   }
 
   getCenterInfo(lat, lon) {
@@ -607,155 +629,167 @@ export default class SignUp extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.radioForm}>
-          <RadioForm
-            radio_props={radio_props}
-            initial={0}
-            formHorizontal={true}
-            buttonSize={12}
-            onPress={(value) => {
-              this.setState({ value: value });
-            }}
-          />
-        </View>
-        {value === 0 ? (
-          <View style={styles.inputForm}>
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='username'
-              placeholderTextColor='#ffffff'
-              onChangeText={(username) => this.setState({ username })}
-            />
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='password'
-              placeholderTextColor='#ffffff'
-              secureTextEntry={true}
-              onChangeText={(password) => this.setState({ password })}
-            />
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='nickname'
-              placeholderTextColor='#ffffff'
-              onChangeText={(nickname) => this.setState({ nickname })}
-            />
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='phone'
-              placeholderTextColor='#ffffff'
-              onChangeText={(phone) => this.setState({ phone })}
-            />
-            <TouchableOpacity onPress={this.userSignup}>
-              <Text>회원 가입</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.inputForm}>
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='username'
-              placeholderTextColor='#ffffff'
-              onChangeText={(username) => this.setState({ username })}
-            />
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='password'
-              placeholderTextColor='#ffffff'
-              secureTextEntry={true}
-              onChangeText={(password) => this.setState({ password })}
-            />
-            <TextInput
-              style={styles.inputBox}
-              underlineColorAndroid='rgba(255, 255, 255, 0)'
-              placeholder='사업자 번호'
-              placeholderTextColor='#ffffff'
-              onChangeText={(businessNumber) =>
-                this.setState({ businessNumber })
-              }
-            />
-            <Text>{centerName}</Text>
-            <Text>{latitude}</Text>
-            <Text>{longitude}</Text>
-            <Text>{addressName}</Text>
-            <Text>{roadAddressName}</Text>
-            <Text>{phone}</Text>
-            <RNPickerSelect
-              useNativeAndroidPickerStyle={false}
-              style={{
-                inputAndroid: {
-                  fontSize: 20,
-                  marginBottom: 40,
-                  textAlign: 'center',
-                },
+        <View style={styles.regform}>
+          <Text style={styles.header}>Registration</Text>
+          <View style={styles.radioForm}>
+            <RadioForm
+              radio_props={radio_props}
+              initial={1}
+              formHorizontal={false}
+              labelHorizontal={true}
+              buttonSize={12}
+              onPress={(value) => {
+                this.setState({ value: value });
               }}
-              placeholder={{ label: '지역을 선택해주세요', value: '' }}
-              onValueChange={(value) => this.inputCity(value)}
-              onOpen={this.resetState}
-              items={cities.map((ele) => {
-                return { label: `${ele}`, value: `${ele}` };
-              })}
             />
-            {this.state.citySelected ? (
-              <RNPickerSelect
-                useNativeAndroidPickerStyle={false}
-                style={{
-                  inputAndroid: {
-                    fontSize: 20,
-                    marginBottom: 40,
-                    textAlign: 'center',
-                  },
-                }}
-                selectedValue={this.state.stateSelected}
-                placeholder={{
-                  label: '시/구/군을 선택해주세요',
-                  value: '',
-                }}
-                value={state}
-                onValueChange={(value) => this.inputState(value)}
-                items={states[city].sort().map((ele) => {
-                  return { label: `${ele}`, value: `${ele}` };
-                })}
-              />
-            ) : (
-              <Text />
-            )}
-            <TouchableOpacity onPress={this.getCoordinate}>
-              <Text>주소 찾기</Text>
-            </TouchableOpacity>
-            {this.state.centerSelected ? (
-              centerInfo.map((center, index) => (
-                <CenterList
-                  key={index}
-                  center={center}
-                  centerName={center.centerName}
-                  latitude={center.latitude}
-                  longitude={center.longitude}
-                  phone={center.phone}
-                  addressName={center.addressName}
-                  roadAddressName={center.roadAddressName}
-                  setPhone={this.setPhone}
-                  setLatitude={this.setLatitude}
-                  setLongitude={this.setLongitude}
-                  setAddressName={this.setAddressName}
-                  setRoadAddressName={this.setRoadAddressName}
-                  selectCenter={this.selectCenter}
-                  setCenterName={this.setCenterName}
-                />
-              ))
-            ) : (
-              <Text />
-            )}
-            <TouchableOpacity onPress={this.centerSignup}>
-              <Text>회원 가입</Text>
-            </TouchableOpacity>
           </View>
-        )}
+          {value === 0 ? (
+            <Fragment>
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='username'
+                onChangeText={(username) => this.setState({ username })}
+              />
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='password'
+                secureTextEntry={true}
+                onChangeText={(password) => this.setState({ password })}
+              />
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='nickname'
+                onChangeText={(nickname) => this.setState({ nickname })}
+              />
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='phone'
+                onChangeText={(phone) => this.setState({ phone })}
+              />
+              <TouchableOpacity
+                style={styles.submitBtn}
+                onPress={this.userSignup}
+              >
+                <Text style={styles.btnText}>회원 가입</Text>
+              </TouchableOpacity>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='username'
+                onChangeText={(username) => this.setState({ username })}
+              />
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='password'
+                secureTextEntry={true}
+                onChangeText={(password) => this.setState({ password })}
+              />
+              <TextInput
+                style={styles.inputBox}
+                underlineColorAndroid={'transparent'}
+                placeholder='사업자 번호'
+                onChangeText={(businessNumber) =>
+                  this.setState({ businessNumber })
+                }
+              />
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  useNativeAndroidPickerStyle={false}
+                  style={{
+                    inputAndroid: {
+                      width: 100,
+                      height: 30,
+                      fontSize: 16,
+                      textAlign: 'center',
+                    },
+                  }}
+                  placeholder={{ label: '지역 선택', value: '' }}
+                  onValueChange={(value) => this.inputCity(value)}
+                  onOpen={this.resetState}
+                  items={cities.map((ele) => {
+                    return { label: `${ele}`, value: `${ele}` };
+                  })}
+                />
+                {this.state.citySelected ? (
+                  <RNPickerSelect
+                    useNativeAndroidPickerStyle={false}
+                    style={{
+                      inputAndroid: {
+                        width: 100,
+                        height: 30,
+                        fontSize: 16,
+                        textAlign: 'center',
+                      },
+                    }}
+                    selectedValue={this.state.stateSelected}
+                    placeholder={{
+                      label: '시/구/군 선택',
+                      value: '',
+                    }}
+                    value={state}
+                    onValueChange={(value) => this.inputState(value)}
+                    items={states[city].sort().map((ele) => {
+                      return { label: `${ele}`, value: `${ele}` };
+                    })}
+                  />
+                ) : (
+                  <Text />
+                )}
+                <TouchableOpacity
+                  style={styles.searchAddress}
+                  onPress={this.getCoordinate}
+                >
+                  <Text>주소 찾기</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.selectedCity}>
+                <Text>{centerName}</Text>
+                <Text>{addressName}</Text>
+                <Text>{roadAddressName}</Text>
+                <Text>{phone}</Text>
+              </View>
+
+              {this.state.centerSelected ? (
+                centerInfo.map((center, index) => (
+                  <CenterList
+                    key={index}
+                    center={center}
+                    centerName={center.centerName}
+                    latitude={center.latitude}
+                    longitude={center.longitude}
+                    phone={center.phone}
+                    addressName={center.addressName}
+                    roadAddressName={center.roadAddressName}
+                    setPhone={this.setPhone}
+                    setLatitude={this.setLatitude}
+                    setLongitude={this.setLongitude}
+                    setAddressName={this.setAddressName}
+                    setRoadAddressName={this.setRoadAddressName}
+                    selectCenter={this.selectCenter}
+                    setCenterName={this.setCenterName}
+                  />
+                ))
+              ) : (
+                <Text />
+              )}
+              <TouchableOpacity
+                style={styles.submitBtn}
+                onPress={this.centerSignup}
+              >
+                <Text style={styles.btnText}>회원 가입</Text>
+              </TouchableOpacity>
+            </Fragment>
+          )}
+        </View>
       </View>
     );
   }
@@ -766,31 +800,57 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingLeft: 60,
+    paddingRight: 60,
+  },
+  regform: {
+    height: 600,
+    alignSelf: 'stretch',
+  },
+  header: {
+    fontSize: 24,
+    paddingBottom: 10,
+    marginBottom: 20,
+    borderBottomColor: '#199187',
+    borderBottomWidth: 1,
   },
   radioForm: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  inputForm: {
-    flex: 1,
-    justifyContent: 'center',
+    marginBottom: 30,
   },
   inputBox: {
-    flex: 1,
-    justifyContent: 'center',
-    width: 300,
-    backgroundColor: '#000000',
-    borderRadius: 25,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#ffffff',
-    marginVertical: 10,
+    alignSelf: 'stretch',
+    height: 30,
+    marginBottom: 30,
+    borderBottomColor: '#199187',
+    borderBottomWidth: 1,
+  },
+  selectedCity: {
+    height: 70,
+  },
+  submitBtn: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#59cbbd',
+    marginTop: 30,
+  },
+  btnText: {
+    fontWeight: 'bold',
   },
   pickerContainer: {
-    marginTop: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     color: '#000000',
-    marginLeft: 60,
-    marginRight: 60,
     fontSize: 50,
+    marginBottom: 30,
+  },
+  searchAddress: {
+    width: 80,
+    height: 30,
+    backgroundColor: '#59cbbd',
+    fontSize: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

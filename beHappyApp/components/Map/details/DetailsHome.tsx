@@ -13,25 +13,52 @@ const tags = [{ name: '불면증' }, { name: '스트레스' }];
 const rateAvg = '4.0';
 
 class DetailsHome extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { bookmark: this.props.navigation.state.params.bookmark };
+
+    this.call = this.call.bind(this);
+    this.bookmark = this.bookmark.bind(this);
+    this.handleBookmarkColor = this.handleBookmarkColor.bind(this);
+  }
+
   call() {
     Linking.openURL(
       `tel:${this.props.navigation.state.params.theCenterInfo.phone}`
     );
   }
 
+  bookmark() {
+    const {
+      postDeletebookmark,
+      bookmark,
+      theCenterInfo,
+    } = this.props.navigation.state.params;
+    postDeletebookmark(bookmark, theCenterInfo.id);
+    this.handleBookmarkColor();
+  }
+
+  handleBookmarkColor() {
+    this.setState({
+      bookmark: !this.state.bookmark,
+    });
+  }
+
   render() {
+    const { theCenterInfo } = this.props.navigation.state.params;
+    const { bookmark } = this.state;
+
     return (
       <Fragment>
         <View style={styles.container}>
-          <Text style={styles.centerName}>
-            {this.props.navigation.state.params.theCenterInfo.centerName}
-          </Text>
+          <Text style={styles.centerName}>{theCenterInfo.centerName}</Text>
           <View
             style={{
               flexDirection: 'row',
             }}
           >
-            {/* {this.props.navigation.state.params.theCenterInfo.tags.map((tag) => (
+            {/* {theCenterInfo.tags.map((tag) => (
             <Text>#{tag.name}</Text>
           ))} */}
             {tags.map((tag) => (
@@ -43,7 +70,7 @@ class DetailsHome extends React.Component {
           <Text style={styles.review}>
             평점{' '}
             <Text>
-              {/* {this.props.navigation.state.params.theCenterInfo.rateAvg} */}
+              {/* {theCenterInfo.rateAvg} */}
               {rateAvg}
             </Text>
           </Text>
@@ -60,7 +87,7 @@ class DetailsHome extends React.Component {
                 name='phone'
                 color='black'
                 size={40}
-                onPress={this.call.bind(this)}
+                onPress={this.call}
               />
               <Text
                 style={{
@@ -72,9 +99,10 @@ class DetailsHome extends React.Component {
             </View>
             <View style={styles.iconSet}>
               <MaterialCommunityIcons
-                name='bookmark-outline'
-                color='black'
+                name='bookmark'
+                color={bookmark ? 'black' : 'lightgrey'}
                 size={40}
+                onPress={this.bookmark}
               />
               <Text
                 style={{

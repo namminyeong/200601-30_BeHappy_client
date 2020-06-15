@@ -17,8 +17,8 @@ const MapContainer = ({
   controlCoordinate,
   coordinate,
   token,
-  bookmark,
   controlBookmark,
+  bookmark,
 }) => {
   return (
     <Map
@@ -29,8 +29,8 @@ const MapContainer = ({
       controlCoordinate={controlCoordinate}
       coordinate={coordinate}
       token={token}
-      bookmark={bookmark}
       controlBookmark={controlBookmark}
+      bookmark={bookmark}
     />
   );
 };
