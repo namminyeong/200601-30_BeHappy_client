@@ -15,10 +15,10 @@ class Map extends React.Component {
     super(props);
 
     this.state = {
-      myLatitude: 37.52,
-      myLongitude: 126.97,
-      myLatitudeDelta: 0.03,
-      myLongitudeDelta: 0.02,
+      myLatitude: 37.02,
+      myLongitude: 127.17,
+      myLatitudeDelta: 4,
+      myLongitudeDelta: 4,
       showDetails: false,
       showDetailsIndex: null,
       countTags: 10,
@@ -54,6 +54,9 @@ class Map extends React.Component {
     this.postBookmarkState = this.postBookmarkState.bind(this);
     this.postBookmark = this.postBookmark.bind(this);
     this.checkBookmark = this.checkBookmark.bind(this);
+    this.goSpecificLocationAfterSearch = this.goSpecificLocationAfterSearch.bind(
+      this
+    );
   }
 
   changeFilter(index) {
@@ -111,6 +114,15 @@ class Map extends React.Component {
         let location = await Location.getCurrentPositionAsync({});
         let myLatitude = location.coords.latitude;
         let myLongitude = location.coords.longitude;
+        this._map.animateToRegion(
+          {
+            longitude: myLongitude,
+            latitude: myLatitude,
+            longitudeDelta: 0.03,
+            latitudeDelta: 0.04,
+          },
+          20
+        );
         this.setState({
           myLongitude,
           myLatitude,
@@ -171,18 +183,29 @@ class Map extends React.Component {
         if (typeof data === 'object') {
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
+          if (counseling.length === 0 && psychiatric.length === 0) {
+            alert('조금 더 확대하여 검색해보세요');
+          }
           this.props.controlCenterData(counseling, psychiatric);
         }
       });
   }
 
   goCurrentLocation() {
-    this.props.controlCoordinate(
-      this.state.myLongitude,
-      this.state.myLatitude,
-      this.state.myLatitudeDelta,
-      this.state.myLongitudeDelta
+    this._map.animateToRegion(
+      {
+        longitude: this.state.myLongitude,
+        latitude: this.state.myLatitude,
+        longitudeDelta: 0.03,
+        latitudeDelta: 0.04,
+      },
+      200
     );
+  }
+
+  goSpecificLocationAfterSearch(region) {
+    console.log('goSpecificLocationAfterSearch', region);
+    this._map.animateToRegion(region, 20);
   }
 
   onRegionChangeComplete(lon, lat, lonDelta, latDelta) {
@@ -269,14 +292,15 @@ class Map extends React.Component {
   }
 
   render() {
-    const coordinate = this.props.coordinate;
     const {
       myLatitude,
       myLongitude,
       showDetails,
       showDetailsIndex,
+      myLatitudeDelta,
+      myLongitudeDelta,
     } = this.state;
-
+    ``;
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
@@ -287,7 +311,10 @@ class Map extends React.Component {
                 transparent
                 style={styles.buttonGeo}
                 onPress={() => {
-                  this.props.navigation.navigate('SearchGeoContainer');
+                  this.props.navigation.navigate('SearchGeoContainer', {
+                    goSpecificLocationAfterSearch: this
+                      .goSpecificLocationAfterSearch,
+                  });
                 }}
               >
                 <Text>지역으로 검색</Text>
@@ -296,7 +323,10 @@ class Map extends React.Component {
                 transparent
                 style={styles.button}
                 onPress={() => {
-                  this.props.navigation.navigate('SearchNameContainer');
+                  this.props.navigation.navigate('SearchNameContainer', {
+                    goSpecificLocationAfterSearch: this
+                      .goSpecificLocationAfterSearch,
+                  });
                 }}
               >
                 <Text>이름으로 검색</Text>
@@ -345,15 +375,15 @@ class Map extends React.Component {
           </View>
         </View>
         <MapView
-          moveOnMarkerPress={false}
+          ref={(component) => (this._map = component)}
           style={styles.map}
           showsUserLocation={false}
           zoomEnabled={true}
-          region={{
-            latitude: coordinate[1],
-            longitude: coordinate[0],
-            latitudeDelta: coordinate[3],
-            longitudeDelta: coordinate[2],
+          initialRegion={{
+            latitude: myLatitude,
+            longitude: myLongitude,
+            latitudeDelta: myLatitudeDelta,
+            longitudeDelta: myLongitudeDelta,
           }}
           onRegionChangeComplete={(e) => {
             this.onRegionChangeComplete(

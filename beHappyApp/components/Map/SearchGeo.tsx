@@ -344,6 +344,12 @@ class SearchGeo extends React.Component {
           let lat = parseFloat(data.documents[0].address.y).toFixed(6);
           this.props.controlCoordinate(lon, lat);
           this.getCenterWithCoordinate(lon, lat);
+          this.props.navigation.state.params.goSpecificLocationAfterSearch({
+            latitude: Number(lat),
+            longitude: Number(lon),
+            latitudeDelta: 0.06,
+            longitudeDelta: 0.07,
+          });
         }
       });
   }
@@ -432,12 +438,7 @@ class SearchGeo extends React.Component {
           <Header searchBar rounded style={{ backgroundColor: 'white' }}>
             <Item style={{ width: '80%' }}>
               <Icon active name='search' />
-              <Button
-                transparent
-                onPress={() => {
-                  alert(this.state.city);
-                }}
-              >
+              <Button transparent>
                 <Text style={{ fontSize: 17 }}>지역으로 검색 </Text>
               </Button>
             </Item>
