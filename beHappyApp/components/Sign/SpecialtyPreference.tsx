@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 
 class SpecialtyPreference extends React.Component {
   constructor(props) {
