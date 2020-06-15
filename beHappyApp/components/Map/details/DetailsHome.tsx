@@ -6,6 +6,7 @@ import DetailHomeBody from './DetailHomeBody';
 import DetailReviews from './DetailReviews';
 import Booking from './Booking';
 import * as Linking from 'expo-linking';
+import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -67,13 +68,20 @@ class DetailsHome extends React.Component {
               </Text>
             ))}
           </View>
-          <Text style={styles.review}>
-            평점{' '}
-            <Text>
-              {/* {theCenterInfo.rateAvg} */}
-              {rateAvg}
-            </Text>
-          </Text>
+          {theCenterInfo.rateAvg === 0 ? (
+            <View style={styles.noReviewContainer}>
+              <Text style={styles.noReview}>아직 리뷰가 없습니다</Text>
+            </View>
+          ) : (
+            <>
+              <View style={styles.reviewContainer}>
+                <Text style={styles.rate}>{theCenterInfo.rateAvg}/5 </Text>
+                <View style={styles.star}>
+                  <DetailsMiniStarRateAvg rateAvg={theCenterInfo.rateAvg} />
+                </View>
+              </View>
+            </>
+          )}
         </View>
 
         <View style={styles.iconBox}>
@@ -153,9 +161,32 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     backgroundColor: '#62CCAD',
   },
-  review: {
-    marginVertical: 10,
-    fontSize: 25,
+  noReviewContainer: {
+    marginTop: 23,
+    marginBottom: 15,
+    fontSize: 17,
+  },
+  reviewContainer: {
+    width: 235,
+    marginTop: 20,
+    marginBottom: 12,
+    fontSize: 17,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  rate: {
+    fontSize: 20,
+    width: 50,
+    textAlign: 'center',
+  },
+  star: {
+    left: 3,
+  },
+  noReview: {
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
   },
   iconBox: {
     justifyContent: 'center',
