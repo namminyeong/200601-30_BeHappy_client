@@ -26,7 +26,6 @@ export default class ShowReviews extends React.Component {
         : reviewsData.filter((data) => {
             return data.rate === Number(isRateFilter);
           });
-    console.log(this.state.page);
 
     return (
       <View style={{ marginLeft: '4%', marginRight: '4%' }}>

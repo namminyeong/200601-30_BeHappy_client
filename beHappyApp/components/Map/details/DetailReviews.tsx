@@ -3,8 +3,8 @@ import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-nati
 import RNPickerSelect from 'react-native-picker-select';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import ShowStarRateAvg from '../ShowStarRateAvg';
-import ShowReviews from '../ShowReviews';
+import ShowStarRateAvg from './ShowStarRateAvg';
+import ShowReviews from './ShowReviews';
 
 import { FakeReviewsData } from '../../../Data/FakeReviewsData';
 
@@ -12,7 +12,7 @@ export default class DetailsReviews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rateAvg: 4.8,
+      rateAvg: 3.5,
       isRateFilter: 0,
       reviewsData: FakeReviewsData,
     };
@@ -87,7 +87,7 @@ export default class DetailsReviews extends React.Component {
            style={{marginRight: '2%', position: 'absolute', flex: 1, right: 4, bottom: 6, opacity: 0.1, }}
            onPress={() => { this.refs._scrollView.scrollTo({x: 0, y: 0, animated: true}); }}
            >
-          <FontAwesome5 name='chevron-circle-up' size={34} style={{}} />
+          <FontAwesome5 name='chevron-circle-up' size={34} />
           </TouchableOpacity>
       </View>
     );
