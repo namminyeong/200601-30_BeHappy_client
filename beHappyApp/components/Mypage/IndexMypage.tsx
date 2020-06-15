@@ -2,11 +2,12 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
+import BookMarkContainer from '../../containers/BookMarkContainer';
 import Mypage from './Mypage';
 import MyInfo from './MyInfo';
-import MyBookmarks from './MyBookmarks';
 import MyReviews from './MyReviews';
 import MyBookings from './MyBookings';
+import MapContainer from '../../containers/MapContainer';
 
 const stackNav = createStackNavigator(
   {
@@ -23,14 +24,19 @@ const stackNav = createStackNavigator(
         headerTintColor: 'white',
       },
     },
-    MyBookmarks: {
-      screen: MyBookmarks,
+    BookMarkContainer: {
+      screen: BookMarkContainer,
+      navigationOptions: { headerShown: false },
     },
     MyReviews: {
       screen: MyReviews,
     },
     MyBookings: {
       screen: MyBookings,
+    },
+    MapContainer: {
+      screen: MapContainer,
+      navigationOptions: { headerShown: false },
     },
   },
   {

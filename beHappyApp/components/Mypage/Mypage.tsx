@@ -2,17 +2,105 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LogoutContainer from '../../containers/LogoutContainer';
-import indexMypage from './IndexMypage';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log('Mypage 진입');
     console.log('Mypage props: ', this.props);
 
     this.state = {
       username: 'test',
     };
+
+    this.getBookmark = this.getBookmark.bind(this);
+    this.checkBookmark = this.checkBookmark.bind(this);
+    this.postBookmark = this.postBookmark.bind(this);
+    this.deleteBookmarkState = this.deleteBookmarkState.bind(this);
+    this.postBookmarkState = this.postBookmarkState.bind(this);
+  }
+
+  getBookmark() {
+    console.log('getBookmark 진입');
+    fetch(ec2 + '/bookmark', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        console.log('getBookmark data: ', data);
+        if (typeof data === 'object') {
+          this.props.controlBookmark(data.centers);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
+  checkBookmark(id) {
+    let exist = false;
+    let index;
+    this.props.bookmark.forEach((ele, i) => {
+      if (ele.id === id) {
+        exist = true;
+        index = i;
+      }
+    });
+    return [exist, index];
+  }
+
+  postBookmark(method, centerId) {
+    fetch(ec2 + '/bookmark', {
+      method,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+      body: JSON.stringify({ centerId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          if (method === 'DELETE') {
+            this.deleteBookmarkState(centerId);
+          } else {
+            return res.json();
+          }
+        }
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          this.postBookmarkState(data);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
+  deleteBookmarkState(centerId) {
+    let newBookmarkState = Object.assign([], this.props.bookmark);
+    let index = this.checkBookmark(centerId)[1];
+    newBookmarkState.splice(index, 1);
+    this.props.controlBookmark(newBookmarkState);
+  }
+
+  postBookmarkState(centerInfo) {
+    let newBookmarkState = Object.assign([], this.props.bookmark);
+    newBookmarkState.push(centerInfo);
+    this.props.controlBookmark(newBookmarkState);
   }
 
   render() {
@@ -41,7 +129,7 @@ class Mypage extends React.Component {
           <TouchableOpacity
             style={styles.listItem}
             onPress={() => {
-              this.props.navigation.navigate('MyBookmarks');
+              this.props.navigation.navigate('BookMarkContainer');
             }}
           >
             <Text style={styles.itemText}>즐겨찾기</Text>

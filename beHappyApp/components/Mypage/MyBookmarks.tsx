@@ -1,96 +1,123 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import LogoutContainer from '../../containers/LogoutContainer';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native';
 
-export default function MyBookmarks(props) {
-  console.log('MyBookmarks props: ', this.props);
+import BookMarkList from './BookmarkList';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
+
+export default function MyBookmarks({
+  navigation,
+  token,
+  bookmark,
+  controlBookmark,
+}) {
+  const [bookmarkInfo, setBookmarkInfo] = useState(bookmark);
+
+  useEffect(() => {
+    getBookmark();
+  }, bookmarkInfo);
+
+  const getBookmark = () => {
+    fetch(ec2 + '/bookmark', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          controlBookmark(data.centers);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
+  const postBookmark = (method, centerId) => {
+    fetch(ec2 + '/bookmark', {
+      method,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ centerId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          if (method === 'DELETE') {
+            deleteBookmarkState(centerId);
+          } else {
+            return res.json();
+          }
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
+  const checkBookmark = (id) => {
+    let exist = false;
+    let index;
+    bookmark.forEach((ele, i) => {
+      if (ele.id === id) {
+        exist = true;
+        index = i;
+      }
+    });
+    return [exist, index];
+  };
+
+  const deleteBookmarkState = (centerId) => {
+    let newBookmarkState = Object.assign([], bookmark);
+    let index = checkBookmark(centerId)[1];
+    newBookmarkState.splice(index, 1);
+    controlBookmark(newBookmarkState);
+  };
+  console.log('navigation: ', navigation);
+  console.log('token: ', token);
+  console.log('bookmark: ', bookmark);
+  console.log('controlBookmark: ', controlBookmark);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.title}>
-        <Text style={styles.mypageText}>MyPage</Text>
-        <LogoutContainer />
-      </View>
-
-      <View style={styles.userInfo}>
-        <Text style={styles.user}>test</Text>
-        <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>
-          님
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.navigate('MyInfo');
-          }}
-        >
-          {<Entypo name='chevron-right' size={26} color={'#62CCAD'} />}
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.list}>
-        <TouchableOpacity style={styles.listItem}>
-          <Text style={styles.itemText}>예약관리</Text>
-          {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
-        </TouchableOpacity>
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      {bookmark.length > 0 ? (
+        <FlatList
+          data={bookmark}
+          renderItem={({ item }) =>
+            bookmark.map((item, index) => (
+              <BookMarkList
+                key={index}
+                token={token}
+                bookmark={item}
+                postBookmark={postBookmark}
+                navigation={navigation}
+              />
+            ))
+          }
+        />
+      ) : (
+        <Text>BookMark한 Center가 없습니다.</Text>
+      )}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+    padding: 15,
   },
-  title: {
-    paddingTop: '12%',
-    paddingLeft: '6%',
-    height: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  mypageText: {
-    marginTop: 30,
-    height: 40,
-    color: '#62CCAD',
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingTop: '2%',
-  },
-  userInfo: {
-    marginBottom: 10,
-    paddingLeft: '8%',
-    height: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  user: {
-    paddingLeft: 10,
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  list: {
-    padding: 10,
-  },
-  listItem: {
-    borderColor: '#62CCAD',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    borderWidth: 3,
-    padding: '6%',
-    marginBottom: 10,
-  },
-  itemText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#62CCAD',
-  },
-  // container: {
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   flex: 1,
-  // },
-  // text: {
-  //   fontSize: 30,
-  // },
 });

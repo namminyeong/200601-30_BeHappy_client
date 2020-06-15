@@ -329,7 +329,7 @@ export default class SignUp extends React.Component {
       longitude: 0,
       addressName: '',
       roadAddressName: '',
-      value: 1,
+      value: 0,
       city: '',
       state: '',
       citySelected: false,
