@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import ShowStarRateAvg from '../Map/details/ShowStarRateAvg';
 
-const BookmarkList = ({ token, bookmark, postBookmark, navigation }) => {
-  console.log('BookmarkList 진입');
+const BookmarkList = ({ bookmark, postBookmark, navigation }) => {
   const centerId = bookmark.id;
   const centerName = bookmark.centerName;
   const latitude = bookmark.latitude;
@@ -37,8 +36,7 @@ const BookmarkList = ({ token, bookmark, postBookmark, navigation }) => {
         <TouchableOpacity
           style={styles.showMapBtn}
           onPress={() => {
-            navigation.navigate('MapContainer', {
-              token: token,
+            navigation.navigate('BookmarkMap', {
               latitude: latitude,
               longitude: longitude,
             });

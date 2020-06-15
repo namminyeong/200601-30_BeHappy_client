@@ -344,7 +344,7 @@ class Map extends React.Component {
             ))}
           </View>
         </View>
-        {/* <MapView
+        <MapView
           moveOnMarkerPress={false}
           style={styles.map}
           showsUserLocation={false}
@@ -400,7 +400,7 @@ class Map extends React.Component {
           ) : (
             <Fragment />
           )}
-        </MapView> */}
+        </MapView>
         {this.state.showDetails ? (
           <Details
             centerInfo={this.props[showDetails][showDetailsIndex]}

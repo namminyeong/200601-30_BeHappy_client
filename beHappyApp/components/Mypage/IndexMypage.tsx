@@ -7,7 +7,7 @@ import Mypage from './Mypage';
 import MyInfo from './MyInfo';
 import MyReviews from './MyReviews';
 import MyBookings from './MyBookings';
-import MapContainer from '../../containers/MapContainer';
+import BookmarkMap from '../Mypage/BookmarkMap';
 
 const stackNav = createStackNavigator(
   {
@@ -34,8 +34,8 @@ const stackNav = createStackNavigator(
     MyBookings: {
       screen: MyBookings,
     },
-    MapContainer: {
-      screen: MapContainer,
+    BookmarkMap: {
+      screen: BookmarkMap,
       navigationOptions: { headerShown: false },
     },
   },

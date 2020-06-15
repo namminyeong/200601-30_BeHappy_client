@@ -84,10 +84,6 @@ export default function MyBookmarks({
     newBookmarkState.splice(index, 1);
     controlBookmark(newBookmarkState);
   };
-  console.log('navigation: ', navigation);
-  console.log('token: ', token);
-  console.log('bookmark: ', bookmark);
-  console.log('controlBookmark: ', controlBookmark);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -98,7 +94,6 @@ export default function MyBookmarks({
             bookmark.map((item, index) => (
               <BookMarkList
                 key={index}
-                token={token}
                 bookmark={item}
                 postBookmark={postBookmark}
                 navigation={navigation}
