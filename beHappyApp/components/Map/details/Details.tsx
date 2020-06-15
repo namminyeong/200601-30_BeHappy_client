@@ -7,6 +7,8 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
   const showDetailHome = () => {
     navigation.navigate('DetailsHome', {
       theCenterInfo: centerInfo,
+      bookmark: bookmark,
+      postDeletebookmark: postDeletebookmark,
     });
   };
 
@@ -14,25 +16,11 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
     Linking.openURL(`tel:${centerInfo.phone}`);
   };
 
-  const check = () => {
-    let exist = false;
-    let index;
-    bookmark.forEach((ele, i) => {
-      if (ele.id === centerInfo.id) {
-        exist = true;
-        index = i;
-      }
-    });
-    return [exist, index];
-  };
-
-  const bookmarked = check();
-
-  const postDeletebookmark = () => {
-    if (bookmarked[0] === true) {
-      postBookmark('DELETE', centerInfo.id, bookmarked[1]);
+  const postDeletebookmark = (bookmark, id) => {
+    if (bookmark === true) {
+      postBookmark('DELETE', id);
     } else {
-      postBookmark('POST', centerInfo.id, centerInfo);
+      postBookmark('POST', id);
     }
   };
 
@@ -59,10 +47,10 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
       <View style={{ flexDirection: 'row' }}>
         <MaterialCommunityIcons
           name='bookmark'
-          color={bookmarked[0] ? 'black' : 'lightgrey'}
+          color={bookmark ? 'black' : 'lightgrey'}
           size={50}
           style={{ left: 20 }}
-          onPress={postDeletebookmark}
+          onPress={() => postDeletebookmark(bookmark, centerInfo.id)}
         />
         <MaterialCommunityIcons
           name='phone'
