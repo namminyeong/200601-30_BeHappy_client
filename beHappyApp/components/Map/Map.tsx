@@ -215,7 +215,7 @@ class Map extends React.Component {
 
   saveBookmarkInState(dataArr) {
     const bookmarkState = {};
-    dataArr.map((obj) => {
+    dataArr.forEach((obj) => {
       bookmarkState[`${obj.id}`] = true;
     });
     this.props.controlBookmark(bookmarkState);
