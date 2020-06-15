@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Linking from 'expo-linking';
+import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
 
 function Details({ navigation, centerInfo, bookmark, postBookmark }) {
   const showDetailHome = () => {
@@ -27,8 +28,8 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={1} onPress={showDetailHome}>
-        <Text style={styles.text}>{centerInfo.centerName}</Text>
-        <Text style={styles.text}>
+        <Text style={styles.center}>{centerInfo.centerName}</Text>
+        <Text style={styles.address}>
           {centerInfo.roadAddressName}
           {centerInfo.distance ? (
             <Text style={styles.distance}>
@@ -41,27 +42,44 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
           )}
         </Text>
       </TouchableOpacity>
-      {/* <Text style={styles.text}>
-        {centerInfo.phone}
-      </Text> */}
       <View style={{ flexDirection: 'row' }}>
         <MaterialCommunityIcons
           name='bookmark'
           color={bookmark ? 'black' : 'lightgrey'}
-          size={50}
-          style={{ left: 20 }}
+          size={45}
+          style={{ left: 20, marginHorizontal: 2 }}
           onPress={() => postDeletebookmark(bookmark, centerInfo.id)}
         />
         <MaterialCommunityIcons
           name='phone'
           color='black'
-          size={50}
-          style={{ left: 30 }}
+          size={45}
+          style={{ left: 30, marginHorizontal: 2 }}
           onPress={call}
         />
-        <Text style={styles.review}>
-          평점 <Text>{centerInfo.rateAvg}</Text>
-        </Text>
+        <View
+          style={{
+            left: 15,
+            width: '70%',
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}
+        >
+          {centerInfo.rateAvg === 0 ? (
+            <Text style={styles.noReview}>아직 리뷰가 없습니다.</Text>
+          ) : (
+            <>
+              <Text style={styles.review}>
+                {centerInfo.rateAvg.length > 1
+                  ? `${centerInfo.rateAvg}`
+                  : `${centerInfo.rateAvg}.0`}
+              </Text>
+              <View style={styles.star}>
+                <DetailsMiniStarRateAvg rateAvg={centerInfo.rateAvg} />
+              </View>
+            </>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -76,9 +94,18 @@ const styles = StyleSheet.create({
     height: '20%',
     backgroundColor: 'white',
     zIndex: 1,
+    paddingHorizontal: 3,
   },
-  text: {
-    fontSize: 20,
+  center: {
+    top: 7,
+    fontSize: 25,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    height: 40,
+  },
+  address: {
+    top: 3,
+    fontSize: 17,
     textAlign: 'center',
     height: 40,
   },
@@ -87,10 +114,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     height: 40,
   },
+  noReview: {
+    width: '100%',
+    textAlign: 'center',
+  },
   review: {
-    top: 10,
+    marginHorizontal: 7,
     fontSize: 20,
-    left: 60,
+    left: 35,
+  },
+  star: {
+    left: 35,
   },
 });
 
