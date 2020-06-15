@@ -49,9 +49,7 @@ class Map extends React.Component {
     this.pressAll = this.pressAll.bind(this);
     this.checkTagsForUrl = this.checkTagsForUrl.bind(this);
     this.changeCenterFilter = this.changeCenterFilter.bind(this);
-    this.saveBookmarkIdInState = this.saveBookmarkIdInState.bind(this);
     this.getBookmark = this.getBookmark.bind(this);
-    this.handleBookmarkIdState = this.handleBookmarkIdState.bind(this);
     this.handleBookmarkState = this.handleBookmarkState.bind(this);
     this.postBookmark = this.postBookmark.bind(this);
   }
@@ -206,7 +204,6 @@ class Map extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          this.saveBookmarkIdInState(data.centers);
           this.props.controlBookmark(data.centers);
         }
       })
@@ -215,15 +212,7 @@ class Map extends React.Component {
       });
   }
 
-  saveBookmarkIdInState(dataArr) {
-    const bookmarkIdState = {};
-    dataArr.forEach((obj) => {
-      bookmarkIdState[`${obj.id}`] = true;
-    });
-    this.props.controlBookmarkId(bookmarkIdState);
-  }
-
-  postBookmark(method, centerId, centerInfo) {
+  postBookmark(method, centerId, centerInfoORindex) {
     fetch(ec2 + '/bookmark', {
       method,
       credentials: 'include',
@@ -235,8 +224,7 @@ class Map extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          this.handleBookmarkIdState(`${centerId}`);
-          this.handleBookmarkState(method, centerId, centerInfo);
+          this.handleBookmarkState(method, centerInfoORindex);
         }
       })
       .catch((error) => {
@@ -244,28 +232,12 @@ class Map extends React.Component {
       });
   }
 
-  handleBookmarkIdState(id) {
-    let newBookmarkIdState = Object.assign({}, this.props.bookmarkId);
-    if (this.props.bookmarkId[id]) {
-      delete newBookmarkIdState[id];
-    } else {
-      newBookmarkIdState[id] = true;
-    }
-    this.props.controlBookmarkId(newBookmarkIdState);
-  }
-
-  handleBookmarkState(method, centerId, centerInfo) {
+  handleBookmarkState(method, centerInfoORindex) {
     let newBookmarkState = Object.assign([], this.props.bookmark);
     if (method === 'DELETE') {
-      let index;
-      newBookmarkState.forEach((x, i) => {
-        if (x.id === centerId) {
-          index = i;
-        }
-      });
-      newBookmarkState.splice(index, 1);
+      newBookmarkState.splice(centerInfoORindex, 1);
     } else {
-      newBookmarkState.push(centerInfo);
+      newBookmarkState.push(centerInfoORindex);
     }
     this.props.controlBookmark(newBookmarkState);
   }
@@ -407,7 +379,7 @@ class Map extends React.Component {
           <Details
             centerInfo={this.props[showDetails][showDetailsIndex]}
             navigation={this.props.navigation}
-            bookmarkId={this.props.bookmarkId}
+            bookmark={this.props.bookmark}
             postBookmark={this.postBookmark}
           />
         ) : (

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Linking from 'expo-linking';
 
-function Details({ navigation, centerInfo, bookmarkId, postBookmark }) {
+function Details({ navigation, centerInfo, bookmark, postBookmark }) {
   const showDetailHome = () => {
     navigation.navigate('DetailsHome', {
       theCenterInfo: centerInfo,
@@ -14,9 +14,23 @@ function Details({ navigation, centerInfo, bookmarkId, postBookmark }) {
     Linking.openURL(`tel:${centerInfo.phone}`);
   };
 
+  const check = () => {
+    let exist = false;
+    let index;
+    bookmark.forEach((ele, i) => {
+      if (ele.id === centerInfo.id) {
+        exist = true;
+        index = i;
+      }
+    });
+    return [exist, index];
+  };
+
+  const bookmarked = check();
+
   const postDeletebookmark = () => {
-    if (bookmarkId[centerInfo.id]) {
-      postBookmark('DELETE', centerInfo.id);
+    if (bookmarked[0] === true) {
+      postBookmark('DELETE', centerInfo.id, bookmarked[1]);
     } else {
       postBookmark('POST', centerInfo.id, centerInfo);
     }
@@ -45,7 +59,7 @@ function Details({ navigation, centerInfo, bookmarkId, postBookmark }) {
       <View style={{ flexDirection: 'row' }}>
         <MaterialCommunityIcons
           name='bookmark'
-          color={bookmarkId[centerInfo.id] ? 'black' : 'lightgrey'}
+          color={bookmarked[0] ? 'black' : 'lightgrey'}
           size={50}
           style={{ left: 20 }}
           onPress={postDeletebookmark}
