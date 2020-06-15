@@ -7,6 +7,9 @@ import indexMypage from './IndexMypage';
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
+
+    console.log('Mypage props: ', this.props);
+
     this.state = {
       username: 'test',
     };
