@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
-// import { createStackNavigator } from '@react-navigation/stack';
 
 import MapContainer from '../../containers/MapContainer';
 import SearchNameContainer from '../../containers/SearchNameContainer';
@@ -44,26 +43,5 @@ class MapStack extends React.Component {
     return <NavContainer />;
   }
 }
-
-// const Stack = createStackNavigator();
-
-// function MapStack() {
-//   return (
-//     <Stack.Navigator
-//       screenOptions={{
-//         headerShown: false,
-//       }}
-//     >
-//       <Stack.Screen name='MapContainer' component={MapContainer} />
-//       <Stack.Screen
-//         name='SearchNameContainer'
-//         component={SearchNameContainer}
-//       />
-//       <Stack.Screen name='SearchGeoContainer' component={SearchGeoContainer} />
-//       <Stack.Screen name='Details' component={Details} />
-//       <Stack.Screen name='DetailsHome' component={DetailsHome} />
-//     </Stack.Navigator>
-//   );
-// }
 
 export default MapStack;

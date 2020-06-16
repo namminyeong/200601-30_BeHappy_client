@@ -109,8 +109,6 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
-
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -212,7 +210,6 @@ class Map extends React.Component {
   }
 
   onRegionChangeComplete(lon, lat, lonDelta, latDelta) {
-    console.log('onRegionChangeComplete');
     this.props.controlCoordinate(lon, lat, lonDelta, latDelta);
   }
 
@@ -413,14 +410,10 @@ class Map extends React.Component {
             this.handleShowDetails(false, null);
           }}
           onMapReady={() => {
-            console.log('onMapReady');
             this._map.fitToSuppliedMarkers(['centers'], {
               edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
               animated: false,
             });
-          }}
-          onCalloutPress={() => {
-            console.log('onCalloutPress');
           }}
         >
           <Marker
