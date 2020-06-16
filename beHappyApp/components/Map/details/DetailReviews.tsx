@@ -6,6 +6,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ShowStarRateAvg from './ShowStarRateAvg';
 import ShowReviews from './ShowReviews';
 import DeviceStorage from '../../../service/DeviceStorage';
+import { FakeReviewsData } from '../../../Data/FakeReviewsData';
 
 export default class DetailsReviews extends React.Component {
   constructor(props) {
@@ -14,6 +15,7 @@ export default class DetailsReviews extends React.Component {
       rateAvg: this.props.route.params.rateAvg,
       isRateFilter: 0,
       reviewsData: [],
+      stars: [5, 4, 3, 2, 1]
     };
     this.getUserPreference = this.getUserPreference.bind(this)
   }
@@ -51,7 +53,7 @@ export default class DetailsReviews extends React.Component {
   }
 
   render() {
-    const { isRateFilter, rateAvg } = this.state;
+    const { isRateFilter, rateAvg, stars } = this.state;
     const reviewsData = this.state?.reviewsData || [];
 
     return (
@@ -68,33 +70,17 @@ export default class DetailsReviews extends React.Component {
             </View>
             <View style={{ marginLeft: 10, marginRight: 10, borderLeftWidth: 2, borderColor: '#B2BEC3' }} />
             <View style={{ paddingLeft: 20, width: 150, marginRight: -24 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>5점</Text>
-                <View style={{ width: `${Math.round((reviewsData.filter((data) => data.rate === 5).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>4점</Text>
-                <View style={{ width: `${Math.round((reviewsData.filter((data) => data.rate === 4).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>3점</Text>
-                <View style={{ width: `${Math.round((reviewsData.filter((data) => data.rate === 3).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>2점</Text>
-                <View style={{ width: `${Math.round((reviewsData.filter((data) => data.rate === 2).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>1점</Text>
-                <View style={{ width: `${Math.round((reviewsData.filter((data) => data.rate === 1).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
-              </View>
+              {stars.map(rate => 
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>{rate}점</Text>
+                  <View style={{maxWidth: 60, width: `${Math.round((reviewsData.filter((data) => data.rate === rate).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
+                </View>
+              )}
             </View>
             <View>
-              <Text>{reviewsData.filter((data) => data.rate === 5).length}</Text>
-              <Text>{reviewsData.filter((data) => data.rate === 4).length}</Text>
-              <Text>{reviewsData.filter((data) => data.rate === 3).length}</Text>
-              <Text>{reviewsData.filter((data) => data.rate === 2).length}</Text>
-              <Text>{reviewsData.filter((data) => data.rate === 1).length}</Text>
+              {stars.map(rate =>
+                <Text>{reviewsData.filter((data) => data.rate === rate).length}</Text>
+              )}
             </View>
           </View>
 
@@ -102,9 +88,9 @@ export default class DetailsReviews extends React.Component {
 
           <View style={{ marginTop: 20, paddingLeft: '4%', paddingRight: '4%', backgroundColor: 'white' }}>
             <RNPickerSelect
-              placeholder={{ label: '별점 필터', value: 0 }}
+              placeholder={{ label: '전체 리뷰', value: 0 }}
               onValueChange={(value) => this.handleRateFilter(value)}
-              items={[1, 2, 3, 4, 5].map((ele) => {
+              items={stars.map((ele) => {
                 return { label: `${ele}점`, value: `${ele}` };
               })}
             />
