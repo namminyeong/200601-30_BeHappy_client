@@ -57,11 +57,10 @@ export default function MyBookmarks({
     <SafeAreaView style={styles.container}>
       {bookmark.length > 0 ? (
         <FlatList
-          // keyExtractor={(item) => item.toString()}
+          keyExtractor={(item) => item.id.toString()}
           data={bookmark}
           renderItem={({ item }) => (
             <BookMarkList
-              key={item.centerName}
               bookmark={item}
               deleteBookmark={deleteBookmark}
               navigation={navigation}
@@ -72,7 +71,7 @@ export default function MyBookmarks({
           )}
         />
       ) : (
-        <Text>BookMark한 Center가 없습니다.</Text>
+        <Text style={styles.text}>즐겨찾기 목록이 없습니다.</Text>
       )}
     </SafeAreaView>
   );
@@ -80,9 +79,11 @@ export default function MyBookmarks({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
-    padding: 15,
+  },
+  text: {
+    alignSelf: 'center',
+    fontSize: 24,
   },
 });

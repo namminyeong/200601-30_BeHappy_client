@@ -80,8 +80,9 @@ class SpecialtyPreference extends React.Component {
             <Text style={styles.section}>Preference</Text>
             <Text style={styles.preSection}>전문 분야</Text>
             <View style={styles.attention}>
-              {specialtyDatas.map((data) => (
+              {specialtyDatas.map((data, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.hashtagButton}
                   onPress={() => this.inputSpecialty(data)}
                 >
@@ -92,8 +93,9 @@ class SpecialtyPreference extends React.Component {
 
             <Text style={styles.preSection}>내가 선택한 전문 분야</Text>
             <View style={styles.attention}>
-              {specialties.map((data) => (
+              {specialties.map((data, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.selectedHashtagButton}
                   onPress={() => this.deleteSpecialty(data)}
                 >
