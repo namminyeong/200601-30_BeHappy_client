@@ -135,7 +135,11 @@ class DetailsHome extends React.Component {
             component={DetailHomeBody}
             initialParams={this.props.navigation.state.params.theCenterInfo}
           />
-          <Tab.Screen name='리뷰' component={DetailReviews} />
+          <Tab.Screen
+            name='리뷰'
+            component={DetailReviews}
+            initialParams={this.props.navigation.state.params.theCenterInfo}
+          />
           <Tab.Screen name='예약' component={Booking} />
         </Tab.Navigator>
       </Fragment>
