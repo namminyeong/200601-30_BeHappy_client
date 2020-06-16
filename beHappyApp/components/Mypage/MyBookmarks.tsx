@@ -71,7 +71,7 @@ export default function MyBookmarks({
           )}
         />
       ) : (
-        <Text style={styles.text}>BookMark한 Center가 없습니다.</Text>
+        <Text style={styles.text}>즐겨찾기 목록이 없습니다.</Text>
       )}
     </SafeAreaView>
   );
