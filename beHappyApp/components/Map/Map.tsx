@@ -184,7 +184,9 @@ class Map extends React.Component {
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           if (counseling.length === 0 && psychiatric.length === 0) {
-            alert('조금 더 확대하여 검색해보세요');
+            alert(
+              '검색 결과가 없습니다, 다른 곳으로 이동하시거나 조금 더 확대하여 검색해보세요'
+            );
           }
           this.props.controlCenterData(counseling, psychiatric);
           this.handleShowDetails(false, null);
@@ -311,8 +313,6 @@ class Map extends React.Component {
       showDetailsIndex,
     } = this.state;
 
-    console.log('this.props[showDetails]', this.props, showDetails);
-
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
@@ -326,6 +326,7 @@ class Map extends React.Component {
                   this.props.navigation.navigate('SearchGeoContainer', {
                     goSpecificLocationAfterSearch: this
                       .goSpecificLocationAfterSearch,
+                    handleShowDetails: this.handleShowDetails,
                   });
                 }}
               >
@@ -422,8 +423,7 @@ class Map extends React.Component {
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
-                // importance={ele.importance}
-                importance={1}
+                importance={ele.importance}
                 center='counseling'
                 handleShowDetails={this.handleShowDetails}
               />
@@ -438,8 +438,7 @@ class Map extends React.Component {
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
-                // importance={ele.importance}
-                importance={0}
+                importance={ele.importance}
                 center='psychiatric'
                 handleShowDetails={this.handleShowDetails}
               />
