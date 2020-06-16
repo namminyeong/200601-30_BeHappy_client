@@ -26,7 +26,7 @@ const stackNav = createStackNavigator(
     },
     BookMarkContainer: {
       screen: BookMarkContainer,
-      navigationOptions: { headerShown: false },
+      // navigationOptions: { headerShown: false },
     },
     MyReviews: {
       screen: MyReviews,

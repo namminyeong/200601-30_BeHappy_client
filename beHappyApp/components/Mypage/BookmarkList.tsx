@@ -36,7 +36,8 @@ const BookmarkList = ({ bookmark, postBookmark, navigation }) => {
         <TouchableOpacity
           style={styles.showMapBtn}
           onPress={() => {
-            navigation.navigate('BookmarkMap', {
+            console.log('navigation: ', navigation);
+            navigation.navigate('MapStack', {
               latitude: latitude,
               longitude: longitude,
             });

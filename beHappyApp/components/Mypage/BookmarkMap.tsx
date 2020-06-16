@@ -40,7 +40,6 @@ class BookmarkMap extends React.Component {
           <Marker
             coordinate={{ latitude: myLatitude, longitude: myLongitude }}
             pinColor='#000000'
-            image={require('../../assets/mylocation.png')}
           />
         </MapView>
       </View>

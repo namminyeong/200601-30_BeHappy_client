@@ -11,37 +11,6 @@ export default function MyBookmarks({
   bookmark,
   controlBookmark,
 }) {
-  const [bookmarkInfo, setBookmarkInfo] = useState(bookmark);
-
-  useEffect(() => {
-    getBookmark();
-  }, bookmarkInfo);
-
-  const getBookmark = () => {
-    fetch(ec2 + '/bookmark', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        return '';
-      })
-      .then((data) => {
-        if (typeof data === 'object') {
-          controlBookmark(data.centers);
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
-
   const postBookmark = (method, centerId) => {
     fetch(ec2 + '/bookmark', {
       method,
