@@ -155,7 +155,6 @@ class Map extends React.Component {
   }
 
   findCentersFromCurrentLocation() {
-    console.log('findCentersFromCurrentLocation');
     const coordinate = this.props.coordinate;
     let tags = this.checkTagsForUrl();
     let url =
@@ -175,7 +174,6 @@ class Map extends React.Component {
       },
     })
       .then((res) => {
-        console.log('res', res.status);
         if (res.status === 200) {
           return res.json();
         }
@@ -188,7 +186,6 @@ class Map extends React.Component {
           if (counseling.length === 0 && psychiatric.length === 0) {
             alert('조금 더 확대하여 검색해보세요');
           }
-          console.log(data);
           this.props.controlCenterData(counseling, psychiatric);
           this.handleShowDetails(false, null);
         }

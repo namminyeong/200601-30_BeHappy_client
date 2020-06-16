@@ -28,21 +28,9 @@ function Markers({
       pinColor={
         importance === 0 ? 'yellow' : importance === 1 ? 'orange' : 'red'
       }
-      // image={
-      //   importance === 0
-      //     ? require('../../assets/low.png')
-      //     : importance === 1
-      //     ? require('../../assets/medium.png')
-      //     : require('../../assets/high.png')
-      // }
       onPress={onPressEvent}
       identifier={'centers'}
-    >
-      {/* <Image
-        source={require('../../assets/low.png')}
-        style={{ width: 15, height: 15 }}
-      /> */}
-    </Marker>
+    />
   );
 }
 export default Markers;
