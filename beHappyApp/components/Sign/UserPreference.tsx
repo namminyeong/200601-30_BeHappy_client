@@ -578,12 +578,6 @@ class UserPreference extends React.Component {
             </View>
             <Text>{favorCity}</Text>
 
-            {/* {favorCity.map((city, index) => (
-                <Text key={index}>
-                  {city.city} {city.state}
-                </Text>
-              ))} */}
-
             <Text style={styles.preSection}>선호센터</Text>
             <View style={styles.favor}>
               {favorCenterDatas.map((center, index) => (

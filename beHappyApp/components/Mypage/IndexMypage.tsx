@@ -1,50 +1,37 @@
 import React from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-
+import { createStackNavigator } from '@react-navigation/stack';
 import Mypage from './Mypage';
 import MyInfo from './MyInfo';
-import MyBookmarks from './MyBookmarks';
 import MyReviews from './MyReviews';
 import MyBookings from './MyBookings';
+import BookMarkContainer from '../../containers/BookMarkContainer';
 
-const stackNav = createStackNavigator(
-  {
-    Mypage: {
-      screen: Mypage,
-      navigationOptions: { headerShown: false },
-    },
-    MyInfo: {
-      screen: MyInfo,
-      navigationOptions: {
-        headerStyle: {
-          backgroundColor: '#62CCAD',
-        },
-        headerTintColor: 'white',
-      },
-    },
-    MyBookmarks: {
-      screen: MyBookmarks,
-    },
-    MyReviews: {
-      screen: MyReviews,
-    },
-    MyBookings: {
-      screen: MyBookings,
-    },
-  },
-  {
-    initialRouteName: 'Mypage',
-  }
-);
+const Stack = createStackNavigator();
 
-const NavContainer = createAppContainer(stackNav);
-
-class IndexMypage extends React.Component {
-  static navigationOptions = { header: null };
-  render() {
-    return <NavContainer />;
-  }
+function IndexMypage() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name='Mypage'
+        component={Mypage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name='MyInfo'
+        component={MyInfo}
+        options={{
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: 'white',
+        }}
+      />
+      <Stack.Screen name='BookMarkContainer' component={BookMarkContainer} />
+      <Stack.Screen name='MyReviews' component={MyReviews} />
+      <Stack.Screen name='MyBookings' component={MyBookings} />
+    </Stack.Navigator>
+  );
 }
-
 export default IndexMypage;
