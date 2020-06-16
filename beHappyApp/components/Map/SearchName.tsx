@@ -52,6 +52,7 @@ class SearchName extends React.Component {
                 longitudeDelta: 0.03,
                 latitudeDelta: 0.03,
               });
+              this.props.handleShowDetails('counseling', 0);
             } else {
               this.props.navigation.state.params.goSpecificLocationAfterSearch({
                 longitude: data.psychiatric[0].longitude,
@@ -59,6 +60,7 @@ class SearchName extends React.Component {
                 longitudeDelta: 0.03,
                 latitudeDelta: 0.03,
               });
+              this.props.handleShowDetails('psychiatric', 0);
             }
             this.goBack();
           } else {

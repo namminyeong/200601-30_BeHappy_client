@@ -311,6 +311,8 @@ class Map extends React.Component {
       showDetailsIndex,
     } = this.state;
 
+    console.log('this.props[showDetails]', this.props, showDetails);
+
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
@@ -336,6 +338,7 @@ class Map extends React.Component {
                   this.props.navigation.navigate('SearchNameContainer', {
                     goSpecificLocationAfterSearch: this
                       .goSpecificLocationAfterSearch,
+                    handleShowDetails: this.handleShowDetails,
                   });
                 }}
               >
