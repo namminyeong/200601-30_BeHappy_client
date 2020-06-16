@@ -301,6 +301,7 @@ class Map extends React.Component {
       latitudeDelta: this.props.coordinate[3],
     });
     this.props.controlBookmarkClicked(false);
+    this.props.navigation.popToTop();
   }
 
   render() {
