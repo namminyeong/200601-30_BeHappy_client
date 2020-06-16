@@ -17,8 +17,6 @@ class Map extends React.Component {
     this.state = {
       myLatitude: 37.02,
       myLongitude: 127.17,
-      myLatitudeDelta: 4,
-      myLongitudeDelta: 4,
       showDetails: false,
       showDetailsIndex: null,
       countTags: 10,
@@ -294,8 +292,8 @@ class Map extends React.Component {
 
   goToMarked() {
     this.goSpecificLocationAfterSearch({
-      longitude: this.props.coordinate[1],
       latitude: this.props.coordinate[0],
+      longitude: this.props.coordinate[1],
       longitudeDelta: this.props.coordinate[2],
       latitudeDelta: this.props.coordinate[3],
     });
@@ -310,8 +308,6 @@ class Map extends React.Component {
       myLongitude,
       showDetails,
       showDetailsIndex,
-      myLatitudeDelta,
-      myLongitudeDelta,
     } = this.state;
 
     return (
@@ -395,10 +391,11 @@ class Map extends React.Component {
           initialRegion={{
             latitude: myLatitude,
             longitude: myLongitude,
-            latitudeDelta: myLatitudeDelta,
-            longitudeDelta: myLongitudeDelta,
+            latitudeDelta: 4,
+            longitudeDelta: 4,
           }}
           onRegionChangeComplete={(e) => {
+            console.log('onRegionChangeComplete');
             this.onRegionChangeComplete(
               e.longitude.toFixed(6),
               e.latitude.toFixed(6),
@@ -408,6 +405,9 @@ class Map extends React.Component {
           }}
           onPress={() => {
             this.handleShowDetails(false, null);
+          }}
+          onMapReady={() => {
+            console.log('onMapReady');
           }}
         >
           <Marker
