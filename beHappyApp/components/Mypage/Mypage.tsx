@@ -8,8 +8,6 @@ const { ec2 } = getEnvVars();
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
-    console.log('Mypage 진입');
-    console.log('Mypage props: ', this.props);
 
     this.state = {
       username: 'test',

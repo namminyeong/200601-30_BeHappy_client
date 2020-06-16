@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native';
 
 import BookMarkList from './BookmarkList';
@@ -11,31 +11,6 @@ export default function MyBookmarks({
   bookmark,
   controlBookmark,
 }) {
-  console.log('bookmark: ', bookmark);
-  const postBookmark = (method, centerId) => {
-    fetch(ec2 + '/bookmark', {
-      method,
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ centerId }),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          if (method === 'DELETE') {
-            deleteBookmarkState(centerId);
-          } else {
-            return res.json();
-          }
-        }
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
-
   const checkBookmark = (id) => {
     let exist = false;
     let index;
@@ -55,6 +30,27 @@ export default function MyBookmarks({
     controlBookmark(newBookmarkState);
   };
 
+  const deleteBookmark = (centerId) => {
+    fetch(ec2 + '/bookmark', {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ centerId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          deleteBookmarkState(centerId);
+        }
+        return res.json();
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {bookmark.length > 0 ? (
@@ -64,7 +60,7 @@ export default function MyBookmarks({
           renderItem={({ item }) => (
             <BookMarkList
               bookmark={item}
-              postBookmark={postBookmark}
+              deleteBookmark={deleteBookmark}
               navigation={navigation}
             />
           )}
