@@ -46,15 +46,19 @@ class SearchName extends React.Component {
             alert('검색 결과가 없습니다');
           } else if (data.counseling.length + data.psychiatric.length === 1) {
             if (data.counseling.length === 1) {
-              this.props.controlCoordinate(
-                data.counseling[0].longitude,
-                data.counseling[0].latitude
-              );
+              this.props.navigation.state.params.goSpecificLocationAfterSearch({
+                longitude: data.counseling[0].longitude,
+                latitude: data.counseling[0].latitude,
+                longitudeDelta: 0.03,
+                latitudeDelta: 0.03,
+              });
             } else {
-              this.props.controlCoordinate(
-                data.psychiatric[0].longitude,
-                data.psychiatric[0].latitude
-              );
+              this.props.navigation.state.params.goSpecificLocationAfterSearch({
+                longitude: data.psychiatric[0].longitude,
+                latitude: data.psychiatric[0].latitude,
+                longitudeDelta: 0.03,
+                latitudeDelta: 0.03,
+              });
             }
             this.goBack();
           } else {
@@ -94,14 +98,15 @@ class SearchName extends React.Component {
             let minLon = Math.min(lon[0].minLon, lon[1].minLon);
             let maxLat = Math.max(lat[0].maxLat, lat[1].maxLat);
             let minLat = Math.min(lat[0].minLat, lat[1].minLat);
-            this.props.controlCoordinate(
-              (maxLon + minLon) / 2,
-              (maxLat + minLat) / 2,
-              (maxLon - minLon) * 0.97,
-              (maxLat - minLat) * 0.97
-            );
+            this.props.navigation.state.params.goSpecificLocationAfterSearch({
+              longitude: (maxLon + minLon) / 2,
+              latitude: (maxLat + minLat) / 2,
+              longitudeDelta: maxLon - minLon + 0.5,
+              latitudeDelta: maxLat - minLat + 0.4,
+            });
           }
           this.props.controlCenterData(data.counseling, data.psychiatric);
+
           this.goBack();
         }
       });
