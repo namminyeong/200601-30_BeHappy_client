@@ -1,15 +1,3 @@
-// export const Specialties = [
-//   { id: 1, name: '스트레스', state: false },
-//   { id: 2, name: '가족', state: false },
-//   { id: 3, name: '우울증', state: false },
-//   { id: 4, name: '식이', state: false },
-//   { id: 5, name: '부부', state: false },
-//   { id: 6, name: '불면증', state: false },
-//   { id: 7, name: '학교폭력', state: false },
-//   { id: 8, name: '아동', state: false },
-//   { id: 9, name: '불안', state: false },
-//   { id: 10, name: '강박', state: false },
-// ];
 const Specialties = [
   ['스트레스', false],
   ['가족', false],

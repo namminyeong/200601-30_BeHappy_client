@@ -119,7 +119,6 @@ class MyInfo extends React.Component {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={styles.section}>Preference</Text>
             <TouchableOpacity
-              // disabled={currentCity !== '' && States[currentCity].includes(currentStates) ? true : false}
               style={{ marginRight: '2%' }}
               onPress={() => {
                 currentCity !== '' && !States[currentCity].includes(currentStates)
@@ -198,7 +197,7 @@ class MyInfo extends React.Component {
               <Text style={styles.section}>이름</Text>
               <Text style={styles.info}>{username}</Text>
             </View>
-            <View style={styles.mobileStyle}>
+            <View style={styles.phoneStyle}>
               <Text style={styles.section}>연락처</Text>
               <Text style={styles.info}>{phone.slice(0, 3) + '-' + phone.slice(3, 7) + '-' + phone.slice(7)}</Text>
             </View>
@@ -275,7 +274,7 @@ const styles = StyleSheet.create({
     marginTop: '2%',
     flexDirection: 'row',
   },
-  mobileStyle: {
+  phoneStyle: {
     height: 40,
     flexDirection: 'row',
   },
