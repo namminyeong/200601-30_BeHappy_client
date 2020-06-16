@@ -409,12 +409,6 @@ class Map extends React.Component {
           onPress={() => {
             this.handleShowDetails(false, null);
           }}
-          onMapReady={() => {
-            this._map.fitToSuppliedMarkers(['centers'], {
-              edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-              animated: false,
-            });
-          }}
         >
           <Marker
             coordinate={{ latitude: myLatitude, longitude: myLongitude }}
