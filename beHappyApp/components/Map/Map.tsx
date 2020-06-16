@@ -17,8 +17,6 @@ class Map extends React.Component {
     this.state = {
       myLatitude: 37.02,
       myLongitude: 127.17,
-      myLatitudeDelta: 4,
-      myLongitudeDelta: 4,
       showDetails: false,
       showDetailsIndex: null,
       countTags: 10,
@@ -57,6 +55,7 @@ class Map extends React.Component {
     this.goSpecificLocationAfterSearch = this.goSpecificLocationAfterSearch.bind(
       this
     );
+    this.goToMarked = this.goToMarked.bind(this);
   }
 
   changeFilter(index) {
@@ -291,14 +290,24 @@ class Map extends React.Component {
     this.props.controlBookmark(newBookmarkState);
   }
 
+  goToMarked() {
+    this.goSpecificLocationAfterSearch({
+      latitude: this.props.coordinate[0],
+      longitude: this.props.coordinate[1],
+      longitudeDelta: this.props.coordinate[2],
+      latitudeDelta: this.props.coordinate[3],
+    });
+    this.props.controlBookmarkClicked(false);
+  }
+
   render() {
+    this.props.bookmarkClicked ? this.goToMarked() : '';
+
     const {
       myLatitude,
       myLongitude,
       showDetails,
       showDetailsIndex,
-      myLatitudeDelta,
-      myLongitudeDelta,
     } = this.state;
 
     return (
@@ -382,8 +391,8 @@ class Map extends React.Component {
           initialRegion={{
             latitude: myLatitude,
             longitude: myLongitude,
-            latitudeDelta: myLatitudeDelta,
-            longitudeDelta: myLongitudeDelta,
+            latitudeDelta: 4,
+            longitudeDelta: 4,
           }}
           onRegionChangeComplete={(e) => {
             this.onRegionChangeComplete(
@@ -396,12 +405,6 @@ class Map extends React.Component {
           onPress={() => {
             this.handleShowDetails(false, null);
           }}
-          onMapReady={() =>
-            this._map.fitToSuppliedMarkers(['centers'], {
-              edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-              animated: false,
-            })
-          }
         >
           <Marker
             coordinate={{ latitude: myLatitude, longitude: myLongitude }}
@@ -439,12 +442,18 @@ class Map extends React.Component {
         </MapView>
         {this.state.showDetails ? (
           <Details
-            centerInfo={this.props[showDetails][showDetailsIndex]}
+            centerInfo={
+              showDetailsIndex > this.props[showDetails].length
+                ? this.props[showDetails][0]
+                : this.props[showDetails][showDetailsIndex]
+            }
             navigation={this.props.navigation}
             bookmark={
-              this.checkBookmark(
-                this.props[showDetails][showDetailsIndex].id
-              )[0]
+              showDetailsIndex > this.props[showDetails].length
+                ? this.checkBookmark(this.props[showDetails][0].id)[0]
+                : this.checkBookmark(
+                    this.props[showDetails][showDetailsIndex].id
+                  )[0]
             }
             postBookmark={this.postBookmark}
           />

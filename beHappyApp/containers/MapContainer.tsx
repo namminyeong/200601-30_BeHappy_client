@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import {
   controlCenterData,
   controlCoordinate,
+  controlBookmarkClicked,
 } from '../modules(reducers)/currentOnMap';
 import { controlBookmark } from '../modules(reducers)/userInfo';
 import Map from '../components/Map/Map';
@@ -19,6 +20,8 @@ const MapContainer = ({
   token,
   controlBookmark,
   bookmark,
+  bookmarkClicked,
+  controlBookmarkClicked,
 }) => {
   return (
     <Map
@@ -31,6 +34,8 @@ const MapContainer = ({
       token={token}
       controlBookmark={controlBookmark}
       bookmark={bookmark}
+      bookmarkClicked={bookmarkClicked}
+      controlBookmarkClicked={controlBookmarkClicked}
     />
   );
 };
@@ -41,6 +46,7 @@ const mapStateToProps = (state) => ({
   coordinate: state.handleCurrentOnMap.coordinate,
   token: state.handleLogin.token,
   bookmark: state.handleUserInfo.bookmark,
+  bookmarkClicked: state.handleCurrentOnMap.bookmarkClicked,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -49,6 +55,7 @@ const mapDispatchToProps = (dispatch) => {
       controlCenterData,
       controlCoordinate,
       controlBookmark,
+      controlBookmarkClicked,
     },
     dispatch
   );
