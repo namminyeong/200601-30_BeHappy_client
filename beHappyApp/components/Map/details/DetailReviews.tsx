@@ -5,22 +5,50 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import ShowStarRateAvg from './ShowStarRateAvg';
 import ShowReviews from './ShowReviews';
-
-import { FakeReviewsData } from '../../../Data/FakeReviewsData';
+import DeviceStorage from '../../../service/DeviceStorage';
 
 export default class DetailsReviews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rateAvg: 3.5,
+      rateAvg: this.props.route.params.rateAvg,
       isRateFilter: 0,
-      reviewsData: FakeReviewsData,
+      reviewsData: [],
     };
+    this.getUserPreference = this.getUserPreference.bind(this)
   }
 
   handleRateFilter = (value) => {
     this.setState({isRateFilter: value});
   };
+
+  componentDidMount() {
+    DeviceStorage.loadJWT().then((value) => {
+      this.getUserPreference(value);
+    });
+  }
+
+  getUserPreference(token) {
+    fetch('http://13.209.16.103:4000/review/center?centerId=' + this.props.route.params.id, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        this.setState({
+          reviewsData: payload
+        })
+      });
+  }
 
   render() {
     const { isRateFilter, rateAvg } = this.state;
