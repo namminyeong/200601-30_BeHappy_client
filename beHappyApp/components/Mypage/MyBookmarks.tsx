@@ -11,6 +11,7 @@ export default function MyBookmarks({
   bookmark,
   controlBookmark,
 }) {
+  console.log('bookmark: ', bookmark);
   const postBookmark = (method, centerId) => {
     fetch(ec2 + '/bookmark', {
       method,
