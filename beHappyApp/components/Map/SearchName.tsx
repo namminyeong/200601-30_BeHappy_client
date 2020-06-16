@@ -46,10 +46,6 @@ class SearchName extends React.Component {
             alert('검색 결과가 없습니다');
           } else if (data.counseling.length + data.psychiatric.length === 1) {
             if (data.counseling.length === 1) {
-              this.props.controlCoordinate(
-                data.counseling[0].longitude,
-                data.counseling[0].latitude
-              );
               this.props.navigation.state.params.goSpecificLocationAfterSearch({
                 longitude: data.counseling[0].longitude,
                 latitude: data.counseling[0].latitude,
@@ -57,10 +53,6 @@ class SearchName extends React.Component {
                 latitudeDelta: 0.03,
               });
             } else {
-              this.props.controlCoordinate(
-                data.psychiatric[0].longitude,
-                data.psychiatric[0].latitude
-              );
               this.props.navigation.state.params.goSpecificLocationAfterSearch({
                 longitude: data.psychiatric[0].longitude,
                 latitude: data.psychiatric[0].latitude,
@@ -68,7 +60,6 @@ class SearchName extends React.Component {
                 latitudeDelta: 0.03,
               });
             }
-
             this.goBack();
           } else {
             let lat = [];
@@ -110,8 +101,8 @@ class SearchName extends React.Component {
             this.props.navigation.state.params.goSpecificLocationAfterSearch({
               longitude: (maxLon + minLon) / 2,
               latitude: (maxLat + minLat) / 2,
-              longitudeDelta: maxLon - minLon + 0.3,
-              latitudeDelta: maxLat - minLat + 0.8,
+              longitudeDelta: maxLon - minLon + 0.5,
+              latitudeDelta: maxLat - minLat + 0.4,
             });
           }
           this.props.controlCenterData(data.counseling, data.psychiatric);

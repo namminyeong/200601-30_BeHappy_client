@@ -187,6 +187,7 @@ class Map extends React.Component {
             alert('조금 더 확대하여 검색해보세요');
           }
           this.props.controlCenterData(counseling, psychiatric);
+          this.handleShowDetails(false, null);
         }
       });
   }
@@ -204,7 +205,6 @@ class Map extends React.Component {
   }
 
   goSpecificLocationAfterSearch(region) {
-    console.log('goSpecificLocationAfterSearch', region);
     this._map.animateToRegion(region, 20);
   }
 
@@ -300,7 +300,7 @@ class Map extends React.Component {
       myLatitudeDelta,
       myLongitudeDelta,
     } = this.state;
-    ``;
+
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.container}>
@@ -396,6 +396,12 @@ class Map extends React.Component {
           onPress={() => {
             this.handleShowDetails(false, null);
           }}
+          onMapReady={() =>
+            this._map.fitToSuppliedMarkers(['centers'], {
+              edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+              animated: false,
+            })
+          }
         >
           <Marker
             coordinate={{ latitude: myLatitude, longitude: myLongitude }}

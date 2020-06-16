@@ -19,6 +19,7 @@ function Markers({ center, index, latitude, longitude, handleShowDetails }) {
       description='5.0'
       pinColor={'orange'}
       onPress={onPressEvent}
+      identifier={'centers'}
     />
   );
 }
