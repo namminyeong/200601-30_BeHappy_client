@@ -86,19 +86,10 @@ export default class Home extends React.Component {
             >
               {this.props.authState === -1 ? (
                 <>
-                  <Stack.Screen
-                    name='LoginContainer'
-                    component={LoginContainer}
-                  />
+                  <Stack.Screen name='LoginContainer' component={LoginContainer} />
                   <Stack.Screen name='Signup' component={Signup} />
-                  <Stack.Screen
-                    name='UserPreference'
-                    component={UserPreference}
-                  />
-                  <Stack.Screen
-                    name='SpecialtyPreference'
-                    component={SpecialtyPreference}
-                  />
+                  <Stack.Screen name='UserPreference' component={UserPreference} />
+                  <Stack.Screen name='SpecialtyPreference' component={SpecialtyPreference} />
                 </>
               ) : this.props.authState === 0 ? (
                 <Stack.Screen name='Main' component={Main} />

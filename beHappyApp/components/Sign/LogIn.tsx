@@ -41,6 +41,7 @@ class Login extends React.Component {
             } else if (payload.adminState === 1) {
               this.props.controlLogin(1, payload.token);
             }
+            this.props.controlBasicUserInfo(payload.userInfo.name, payload.userInfo.phone);
             deviceStorage.saveKey('id_token', payload.token);
           } else if (payload.errorCode === 1) {
             alert('아이디를 확인해주세요.');
@@ -60,10 +61,7 @@ class Login extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.logo}>
-          <Image
-            style={{ width: 150, height: 60 }}
-            source={require('../../assets/behappy.png')}
-          />
+          <Image style={{ width: 150, height: 60 }} source={require('../../assets/behappy.png')} />
         </View>
         <View style={styles.form}>
           <TextInput
@@ -89,9 +87,7 @@ class Login extends React.Component {
         </View>
         <View style={styles.signEntry}>
           <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Signup')}
-          >
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
             <Text style={styles.signUpBtn}>회원가입</Text>
           </TouchableOpacity>
         </View>
