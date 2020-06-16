@@ -38,7 +38,7 @@ class Mypage extends React.Component {
           <TouchableOpacity
             style={styles.listItem}
             onPress={() => {
-              this.props.navigation.navigate('MyBookmarks');
+              this.props.navigation.navigate('BookMarkContainer');
             }}
           >
             <Text style={styles.itemText}>즐겨찾기</Text>

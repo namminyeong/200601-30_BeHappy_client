@@ -16,7 +16,7 @@ class Main extends React.Component {
         barStyle={{ backgroundColor: '#62CCAD', height: 55 }}
       >
         <Tab.Screen
-          name='Main'
+          name='MapStack'
           component={MapStack}
           options={{
             tabBarLabel: 'Map',
@@ -30,7 +30,7 @@ class Main extends React.Component {
           }}
         />
         <Tab.Screen
-          name='Mypage'
+          name='IndexMypage'
           component={IndexMypage}
           options={{
             tabBarLabel: 'Mypage',

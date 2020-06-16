@@ -230,6 +230,7 @@ class Map extends React.Component {
       .then((data) => {
         if (typeof data === 'object') {
           this.props.controlBookmark(data.centers);
+          console.log('get BOokmark', data.centers);
         }
       })
       .catch((error) => {
@@ -300,6 +301,7 @@ class Map extends React.Component {
       myLatitudeDelta,
       myLongitudeDelta,
     } = this.state;
+    console.log('coming?', showDetailsIndex, this.props[showDetails]);
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -439,12 +441,18 @@ class Map extends React.Component {
         </MapView>
         {this.state.showDetails ? (
           <Details
-            centerInfo={this.props[showDetails][showDetailsIndex]}
+            centerInfo={
+              showDetailsIndex > this.props[showDetails].length
+                ? this.props[showDetails][0]
+                : this.props[showDetails][showDetailsIndex]
+            }
             navigation={this.props.navigation}
             bookmark={
-              this.checkBookmark(
-                this.props[showDetails][showDetailsIndex].id
-              )[0]
+              showDetailsIndex > this.props[showDetails].length
+                ? this.checkBookmark(this.props[showDetails][0].id)[0]
+                : this.checkBookmark(
+                    this.props[showDetails][showDetailsIndex].id
+                  )[0]
             }
             postBookmark={this.postBookmark}
           />
