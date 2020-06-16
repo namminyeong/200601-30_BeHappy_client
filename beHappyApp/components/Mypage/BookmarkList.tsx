@@ -17,6 +17,7 @@ const BookmarkList = ({
   const longitude = bookmark.longitude;
   const specialties = bookmark.specialties;
   const rateAvg = bookmark.rateAvg;
+
   return (
     <View style={styles.container}>
       <View style={styles.leftContents}>

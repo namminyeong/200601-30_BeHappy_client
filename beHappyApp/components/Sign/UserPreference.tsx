@@ -508,8 +508,9 @@ class UserPreference extends React.Component {
             <Text style={styles.section}>Preference</Text>
             <Text style={styles.preSection}>관심 분야</Text>
             <View style={styles.attention}>
-              {specialtyDatas.map((data) => (
+              {specialtyDatas.map((data, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.hashtagButton}
                   onPress={() => this.inputSpecialty(data)}
                 >
@@ -520,8 +521,9 @@ class UserPreference extends React.Component {
 
             <Text style={styles.preSection}>내가 선택한 전문 분야</Text>
             <View style={styles.attention}>
-              {specialties.map((data) => (
+              {specialties.map((data, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.selectedHashtagButton}
                   onPress={() => this.deleteSpecialty(data)}
                 >
@@ -597,8 +599,9 @@ class UserPreference extends React.Component {
 
             <Text style={styles.preSection}>내가 선택한 선호 센터</Text>
             <View style={styles.attention}>
-              {favorCenter.map((data) => (
+              {favorCenter.map((data, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.selectedHashtagButton}
                   onPress={() => this.deleteFavorCenter(data)}
                 >
