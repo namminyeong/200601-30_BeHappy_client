@@ -10,9 +10,6 @@ import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
 
 const Tab = createMaterialTopTabNavigator();
 
-const tags = [{ name: '불면증' }, { name: '스트레스' }];
-const rateAvg = '4.0';
-
 class DetailsHome extends React.Component {
   constructor(props) {
     super(props);
@@ -49,7 +46,7 @@ class DetailsHome extends React.Component {
   render() {
     const { theCenterInfo } = this.props.navigation.state.params;
     const { bookmark } = this.state;
-
+    console.log(theCenterInfo);
     return (
       <Fragment>
         <View style={styles.container}>
@@ -59,12 +56,9 @@ class DetailsHome extends React.Component {
               flexDirection: 'row',
             }}
           >
-            {/* {theCenterInfo.tags.map((tag) => (
-            <Text>#{tag.name}</Text>
-          ))} */}
-            {tags.map((tag) => (
-              <Text style={styles.tag} key={tag.name}>
-                #{tag.name}
+            {theCenterInfo.specialties.map((specialty) => (
+              <Text style={styles.specialty} key={specialty.name}>
+                #{specialty.name}
               </Text>
             ))}
           </View>
@@ -157,7 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     height: 70,
   },
-  tag: {
+  specialty: {
     fontSize: 15,
     color: 'white',
     paddingHorizontal: 6,
