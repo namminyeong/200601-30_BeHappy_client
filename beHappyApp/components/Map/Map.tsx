@@ -395,7 +395,6 @@ class Map extends React.Component {
             longitudeDelta: 4,
           }}
           onRegionChangeComplete={(e) => {
-            console.log('onRegionChangeComplete');
             this.onRegionChangeComplete(
               e.longitude.toFixed(6),
               e.latitude.toFixed(6),
@@ -405,9 +404,6 @@ class Map extends React.Component {
           }}
           onPress={() => {
             this.handleShowDetails(false, null);
-          }}
-          onMapReady={() => {
-            console.log('onMapReady');
           }}
         >
           <Marker
