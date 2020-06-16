@@ -59,17 +59,15 @@ export default function MyBookmarks({
     <SafeAreaView style={styles.container}>
       {bookmark.length > 0 ? (
         <FlatList
+          keyExtractor={(item) => item.toString()}
           data={bookmark}
-          renderItem={({ item }) =>
-            bookmark.map((item, index) => (
-              <BookMarkList
-                key={index}
-                bookmark={item}
-                postBookmark={postBookmark}
-                navigation={navigation}
-              />
-            ))
-          }
+          renderItem={({ item }) => (
+            <BookMarkList
+              bookmark={item}
+              postBookmark={postBookmark}
+              navigation={navigation}
+            />
+          )}
         />
       ) : (
         <Text>BookMark한 Center가 없습니다.</Text>
