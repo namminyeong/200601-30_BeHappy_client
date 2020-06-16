@@ -59,10 +59,13 @@ const BookmarkList = ({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
+    padding: 15,
+    borderBottomWidth: 1,
   },
   leftContents: {
-    flex: 1,
+    flex: 3,
     justifyContent: 'space-between',
   },
   text: {

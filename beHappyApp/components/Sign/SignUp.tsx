@@ -633,7 +633,7 @@ export default class SignUp extends React.Component {
           <View style={styles.radioForm}>
             <RadioForm
               radio_props={radio_props}
-              initial={1}
+              initial={0}
               formHorizontal={false}
               labelHorizontal={true}
               buttonSize={12}
