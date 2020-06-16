@@ -3,14 +3,20 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import ShowStarRateAvg from '../Map/details/ShowStarRateAvg';
 
-const BookmarkList = ({ bookmark, deleteBookmark, navigation }) => {
+const BookmarkList = ({
+  bookmark,
+  deleteBookmark,
+  navigation,
+  controlCenterData,
+  controlBookmarkClicked,
+  controlCoordinate,
+}) => {
   const centerId = bookmark.id;
   const centerName = bookmark.centerName;
   const latitude = bookmark.latitude;
   const longitude = bookmark.longitude;
   const specialties = bookmark.specialties;
   const rateAvg = bookmark.rateAvg;
-
   return (
     <View style={styles.container}>
       <View style={styles.leftContents}>
@@ -36,7 +42,12 @@ const BookmarkList = ({ bookmark, deleteBookmark, navigation }) => {
         <TouchableOpacity
           style={styles.showMapBtn}
           onPress={() => {
-            navigation.navigate('MapStack');
+            controlCoordinate(latitude, longitude);
+            controlCenterData([bookmark], [bookmark]);
+            navigation.navigate('MapStack', {
+              screen: 'MapContainer',
+            });
+            controlBookmarkClicked(true);
           }}
         >
           <Text>지도 보기</Text>

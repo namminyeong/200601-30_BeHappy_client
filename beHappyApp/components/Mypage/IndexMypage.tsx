@@ -1,10 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import Mypage from './Mypage';
 import MyInfo from './MyInfo';
 import MyReviews from './MyReviews';
 import MyBookings from './MyBookings';
-import BookMarkContainer from '../../containers/BookMarkContainer';
+import BookMarkContainer from '../../containers/BookmarkContainer';
 
 const Stack = createStackNavigator();
 

@@ -39,7 +39,6 @@ const stackNav = createStackNavigator(
 const NavContainer = createAppContainer(stackNav);
 
 class MapStack extends React.Component {
-  static navigationOptions = { header: null };
   render() {
     return <NavContainer />;
   }

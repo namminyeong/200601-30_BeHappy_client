@@ -11,7 +11,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star'
-              key={i}
+              key={'full' + i.toString()}
               size={33}
               style={{ color: '#D61A3C', marginHorizontal: 3 }}
             />
@@ -21,6 +21,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
       stars.push(
         <FontAwesome
           name='star-half-empty'
+          key={'half'}
           size={33}
           style={{ color: '#D61A3C', marginHorizontal: 3 }}
         />
@@ -30,7 +31,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star-o'
-              key={i}
+              key={'o' + i.toString()}
               size={33}
               style={{
                 color: '#B2BEC3',
@@ -47,7 +48,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star'
-              key={i}
+              key={'full' + i.toString()}
               size={33}
               style={{
                 color: '#D61A3C',
@@ -59,7 +60,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star-o'
-              key={i}
+              key={'o' + i.toString()}
               size={33}
               style={{
                 color: '#B2BEC3',

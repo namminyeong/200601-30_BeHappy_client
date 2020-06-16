@@ -10,7 +10,30 @@ export default function MyBookmarks({
   token,
   bookmark,
   controlBookmark,
+  controlCenterData,
+  controlBookmarkClicked,
+  controlCoordinate,
 }) {
+  const deleteBookmark = (centerId) => {
+    fetch(ec2 + '/bookmark', {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ centerId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          deleteBookmarkState(centerId);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  };
+
   const checkBookmark = (id) => {
     let exist = false;
     let index;
@@ -30,38 +53,21 @@ export default function MyBookmarks({
     controlBookmark(newBookmarkState);
   };
 
-  const deleteBookmark = (centerId) => {
-    fetch(ec2 + '/bookmark', {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ centerId }),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          deleteBookmarkState(centerId);
-        }
-        return res.json();
-      })
-      .catch((error) => {
-        console.log('error', error);
-      });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {bookmark.length > 0 ? (
         <FlatList
-          keyExtractor={(item) => item.toString()}
+          // keyExtractor={(item) => item.toString()}
           data={bookmark}
           renderItem={({ item }) => (
             <BookMarkList
+              key={item.centerName}
               bookmark={item}
               deleteBookmark={deleteBookmark}
               navigation={navigation}
+              controlCenterData={controlCenterData}
+              controlBookmarkClicked={controlBookmarkClicked}
+              controlCoordinate={controlCoordinate}
             />
           )}
         />
