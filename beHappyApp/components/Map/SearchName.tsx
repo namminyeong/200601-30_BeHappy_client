@@ -44,6 +44,7 @@ class SearchName extends React.Component {
           let keys = Object.keys(data);
           if (data.counseling.length + data.psychiatric.length === 0) {
             alert('검색 결과가 없습니다');
+            this.props.handleShowDetails(false, null);
           } else if (data.counseling.length + data.psychiatric.length === 1) {
             if (data.counseling.length === 1) {
               this.props.navigation.state.params.goSpecificLocationAfterSearch({
@@ -52,6 +53,7 @@ class SearchName extends React.Component {
                 longitudeDelta: 0.03,
                 latitudeDelta: 0.03,
               });
+              this.props.handleShowDetails('counseling', 0);
             } else {
               this.props.navigation.state.params.goSpecificLocationAfterSearch({
                 longitude: data.psychiatric[0].longitude,
@@ -59,6 +61,7 @@ class SearchName extends React.Component {
                 longitudeDelta: 0.03,
                 latitudeDelta: 0.03,
               });
+              this.props.handleShowDetails('psychiatric', 0);
             }
             this.goBack();
           } else {
