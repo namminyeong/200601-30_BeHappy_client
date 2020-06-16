@@ -1,7 +1,15 @@
 import React from 'react';
 import { Marker } from 'react-native-maps';
+import { Image } from 'react-native';
 
-function Markers({ center, index, latitude, longitude, handleShowDetails }) {
+function Markers({
+  center,
+  importance,
+  index,
+  latitude,
+  longitude,
+  handleShowDetails,
+}) {
   const onPressEvent = () => {
     handleShowDetails(center, index);
   };
@@ -17,7 +25,9 @@ function Markers({ center, index, latitude, longitude, handleShowDetails }) {
       }}
       title='Reviews'
       description='5.0'
-      pinColor={'orange'}
+      pinColor={
+        importance === 0 ? 'yellow' : importance === 1 ? 'orange' : 'red'
+      }
       onPress={onPressEvent}
       identifier={'centers'}
     />

@@ -164,6 +164,7 @@ class Map extends React.Component {
       '&longitude=' +
       coordinate[0] +
       tags;
+
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -414,10 +415,12 @@ class Map extends React.Component {
           {this.props.counseling && this.state.centerTags[1][1] ? (
             this.props.counseling.map((ele, index) => (
               <Markers
-                key={ele.latitude}
+                key={ele.id}
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
+                // importance={ele.importance}
+                importance={1}
                 center='counseling'
                 handleShowDetails={this.handleShowDetails}
               />
@@ -428,10 +431,12 @@ class Map extends React.Component {
           {this.props.psychiatric && this.state.centerTags[0][1] ? (
             this.props.psychiatric.map((ele, index) => (
               <Markers
-                key={ele.latitude}
+                key={ele.id}
                 index={index}
                 latitude={ele.latitude}
                 longitude={ele.longitude}
+                // importance={ele.importance}
+                importance={0}
                 center='psychiatric'
                 handleShowDetails={this.handleShowDetails}
               />
@@ -462,11 +467,7 @@ class Map extends React.Component {
         )}
 
         <View style={styles.searchNowContainer}>
-          <Button
-            small
-            transparent
-            onPress={this.findCentersFromCurrentLocation}
-          >
+          <Button small dark onPress={this.findCentersFromCurrentLocation}>
             <Text style={styles.searchNow}>현 위치에서 검색하기</Text>
           </Button>
         </View>
@@ -528,7 +529,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 3,
-    backgroundColor: 'white',
+    color: 'white',
+    // backgroundColor: 'white',
   },
   goCurrentLocation: {
     backgroundColor: 'white',
