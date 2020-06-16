@@ -57,6 +57,7 @@ class Map extends React.Component {
     this.goSpecificLocationAfterSearch = this.goSpecificLocationAfterSearch.bind(
       this
     );
+    this.goToMarked = this.goToMarked.bind(this);
   }
 
   changeFilter(index) {
@@ -108,6 +109,8 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount');
+
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -209,6 +212,7 @@ class Map extends React.Component {
   }
 
   onRegionChangeComplete(lon, lat, lonDelta, latDelta) {
+    console.log('onRegionChangeComplete');
     this.props.controlCoordinate(lon, lat, lonDelta, latDelta);
   }
 
@@ -230,7 +234,6 @@ class Map extends React.Component {
       .then((data) => {
         if (typeof data === 'object') {
           this.props.controlBookmark(data.centers);
-          console.log('get BOokmark', data.centers);
         }
       })
       .catch((error) => {
@@ -292,7 +295,19 @@ class Map extends React.Component {
     this.props.controlBookmark(newBookmarkState);
   }
 
+  goToMarked() {
+    this.goSpecificLocationAfterSearch({
+      longitude: this.props.coordinate[1],
+      latitude: this.props.coordinate[0],
+      longitudeDelta: this.props.coordinate[2],
+      latitudeDelta: this.props.coordinate[3],
+    });
+    this.props.controlBookmarkClicked(false);
+  }
+
   render() {
+    this.props.bookmarkClicked ? this.goToMarked() : '';
+
     const {
       myLatitude,
       myLongitude,
@@ -301,7 +316,6 @@ class Map extends React.Component {
       myLatitudeDelta,
       myLongitudeDelta,
     } = this.state;
-    console.log('coming?', showDetailsIndex, this.props[showDetails]);
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
@@ -398,12 +412,16 @@ class Map extends React.Component {
           onPress={() => {
             this.handleShowDetails(false, null);
           }}
-          onMapReady={() =>
+          onMapReady={() => {
+            console.log('onMapReady');
             this._map.fitToSuppliedMarkers(['centers'], {
               edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
               animated: false,
-            })
-          }
+            });
+          }}
+          onCalloutPress={() => {
+            console.log('onCalloutPress');
+          }}
         >
           <Marker
             coordinate={{ latitude: myLatitude, longitude: myLongitude }}

@@ -2,11 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import LogoutContainer from '../../containers/LogoutContainer';
-import indexMypage from './IndexMypage';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       username: 'test',
     };

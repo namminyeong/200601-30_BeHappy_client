@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 const CenterList = ({
   center,

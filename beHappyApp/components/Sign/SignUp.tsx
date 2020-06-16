@@ -329,7 +329,7 @@ export default class SignUp extends React.Component {
       longitude: 0,
       addressName: '',
       roadAddressName: '',
-      value: 1,
+      value: 0,
       city: '',
       state: '',
       citySelected: false,
@@ -455,7 +455,6 @@ export default class SignUp extends React.Component {
           return '';
         })
         .then((payload) => {
-          console.log('payload: ', payload);
           if (typeof payload === 'object') {
             if (!payload.errorCode) {
               alert('회원가입에 성공했습니다.');

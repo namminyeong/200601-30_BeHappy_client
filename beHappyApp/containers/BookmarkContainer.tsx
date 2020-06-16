@@ -3,8 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { controlBookmark } from '../modules(reducers)/userInfo';
-import { controlCenterData } from '../modules(reducers)/currentOnMap';
-
+import {
+  controlCenterData,
+  controlBookmarkClicked,
+  controlCoordinate,
+} from '../modules(reducers)/currentOnMap';
 import Mybookmarks from '../components/Mypage/MyBookmarks';
 
 const BookMarkContainer = ({
@@ -13,6 +16,8 @@ const BookMarkContainer = ({
   controlBookmark,
   bookmark,
   controlCenterData,
+  controlBookmarkClicked,
+  controlCoordinate,
 }) => {
   return (
     <Mybookmarks
@@ -21,6 +26,8 @@ const BookMarkContainer = ({
       controlBookmark={controlBookmark}
       bookmark={bookmark}
       controlCenterData={controlCenterData}
+      controlBookmarkClicked={controlBookmarkClicked}
+      controlCoordinate={controlCoordinate}
     />
   );
 };
@@ -35,6 +42,8 @@ const mapDispatchToProps = (dispatch) => {
     {
       controlBookmark,
       controlCenterData,
+      controlBookmarkClicked,
+      controlCoordinate,
     },
     dispatch
   );

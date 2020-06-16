@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ShowStarRateAvg({ rateAvg }) {
-  console.log('rateAvg', rateAvg);
   let stars = [];
   {
     if (rateAvg.toString().slice(2) === '5') {
@@ -12,7 +11,7 @@ export default function ShowStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star'
-              key={i}
+              key={i.toString()}
               size={24}
               style={{ color: '#D61A3C', paddingRight: 3 }}
             />
@@ -31,7 +30,7 @@ export default function ShowStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star-o'
-              key={i}
+              key={i.toString()}
               size={24}
               style={{ color: '#B2BEC3', paddingRight: 3 }}
             />
@@ -45,7 +44,7 @@ export default function ShowStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star'
-              key={i}
+              key={i.toString()}
               size={24}
               style={{ color: '#D61A3C', paddingRight: 3 }}
             />
@@ -54,7 +53,7 @@ export default function ShowStarRateAvg({ rateAvg }) {
           stars.push(
             <FontAwesome
               name='star-o'
-              key={i}
+              key={i.toString()}
               size={24}
               style={{ color: '#B2BEC3', paddingRight: 3 }}
             />

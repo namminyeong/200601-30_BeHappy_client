@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native';
 
 import BookMarkList from './BookmarkList';
@@ -11,10 +11,12 @@ export default function MyBookmarks({
   bookmark,
   controlBookmark,
   controlCenterData,
+  controlBookmarkClicked,
+  controlCoordinate,
 }) {
-  const deleteBookmark = (method, centerId) => {
+  const deleteBookmark = (centerId) => {
     fetch(ec2 + '/bookmark', {
-      method,
+      method: 'DELETE',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -24,11 +26,7 @@ export default function MyBookmarks({
     })
       .then((res) => {
         if (res.status === 200) {
-          if (method === 'DELETE') {
-            deleteBookmarkState(centerId);
-          } else {
-            return res.json();
-          }
+          deleteBookmarkState(centerId);
         }
       })
       .catch((error) => {
@@ -55,32 +53,24 @@ export default function MyBookmarks({
     controlBookmark(newBookmarkState);
   };
 
-  console.log('!!!', bookmark);
   return (
     <SafeAreaView style={styles.container}>
       {bookmark.length > 0 ? (
-        // <FlatList
-        //   data={bookmark}
-        //   renderItem={({ item }) =>
-        //     bookmark.map((item, index) => (
-        //       <BookMarkList
-        //         key={index}
-        //         bookmark={item}
-        //         deleteBookmark={deleteBookmark}
-        //         navigation={navigation}
-        //       />
-        //     ))
-        //   }
-        // />
-        bookmark.map((item, index) => (
-          <BookMarkList
-            key={index}
-            bookmark={item}
-            deleteBookmark={deleteBookmark}
-            navigation={navigation}
-            controlCenterData={controlCenterData}
-          />
-        ))
+        <FlatList
+          // keyExtractor={(item) => item.toString()}
+          data={bookmark}
+          renderItem={({ item }) => (
+            <BookMarkList
+              key={item.centerName}
+              bookmark={item}
+              deleteBookmark={deleteBookmark}
+              navigation={navigation}
+              controlCenterData={controlCenterData}
+              controlBookmarkClicked={controlBookmarkClicked}
+              controlCoordinate={controlCoordinate}
+            />
+          )}
+        />
       ) : (
         <Text>BookMark한 Center가 없습니다.</Text>
       )}

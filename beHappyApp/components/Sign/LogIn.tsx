@@ -16,7 +16,6 @@ class Login extends React.Component {
   }
 
   loginUser() {
-    console.log('login');
     const { username, password } = this.state;
 
     fetch('http://13.209.16.103:4000/user/login', {

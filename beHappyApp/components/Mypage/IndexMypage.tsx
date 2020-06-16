@@ -35,5 +35,4 @@ function IndexMypage() {
     </Stack.Navigator>
   );
 }
-
 export default IndexMypage;

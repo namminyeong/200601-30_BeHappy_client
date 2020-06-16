@@ -8,6 +8,8 @@ const BookmarkList = ({
   deleteBookmark,
   navigation,
   controlCenterData,
+  controlBookmarkClicked,
+  controlCoordinate,
 }) => {
   const centerId = bookmark.id;
   const centerName = bookmark.centerName;
@@ -32,7 +34,7 @@ const BookmarkList = ({
       <View style={styles.rightContents}>
         <TouchableOpacity
           onPress={() => {
-            deleteBookmark('DELETE', centerId);
+            deleteBookmark(centerId);
           }}
         >
           <Text style={styles.deleteBtn}>X</Text>
@@ -40,17 +42,12 @@ const BookmarkList = ({
         <TouchableOpacity
           style={styles.showMapBtn}
           onPress={() => {
-            console.log('inf00000000000000', bookmark);
-            console.log('[bookmark]', [bookmark]);
+            controlCoordinate(latitude, longitude);
             controlCenterData([bookmark], [bookmark]);
             navigation.navigate('MapStack', {
-              region: {
-                latitude: latitude,
-                longitude: longitude,
-                longitudeDelta: 0.03,
-                latitudeDelta: 0.04,
-              },
+              screen: 'MapContainer',
             });
+            controlBookmarkClicked(true);
           }}
         >
           <Text>지도 보기</Text>

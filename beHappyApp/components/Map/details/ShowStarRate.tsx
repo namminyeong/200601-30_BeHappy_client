@@ -10,7 +10,7 @@ export default function ShowStarRateAvg({ data }) {
         stars.push(
           <AntDesign
             name='star'
-            key={i}
+            key={i.toString()}
             size={16}
             style={{ color: '#D61A3C' }}
           />
@@ -19,7 +19,7 @@ export default function ShowStarRateAvg({ data }) {
         stars.push(
           <AntDesign
             name='star'
-            key={i}
+            key={i.toString()}
             size={16}
             style={{ color: '#B2BEC3' }}
           />
