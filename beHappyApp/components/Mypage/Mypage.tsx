@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+
 import LogoutContainer from '../../containers/LogoutContainer';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
@@ -23,13 +24,11 @@ class Mypage extends React.Component {
         </View>
 
         <View style={styles.userInfo}>
-          <Text style={styles.user}>{this.state.username}</Text>
-          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>
-            님
-          </Text>
+          <Text style={styles.user}>{this.props.username}</Text>
+          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>님</Text>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate('MyInfo');
+              this.props.navigation.navigate('MyInfo', { username: this.props.username, phone: this.props.phone });
             }}
           >
             {<Entypo name='chevron-right' size={26} color={'#62CCAD'} />}

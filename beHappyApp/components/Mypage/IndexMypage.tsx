@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Mypage from './Mypage';
+import MypageContainer from '../../containers/MypageContainer';
 import MyInfo from './MyInfo';
 import MyReviews from './MyReviews';
 import MyBookings from './MyBookings';
@@ -12,8 +12,8 @@ function IndexMypage() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name='Mypage'
-        component={Mypage}
+        name='MypageContainer'
+        component={MypageContainer}
         options={{
           headerShown: false,
         }}

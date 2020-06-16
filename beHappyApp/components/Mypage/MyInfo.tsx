@@ -1,76 +1,259 @@
-import React from 'react'
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, ListView, FlatList, ScrollView } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
+
+import DeviceStorage from '../../service/DeviceStorage';
+import { Specialties, States, KindOfCenters } from '../../Data/Preference';
 
 class MyInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'test',
-      usermobile: '010-1234-5678',
-      city: '서울시',
-      district: '강남구',
-      datas: ['스트레스', '가족', '식이', '부부', '우울증', '불면증', '학교폭력', '아동', '불안', '강박'],
+      currentCity: '',
+      currentStates: '',
+      currentSpecialties: [],
+      currentKindOfCenters: [],
+      isModify: false,
+      userSpecialties: [],
+      userKindOfCenters: [],
+    };
+    this.getUserPreference = this.getUserPreference.bind(this);
+    this.getUserSpecialties = this.getUserSpecialties.bind(this);
+    this.getUserKindOfCenters = this.getUserKindOfCenters.bind(this);
+    this.changeSpecialties = this.changeSpecialties.bind(this);
+  }
+
+  componentDidMount() {
+    DeviceStorage.loadJWT().then((value) => {
+      this.getUserPreference(value);
+    });
+  }
+
+  getUserPreference(token) {
+    fetch('http://13.209.16.103:4000/preference', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        this.setState({
+          currentCity: payload.city.name.split(' ')[0],
+          currentStates: payload.city.name.split(' ')[1],
+          currentSpecialties: payload.specialties.map((data) => data.name),
+          currentKindOfCenters: payload.kindOfCenters.map((data) => data.name),
+        });
+        return;
+      });
+  }
+
+  modifyPreference(token) {
+    const { currentSpecialties, currentKindOfCenters, currentCity, currentStates } = this.state;
+
+    fetch('http://13.209.16.103:4000/preference', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        specialties: currentSpecialties,
+        kindOfCenters: currentKindOfCenters,
+        city: currentCity + ' ' + currentStates,
+      }),
+    }).then((res) => {
+      return res.status;
+    });
+  }
+
+  getUserSpecialties(currentSpecialties) {
+    for (let i = 0; i < Specialties.length; i++) {
+      Specialties.map((data) => (data.includes(currentSpecialties[i]) ? (data[1] = true) : data));
     }
+    return Specialties;
+  }
+
+  getUserKindOfCenters(currentKindOfCenters) {
+    for (let i = 0; i < KindOfCenters.length; i++) {
+      KindOfCenters.map((data) => (data.includes(currentKindOfCenters[i]) ? (data[1] = true) : data));
+    }
+    return KindOfCenters;
+  }
+
+  changeSpecialties(index) {
+    let newState = Specialties;
+    let present = newState[index][1];
+    newState[index][1] = !present;
+    this.setState({
+      userSpecialties: newState,
+    });
+  }
+
+  changeKindOfCenters(index) {
+    let newState = KindOfCenters;
+    let present = newState[index][1];
+    newState[index][1] = !present;
+    this.setState({
+      userKindOfCenters: newState,
+    });
   }
 
   render() {
-    return (
-      <View style={styles.container} >
+    const { username, phone } = this.props.route.params;
+    const { currentCity, currentStates, currentSpecialties, currentKindOfCenters, userSpecialties, userKindOfCenters } = this.state;
+
+    return this.state.isModify ? (
+      <View style={styles.container}>
+        <Text style={{ paddingTop: 28, paddingBottom: 28, color: '#636E72', alignContent: 'center' }}>* 아래 내용을 참고하여 지도에 마커가 표시됩니다.</Text>
+        <View style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }} />
+        <View style={styles.preference}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={styles.section}>Preference</Text>
+            <TouchableOpacity
+              // disabled={currentCity !== '' && States[currentCity].includes(currentStates) ? true : false}
+              style={{ marginRight: '2%' }}
+              onPress={() => {
+                currentCity !== '' && !States[currentCity].includes(currentStates)
+                  ? alert('시/구/군을 다시 선택해주세요.')
+                  : this.setState({
+                      isModify: false,
+                      currentSpecialties: userSpecialties.map((data) => (data[1] ? data[0] : null)).filter((el) => el !== null),
+                      currentKindOfCenters: userKindOfCenters.map((data) => (data[1] ? data[0] : null)).filter((el) => el !== null),
+                    });
+                DeviceStorage.loadJWT().then((value) => {
+                  this.modifyPreference(currentSpecialties, currentKindOfCenters, currentCity, currentStates);
+                });
+              }}
+            >
+              <Text style={styles.modifyButton}>완료</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.preSection}>관심분야</Text>
+          <View style={styles.attention}>
+            {userSpecialties.map((data, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  this.changeSpecialties(index);
+                }}
+              >
+                <Text style={data[1] ? styles.selected : styles.notSelected}>#{data}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Text style={styles.preSection}>지역</Text>
+          <View>
+            <RNPickerSelect
+              placeholder={{ label: '지역 선택', value: currentCity }}
+              onValueChange={(value) => this.setState({ currentCity: value })}
+              items={Object.keys(States).map((ele) => {
+                return { label: `${ele}`, value: `${ele}` };
+              })}
+            />
+            {currentCity === '' ? null : (
+              <RNPickerSelect
+                placeholder={{ label: '시/구/군 선택', value: currentStates }}
+                onValueChange={(value) =>
+                  this.setState({
+                    currentStates: value,
+                  })
+                }
+                items={States[currentCity].map((ele) => {
+                  return { label: `${ele}`, value: `${ele}` };
+                })}
+              />
+            )}
+          </View>
+
+          <Text style={styles.preSection}>선호센터</Text>
+          <View style={styles.favor}>
+            {userKindOfCenters.map((data, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  this.changeKindOfCenters(index);
+                }}
+              >
+                <Text style={data[1] ? styles.selected : styles.notSelected}>{data}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </View>
+    ) : (
+      <View style={styles.container}>
         <ScrollView showsHorizontalScrollIndicator={false}>
           <View>
             <View style={styles.nameStyle}>
               <Text style={styles.section}>이름</Text>
-              <Text style={styles.info}>{this.state.username}</Text>
+              <Text style={styles.info}>{username}</Text>
             </View>
             <View style={styles.mobileStyle}>
               <Text style={styles.section}>연락처</Text>
-              <Text style={styles.info}>{this.state.usermobile}</Text>
+              <Text style={styles.info}>{phone.slice(0, 3) + '-' + phone.slice(3, 7) + '-' + phone.slice(7)}</Text>
             </View>
           </View>
 
-          <View style={{ width: "100%", borderBottomWidth: 2, borderColor: '#62CCAD' }} />
+          <View style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }} />
           <View style={styles.preference}>
-            <Text style={styles.section}>Preference</Text>
-
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={styles.section}>Preference</Text>
+              <TouchableOpacity
+                style={{ marginRight: '2%' }}
+                onPress={() => {
+                  this.setState({
+                    isModify: true,
+                    userSpecialties: Specialties.length === 0 ? [] : this.getUserSpecialties(currentSpecialties),
+                    userKindOfCenters: KindOfCenters.length === 0 ? [] : this.getUserKindOfCenters(currentKindOfCenters),
+                  });
+                }}
+              >
+                <Text style={styles.modifyButton}>수정</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.preSection}>관심분야</Text>
             <View style={styles.attention}>
-              {this.state.datas.map((data) => (
-                <TouchableOpacity style={styles.hashtagButton} onPress={() => { }}>
-                  <Text style={{ color: 'white' }}>#{data}</Text>
-                </TouchableOpacity>
-              ))}
+              {currentSpecialties.length === 0 ? (
+                <Text style={{ margin: 6 }}>선택한 관심분야가 없습니다.</Text>
+              ) : (
+                currentSpecialties.map((data, index) => (
+                  <Text key={index} style={styles.selected}>
+                    #{data}
+                  </Text>
+                ))
+              )}
             </View>
 
             <Text style={styles.preSection}>지역</Text>
             <View style={styles.area}>
-              <TouchableOpacity style={styles.areaButton} onPress={() => { }}>
-                <Text style={{ color: 'white' }} >{this.state.city}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.favorButton} onPress={() => { }}>
-                <Text style={{ color: 'white' }} >{this.state.district}</Text>
-              </TouchableOpacity>
+              {currentCity === '' || currentCity === '선택해제' ? (
+                <Text style={{ margin: 6 }}>선택한 지역이 없습니다</Text>
+              ) : (
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.selected}>{currentCity}</Text>
+                  <Text style={styles.selected}>{currentStates}</Text>
+                </View>
+              )}
             </View>
 
             <Text style={styles.preSection}>선호센터</Text>
             <View style={styles.favor}>
-              <TouchableOpacity style={styles.favorButton} onPress={() => { }}>
-                <Text style={{ color: 'white' }} >정신과</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.favorButton} onPress={() => { }}>
-                <Text style={{ color: 'white' }} >심리센터</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-              <TouchableOpacity style={styles.modifyButton} onPress={() => { }}>
-                <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }} >수정</Text>
-              </TouchableOpacity>
-
+              {currentKindOfCenters.length === 0 ? <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다.</Text> : currentKindOfCenters.map((data) => <Text style={styles.selected}>{data}</Text>)}
             </View>
           </View>
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 
@@ -102,10 +285,8 @@ const styles = StyleSheet.create({
   preSection: {
     marginTop: '2%',
     paddingLeft: 6,
-    color: '#62CCAD',
     fontSize: 16,
     fontWeight: 'bold',
-
   },
   attention: {
     marginLeft: '2%',
@@ -114,37 +295,28 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
   },
-  hashtagButton: {
-    marginTop: 9,
-    marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
-  },
   area: {
     marginLeft: '2%',
     marginRight: '2%',
     paddingBottom: 10,
-    flexDirection: 'row',
-  },
-  areaButton: {
-    marginTop: 9,
-    marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
   },
   favor: {
-    flexDirection: 'row',
-    paddingBottom: 10,
     marginLeft: '2%',
     marginRight: '2%',
+    paddingBottom: 10,
+    flexDirection: 'row',
   },
-  favorButton: {
+  modifyButton: {
+    padding: 3,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: '#62CCAD',
+    borderRadius: 10,
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  selected: {
     marginTop: 9,
     marginRight: 10,
     padding: 3,
@@ -152,16 +324,27 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     backgroundColor: '#62CCAD',
     borderRadius: 10,
+    color: '#FFFFFF',
   },
-  modifyButton: {
-    marginTop: '20%',
+  notSelected: {
+    marginTop: 9,
     marginRight: 10,
     padding: 3,
     paddingLeft: 10,
     paddingRight: 10,
-    backgroundColor: '#62CCAD',
+    backgroundColor: '#B2BEC3',
     borderRadius: 10,
-  }
-})
+    color: '#FFFFFF',
+  },
+
+  pickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    color: '#000000',
+    fontSize: 50,
+    marginBottom: 30,
+  },
+});
 
 export default MyInfo;
