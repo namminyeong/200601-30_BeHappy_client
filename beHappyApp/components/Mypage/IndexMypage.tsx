@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import MypageContainer from '../../containers/MypageContainer';
 import MyInfo from './MyInfo';
-import MyReviews from './MyReviews';
+import MyReviewsContainer from '../../containers/MyReviewsContainer';
 import MyBookings from './MyBookings';
 import BookMarkContainer from '../../containers/BookmarkContainer';
 
@@ -30,7 +30,11 @@ function IndexMypage() {
         }}
       />
       <Stack.Screen name='BookMarkContainer' component={BookMarkContainer} />
-      <Stack.Screen name='MyReviews' component={MyReviews} />
+      <Stack.Screen
+        name='MyReviewsContainer'
+        component={MyReviewsContainer}
+        options={{ title: '리뷰관리' }}
+      />
       <Stack.Screen name='MyBookings' component={MyBookings} />
     </Stack.Navigator>
   );
