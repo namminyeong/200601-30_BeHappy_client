@@ -495,7 +495,11 @@ class Map extends React.Component {
         )}
 
         <View style={styles.searchNowContainer}>
-          <Button small dark onPress={this.findCentersFromCurrentLocation}>
+          <Button
+            small
+            transparent
+            onPress={this.findCentersFromCurrentLocation}
+          >
             <Text style={styles.searchNow}>현 위치에서 검색하기</Text>
           </Button>
         </View>
@@ -556,9 +560,18 @@ const styles = StyleSheet.create({
   searchNow: {
     paddingHorizontal: 7,
     paddingVertical: 3,
-    borderRadius: 3,
-    color: 'white',
-    // backgroundColor: 'white',
+    borderRadius: 15,
+    color: 'black',
+    fontWeight: 'bold',
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   goCurrentLocation: {
     backgroundColor: 'white',
@@ -566,8 +579,17 @@ const styles = StyleSheet.create({
     right: 15,
     bottom: 30,
     padding: 5,
-    borderRadius: 10,
+    borderRadius: 20,
     alignSelf: 'flex-end',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   allText: {
     marginTop: -2,
@@ -593,14 +615,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notSelected: {
-    backgroundColor: '#cdf7eb',
+    backgroundColor: '#D1D1D1',
     marginTop: -2,
     borderRadius: 12,
     padding: 3,
     marginLeft: 10,
     paddingLeft: 10,
     paddingRight: 10,
-    color: '#5c5c5c',
+    color: 'white',
     fontSize: 16,
     textAlign: 'center',
   },

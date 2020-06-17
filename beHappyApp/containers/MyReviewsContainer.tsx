@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import MyReviews from '../components/Mypage/MyReviews';
 
-const MyReviewsContainer = ({ token }) => {
-  return <MyReviews token={token} />;
+const MyReviewsContainer = ({ token, navigation }) => {
+  return <MyReviews token={token} navigation={navigation} />;
 };
 
 const mapStateToProps = (state) => ({
