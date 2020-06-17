@@ -1,7 +1,20 @@
 import React from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import logo from '../../assets/behappy.png';
 
 import deviceStorage from '../../service/DeviceStorage';
+
+const { width: WIDTH } = Dimensions.get('window');
 
 class Login extends React.Component {
   constructor(props) {
@@ -10,9 +23,12 @@ class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
+      showPass: true,
+      press: false,
     };
 
     this.loginUser = this.loginUser.bind(this);
+    this.showPass = this.showPass.bind(this);
   }
 
   loginUser() {
@@ -41,7 +57,10 @@ class Login extends React.Component {
             } else if (payload.adminState === 1) {
               this.props.controlLogin(1, payload.token);
             }
-            this.props.controlBasicUserInfo(payload.userInfo.name, payload.userInfo.phone);
+            this.props.controlBasicUserInfo(
+              payload.userInfo.name,
+              payload.userInfo.phone
+            );
             deviceStorage.saveKey('id_token', payload.token);
           } else if (payload.errorCode === 1) {
             alert('아이디를 확인해주세요.');
@@ -55,102 +74,145 @@ class Login extends React.Component {
       });
   }
 
+  showPass() {
+    if (this.state.press === false) {
+      this.setState({
+        showPass: false,
+        press: true,
+      });
+    } else {
+      this.setState({
+        showPass: true,
+        press: false,
+      });
+    }
+  }
+
   render() {
-    const { username, password } = this.state;
+    const { username, password, showPass, press } = this.state;
 
     return (
       <View style={styles.container}>
-        <View style={styles.logo}>
-          <Image style={{ width: 150, height: 60 }} source={require('../../assets/behappy.png')} />
+        <View style={styles.logoContainer}>
+          <Image source={logo} style={styles.logo} />
         </View>
-        <View style={styles.form}>
+        <View style={styles.inputContainer}>
+          <Icon
+            style={styles.inputIcon}
+            name={'ios-person'}
+            size={28}
+            color={'rgba(0,0,0,0.7)'}
+          />
           <TextInput
             style={styles.inputBox}
-            underlineColorAndroid='rgba(0, 0, 0, 0)'
-            placeholder='username'
-            placeholderTextColor='#ffffff'
+            placeholder={'username'}
+            placeholderTextColor={'#000000'}
+            underlineColorAndroid='transparent'
             value={username}
             onChangeText={(username) => this.setState({ username })}
           />
+        </View>
+        <View style={styles.inputContainer}>
+          <Icon
+            style={styles.inputIcon}
+            name={'ios-lock'}
+            size={28}
+            color={'rgba(0,0,0,0.7)'}
+          />
           <TextInput
             style={styles.inputBox}
-            underlineColorAndroid='rgba(0, 0, 0, 0)'
-            placeholder='password'
-            secureTextEntry={true}
-            placeholderTextColor='#ffffff'
+            placeholder={'password'}
+            secureTextEntry={showPass}
+            placeholderTextColor={'#000000'}
+            underlineColorAndroid='transparent'
             value={password}
             onChangeText={(password) => this.setState({ password })}
           />
-          <TouchableOpacity style={styles.btn} onPress={this.loginUser}>
-            <Text style={styles.btnText}>로그인</Text>
+          <TouchableOpacity style={styles.btnEye} onPress={this.showPass}>
+            <Icon
+              name={press === false ? 'ios-eye' : 'ios-eye-off'}
+              size={26}
+              color={'rgba(0,0,0,0.7)'}
+            />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity style={styles.btnLogin}>
+          <Text style={styles.text} onPress={this.loginUser}>
+            Login
+          </Text>
+        </TouchableOpacity>
         <View style={styles.signEntry}>
           <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
-            <Text style={styles.signUpBtn}>회원가입</Text>
-          </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('Signup')}
+        >
+          <Text style={styles.signUpBtn}>회원가입</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
-  logo: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-  },
-  form: {
-    flexGrow: 1,
-    justifyContent: 'center',
+  logoContainer: {
     alignItems: 'center',
   },
+  logo: {
+    width: 250,
+    height: 125,
+  },
+  inputContainer: {
+    margin: 10,
+  },
+  inputIcon: {
+    position: 'absolute',
+    top: 5,
+    left: 15,
+  },
   inputBox: {
-    width: 300,
-    backgroundColor: '#000000',
+    width: WIDTH - 100,
+    height: 40,
     borderRadius: 25,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#ffffff',
-    marginVertical: 10,
+    fontSize: 20,
+    paddingLeft: 45,
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
-  btn: {
-    width: 300,
-    backgroundColor: '#1c313a',
+  btnEye: {
+    position: 'absolute',
+    top: 7,
+    right: 15,
+  },
+  btnLogin: {
+    width: WIDTH - 100,
+    height: 40,
+    justifyContent: 'center',
     borderRadius: 25,
-    marginVertical: 10,
-    paddingVertical: 12,
+    marginTop: 30,
+    backgroundColor: '#62CCAD',
   },
-  btnText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#ffffff',
+  text: {
+    fontSize: 20,
     textAlign: 'center',
   },
   signEntry: {
-    flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'flex-end',
     paddingVertical: 16,
-    flexDirection: 'row',
   },
   signUpText: {
-    color: '#000000',
     fontSize: 16,
   },
   signUpBtn: {
     color: '#000000',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 'bold',
   },
-};
+});
 
 export default Login;
