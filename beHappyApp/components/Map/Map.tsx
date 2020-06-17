@@ -8,7 +8,6 @@ import Details from './details/Details';
 import TagFilters from './TagFilters';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import getEnvVars from '../../environment';
-import { Specialties } from '../../Data/Preference';
 const { ec2 } = getEnvVars();
 
 class Map extends React.Component {
@@ -33,7 +32,7 @@ class Map extends React.Component {
         ['불안', true],
         ['강박', true],
       ],
-      centerTags: [['정신과', true], ['심리센터', true]],
+      centerTags: [['psychiatric', true], ['counseling', true]],
     };
 
     this.handleShowDetails = this.handleShowDetails.bind(this);
@@ -418,69 +417,43 @@ class Map extends React.Component {
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
-          {this.props.counseling && this.state.centerTags[1][1] ? (
-            this.props.counseling.map((ele, index) => {
-              let result = false;
-              ele.specialties.map((x) => {
-                this.state.specialties.forEach((y) => {
-                  if (x.name === y[0] && y[1] === true) {
-                    result = true;
-                  }
+
+          {this.state.centerTags.map((center) =>
+            center[1] && this.props[center[0]] ? (
+              this.props[center[0]].map((centerInfo, index) => {
+                let result = false;
+                centerInfo.specialties.map((centerSpecialty) => {
+                  this.state.specialties.forEach((specialtyFilter) => {
+                    if (
+                      centerSpecialty.name === specialtyFilter[0] &&
+                      specialtyFilter[1] === true
+                    ) {
+                      result = true;
+                    }
+                  });
                 });
-              });
-              if (
-                (ele.specialties.length === 0 &&
-                  this.state.countSpecialties > 0) ||
-                this.state.countSpecialties === 10 ||
-                result === true
-              ) {
-                return (
-                  <Markers
-                    key={ele.id}
-                    index={index}
-                    latitude={ele.latitude}
-                    longitude={ele.longitude}
-                    importance={ele.importance}
-                    center='counseling'
-                    handleShowDetails={this.handleShowDetails}
-                  />
-                );
-              }
-            })
-          ) : (
-            <Fragment />
-          )}
-          {this.props.psychiatric && this.state.centerTags[0][1] ? (
-            this.props.psychiatric.map((ele, index) => {
-              let result = false;
-              ele.specialties.map((x) => {
-                this.state.specialties.forEach((y) => {
-                  if (x.name === y[0] && y[1] === true) {
-                    result = true;
-                  }
-                });
-              });
-              if (
-                (ele.specialties.length === 0 &&
-                  this.state.countSpecialties > 0) ||
-                this.state.countSpecialties === 10 ||
-                result === true
-              ) {
-                return (
-                  <Markers
-                    key={ele.id}
-                    index={index}
-                    latitude={ele.latitude}
-                    longitude={ele.longitude}
-                    importance={ele.importance}
-                    center='psychiatric'
-                    handleShowDetails={this.handleShowDetails}
-                  />
-                );
-              }
-            })
-          ) : (
-            <Fragment />
+                if (
+                  (centerInfo.specialties.length === 0 &&
+                    this.state.countSpecialties > 0) ||
+                  this.state.countSpecialties === 10 ||
+                  result === true
+                ) {
+                  return (
+                    <Markers
+                      key={centerInfo.id}
+                      index={index}
+                      latitude={centerInfo.latitude}
+                      longitude={centerInfo.longitude}
+                      importance={centerInfo.importance}
+                      center={center[0]}
+                      handleShowDetails={this.handleShowDetails}
+                    />
+                  );
+                }
+              })
+            ) : (
+              <Fragment />
+            )
           )}
         </MapView>
         {this.state.showDetails ? (
