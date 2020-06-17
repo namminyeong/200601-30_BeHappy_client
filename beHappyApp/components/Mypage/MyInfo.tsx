@@ -186,7 +186,7 @@ class MyInfo extends React.Component {
           <View style={styles.attention}>
             {userSpecialties.map((data, index) => (
               <TouchableOpacity
-                key={index}
+                key={'Specialties_' + index}
                 onPress={() => {
                   this.changeSpecialties(index);
                 }}
@@ -230,7 +230,10 @@ class MyInfo extends React.Component {
                   this.changeKindOfCenters(index);
                 }}
               >
-                <Text style={data[1] ? styles.selected : styles.notSelected}>
+                <Text
+                  key={'KindOfCenters_' + index}
+                  style={data[1] ? styles.selected : styles.notSelected}
+                >
                   {data}
                 </Text>
               </TouchableOpacity>
@@ -291,7 +294,7 @@ class MyInfo extends React.Component {
                 <Text style={{ margin: 6 }}>선택한 관심분야가 없습니다.</Text>
               ) : (
                 currentSpecialties.map((data, index) => (
-                  <Text key={index} style={styles.selected}>
+                  <Text key={'Specialties_' + index} style={styles.selected}>
                     #{data}
                   </Text>
                 ))
@@ -315,8 +318,10 @@ class MyInfo extends React.Component {
               {currentKindOfCenters.length === 0 ? (
                 <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다.</Text>
               ) : (
-                currentKindOfCenters.map((data) => (
-                  <Text style={styles.selected}>{data}</Text>
+                currentKindOfCenters.map((data, index) => (
+                  <Text key={'KindOfCenters_' + index} style={styles.selected}>
+                    {data}
+                  </Text>
                 ))
               )}
             </View>
@@ -402,7 +407,7 @@ const styles = StyleSheet.create({
     padding: 3,
     paddingLeft: 10,
     paddingRight: 10,
-    backgroundColor: '#d1d1d1',
+    backgroundColor: '#D1D1D1',
     borderRadius: 10,
     color: '#FFFFFF',
   },

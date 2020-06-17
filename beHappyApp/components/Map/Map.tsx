@@ -19,8 +19,8 @@ class Map extends React.Component {
       myLongitude: 127.17,
       showDetails: false,
       showDetailsIndex: null,
-      countTags: 10,
-      tags: [
+      countSpecialties: 10,
+      specialties: [
         ['스트레스', true],
         ['가족', true],
         ['우울증', true],
@@ -32,7 +32,7 @@ class Map extends React.Component {
         ['불안', true],
         ['강박', true],
       ],
-      centerTags: [['정신과', true], ['심리센터', true]],
+      centerTags: [['psychiatric', true], ['counseling', true]],
     };
 
     this.handleShowDetails = this.handleShowDetails.bind(this);
@@ -42,10 +42,10 @@ class Map extends React.Component {
     );
     this.goCurrentLocation = this.goCurrentLocation.bind(this);
     this.changeFilter = this.changeFilter.bind(this);
-    this.countTags = this.countTags.bind(this);
+    this.countSpecialties = this.countSpecialties.bind(this);
     this.changeAllFilter = this.changeAllFilter.bind(this);
     this.pressAll = this.pressAll.bind(this);
-    this.checkTagsForUrl = this.checkTagsForUrl.bind(this);
+    this.checkSpecialtiesForUrl = this.checkSpecialtiesForUrl.bind(this);
     this.changeCenterFilter = this.changeCenterFilter.bind(this);
     this.getBookmark = this.getBookmark.bind(this);
     this.deleteBookmarkState = this.deleteBookmarkState.bind(this);
@@ -56,16 +56,26 @@ class Map extends React.Component {
       this
     );
     this.goToMarked = this.goToMarked.bind(this);
+    this.filterMarkerBySpecialties = this.filterMarkerBySpecialties.bind(this);
   }
 
   changeFilter(index) {
-    let newState = this.state.tags;
+    const { showDetails, showDetailsIndex } = this.state;
+    let newState = this.state.specialties;
     let present = newState[index][1];
     newState[index][1] = !present;
-    this.countTags(!present);
+    this.countSpecialties(!present);
     this.setState({
-      tags: newState,
+      specialties: newState,
     });
+    if (
+      this.props[showDetails] &&
+      this.filterMarkerBySpecialties(
+        this.props[showDetails][showDetailsIndex]
+      ) === false
+    ) {
+      this.handleShowDetails(false, null);
+    }
   }
 
   changeCenterFilter(index) {
@@ -75,31 +85,34 @@ class Map extends React.Component {
     this.setState({
       centerTags: newState,
     });
+    if (this.state.showDetails === newState[index][0]) {
+      this.handleShowDetails(false, null);
+    }
   }
 
   changeAllFilter(status) {
-    let newState = this.state.tags;
+    let newState = this.state.specialties;
     newState = newState.map((ele) => [ele[0], status]);
-    this.countTags(null, status);
+    this.countSpecialties(null, status);
     this.setState({
-      tags: newState,
+      specialties: newState,
     });
   }
 
-  countTags(status, allStatus) {
+  countSpecialties(status, allStatus) {
     if (status === true) {
-      this.state.countTags += 1;
+      this.state.countSpecialties += 1;
     } else if (status === false) {
-      this.state.countTags -= 1;
+      this.state.countSpecialties -= 1;
     } else if (allStatus === true) {
-      this.state.countTags = 10;
+      this.state.countSpecialties = 10;
     } else {
-      this.state.countTags = 0;
+      this.state.countSpecialties = 0;
     }
   }
 
   pressAll() {
-    if (this.state.countTags === 10) {
+    if (this.state.countSpecialties === 10) {
       this.changeAllFilter(false);
     } else {
       this.changeAllFilter(true);
@@ -140,30 +153,30 @@ class Map extends React.Component {
     });
   }
 
-  checkTagsForUrl() {
-    if (this.state.countTags === (this.state.tags.length || 0)) {
+  checkSpecialtiesForUrl() {
+    if (this.state.countSpecialties === (this.state.specialties.length || 0)) {
       return '';
     }
-    let allTags = this.state.tags.reduce((acc, cur) => {
+    let allSpecialties = this.state.specialties.reduce((acc, cur) => {
       if (cur[1] === true) {
         acc.push(cur[0]);
         return acc;
       }
       return acc;
     }, []);
-    return '&tags='.concat(allTags);
+    return '&tags='.concat(allSpecialties);
   }
 
   findCentersFromCurrentLocation() {
     const coordinate = this.props.coordinate;
-    let tags = this.checkTagsForUrl();
+    let specialties = this.checkSpecialtiesForUrl();
     let url =
       ec2 +
       '/search/location?radius=5000&latitude=' +
       coordinate[1] +
       '&longitude=' +
       coordinate[0] +
-      tags;
+      specialties;
 
     fetch(url, {
       method: 'GET',
@@ -304,6 +317,21 @@ class Map extends React.Component {
     this.props.navigation.popToTop();
   }
 
+  filterMarkerBySpecialties(centerInfo) {
+    let result = false;
+    centerInfo.specialties.forEach((centerSpecialty) => {
+      this.state.specialties.forEach((specialtyFilter) => {
+        if (
+          centerSpecialty.name === specialtyFilter[0] &&
+          specialtyFilter[1] === true
+        ) {
+          result = true;
+        }
+      });
+    });
+    return result;
+  }
+
   render() {
     this.props.bookmarkClicked ? this.goToMarked() : '';
 
@@ -353,7 +381,7 @@ class Map extends React.Component {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
-              {this.state.tags.map((tagArr, index) => (
+              {this.state.specialties.map((tagArr, index) => (
                 <TagFilters
                   key={tagArr[0]}
                   tag={tagArr[0]}
@@ -383,7 +411,7 @@ class Map extends React.Component {
                 onPress={() => this.changeCenterFilter(index)}
               >
                 <Text style={tagArr[1] ? styles.selected : styles.notSelected}>
-                  {tagArr[0]}
+                  {tagArr[0] === 'psychiatric' ? '정신과' : '심리센터'}
                 </Text>
               </Button>
             ))}
@@ -417,35 +445,32 @@ class Map extends React.Component {
             pinColor='#000000'
             image={require('../../assets/mylocation.png')}
           />
-          {this.props.counseling && this.state.centerTags[1][1] ? (
-            this.props.counseling.map((ele, index) => (
-              <Markers
-                key={ele.id}
-                index={index}
-                latitude={ele.latitude}
-                longitude={ele.longitude}
-                importance={ele.importance}
-                center='counseling'
-                handleShowDetails={this.handleShowDetails}
-              />
-            ))
-          ) : (
-            <Fragment />
-          )}
-          {this.props.psychiatric && this.state.centerTags[0][1] ? (
-            this.props.psychiatric.map((ele, index) => (
-              <Markers
-                key={ele.id}
-                index={index}
-                latitude={ele.latitude}
-                longitude={ele.longitude}
-                importance={ele.importance}
-                center='psychiatric'
-                handleShowDetails={this.handleShowDetails}
-              />
-            ))
-          ) : (
-            <Fragment />
+
+          {this.state.centerTags.map((center) =>
+            center[1] && this.props[center[0]] ? (
+              this.props[center[0]].map((centerInfo, index) => {
+                if (
+                  (centerInfo.specialties.length === 0 &&
+                    this.state.countSpecialties > 0) ||
+                  this.state.countSpecialties === 10 ||
+                  this.filterMarkerBySpecialties(centerInfo) === true
+                ) {
+                  return (
+                    <Markers
+                      key={centerInfo.id}
+                      index={index}
+                      latitude={centerInfo.latitude}
+                      longitude={centerInfo.longitude}
+                      importance={centerInfo.importance}
+                      center={center[0]}
+                      handleShowDetails={this.handleShowDetails}
+                    />
+                  );
+                }
+              })
+            ) : (
+              <Fragment />
+            )
           )}
         </MapView>
         {this.state.showDetails ? (
