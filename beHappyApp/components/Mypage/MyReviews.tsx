@@ -83,13 +83,18 @@ class MyReviews extends React.Component {
               <View style={{ flexDirection: 'row' }}>
                 <View style={styles.rate}>{this.drawStars(review.rate)}</View>
                 <View style={styles.buttons}>
-                  <Button small transparent style={styles.modifyDelete}>
+                  <Button small transparent style={styles.modifyDeleteButton}>
                     <Text style={styles.modifyDeleteText}>수정</Text>
                   </Button>
-                  <Button small transparent style={styles.modifyDelete}>
+                  <Button small transparent style={styles.modifyDeleteButton}>
                     <Text style={styles.modifyDeleteText}>삭제</Text>
                   </Button>
                 </View>
+              </View>
+              <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                {review.specialties.map((specialty) => (
+                  <Text style={styles.specialty}>#{specialty}</Text>
+                ))}
               </View>
               <Text numberOfLines={3} style={styles.content}>
                 {review.content}
@@ -135,19 +140,27 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     flexDirection: 'row',
-    alignSelf: 'flex-end',
-    marginHorizontal: 5,
   },
-  modifyDelete: {
+  modifyDeleteButton: {
+    marginLeft: 15,
     alignItems: 'center',
     marginHorizontal: 5,
     width: 60,
+    height: 35,
     borderColor: 'black',
     borderWidth: 1,
   },
   modifyDeleteText: {
+    fontSize: 14,
     width: 57,
     textAlign: 'center',
+  },
+  specialty: {
+    color: 'white',
+    marginRight: 8,
+    backgroundColor: '#62CCAD',
+    paddingHorizontal: 5,
+    borderRadius: 10,
   },
   content: {
     marginVertical: 10,
