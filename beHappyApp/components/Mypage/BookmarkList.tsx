@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import ShowStarRateAvg from '../Map/details/ShowStarRateAvg';
@@ -23,9 +23,13 @@ const BookmarkList = ({
       <View style={styles.leftContents}>
         <Text style={styles.text}>{centerName}</Text>
         {specialties.length > 0 ? (
-          <TouchableOpacity style={styles.hashtagButton}>
-            <Text style={{ color: 'white' }}>#{specialties}</Text>
-          </TouchableOpacity>
+          <View style={styles.specialtiesInfo}>
+            {specialties.map((data, index) => (
+              <Text key={index} style={styles.specialty}>
+                {data.name}
+              </Text>
+            ))}
+          </View>
         ) : (
           <Text style={styles.specialtyText}>전문분야가 없습니다.</Text>
         )}
@@ -73,13 +77,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  hashtagButton: {
+  specialtiesInfo: {
+    flexDirection: 'row',
+  },
+  specialty: {
     marginTop: 10,
-    marginBottom: 5,
     marginRight: 10,
+    marginBottom: 10,
     padding: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
     backgroundColor: '#62CCAD',
     borderRadius: 10,
   },
