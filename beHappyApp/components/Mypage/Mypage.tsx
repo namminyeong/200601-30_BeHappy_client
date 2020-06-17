@@ -25,10 +25,15 @@ class Mypage extends React.Component {
 
         <View style={styles.userInfo}>
           <Text style={styles.user}>{this.props.username}</Text>
-          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>님</Text>
+          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>
+            님
+          </Text>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate('MyInfo', { username: this.props.username, phone: this.props.phone });
+              this.props.navigation.navigate('MyInfo', {
+                username: this.props.username,
+                phone: this.props.phone,
+              });
             }}
           >
             {<Entypo name='chevron-right' size={26} color={'#62CCAD'} />}
@@ -49,7 +54,7 @@ class Mypage extends React.Component {
           <TouchableOpacity
             style={styles.listItem}
             onPress={() => {
-              this.props.navigation.navigate('MyReviews');
+              this.props.navigation.navigate('MyReviewsContainer');
             }}
           >
             <Text style={styles.itemText}>리뷰관리</Text>
