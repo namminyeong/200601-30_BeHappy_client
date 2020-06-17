@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 import DeviceStorage from '../../service/DeviceStorage';
@@ -56,7 +62,12 @@ class MyInfo extends React.Component {
   }
 
   modifyPreference(token) {
-    const { currentSpecialties, currentKindOfCenters, currentCity, currentStates } = this.state;
+    const {
+      currentSpecialties,
+      currentKindOfCenters,
+      currentCity,
+      currentStates,
+    } = this.state;
 
     fetch('http://13.209.16.103:4000/preference', {
       method: 'PATCH',
@@ -77,14 +88,18 @@ class MyInfo extends React.Component {
 
   getUserSpecialties(currentSpecialties) {
     for (let i = 0; i < Specialties.length; i++) {
-      Specialties.map((data) => (data.includes(currentSpecialties[i]) ? (data[1] = true) : data));
+      Specialties.map((data) =>
+        data.includes(currentSpecialties[i]) ? (data[1] = true) : data
+      );
     }
     return Specialties;
   }
 
   getUserKindOfCenters(currentKindOfCenters) {
     for (let i = 0; i < KindOfCenters.length; i++) {
-      KindOfCenters.map((data) => (data.includes(currentKindOfCenters[i]) ? (data[1] = true) : data));
+      KindOfCenters.map((data) =>
+        data.includes(currentKindOfCenters[i]) ? (data[1] = true) : data
+      );
     }
     return KindOfCenters;
   }
@@ -109,27 +124,57 @@ class MyInfo extends React.Component {
 
   render() {
     const { username, phone } = this.props.route.params;
-    const { currentCity, currentStates, currentSpecialties, currentKindOfCenters, userSpecialties, userKindOfCenters } = this.state;
+    const {
+      currentCity,
+      currentStates,
+      currentSpecialties,
+      currentKindOfCenters,
+      userSpecialties,
+      userKindOfCenters,
+    } = this.state;
 
     return this.state.isModify ? (
       <View style={styles.container}>
-        <Text style={{ paddingTop: 28, paddingBottom: 28, color: '#636E72', alignContent: 'center' }}>* 아래 내용을 참고하여 지도에 마커가 표시됩니다.</Text>
-        <View style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }} />
+        <Text
+          style={{
+            paddingTop: 28,
+            paddingBottom: 28,
+            color: '#636E72',
+            alignContent: 'center',
+          }}
+        >
+          * 아래 내용을 참고하여 지도에 마커가 표시됩니다.
+        </Text>
+        <View
+          style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }}
+        />
         <View style={styles.preference}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
             <Text style={styles.section}>Preference</Text>
             <TouchableOpacity
               style={{ marginRight: '2%' }}
               onPress={() => {
-                currentCity !== '' && !States[currentCity].includes(currentStates)
+                currentCity !== '' &&
+                !States[currentCity].includes(currentStates)
                   ? alert('시/구/군을 다시 선택해주세요.')
                   : this.setState({
                       isModify: false,
-                      currentSpecialties: userSpecialties.map((data) => (data[1] ? data[0] : null)).filter((el) => el !== null),
-                      currentKindOfCenters: userKindOfCenters.map((data) => (data[1] ? data[0] : null)).filter((el) => el !== null),
+                      currentSpecialties: userSpecialties
+                        .map((data) => (data[1] ? data[0] : null))
+                        .filter((el) => el !== null),
+                      currentKindOfCenters: userKindOfCenters
+                        .map((data) => (data[1] ? data[0] : null))
+                        .filter((el) => el !== null),
                     });
                 DeviceStorage.loadJWT().then((value) => {
-                  this.modifyPreference(currentSpecialties, currentKindOfCenters, currentCity, currentStates);
+                  this.modifyPreference(
+                    currentSpecialties,
+                    currentKindOfCenters,
+                    currentCity,
+                    currentStates
+                  );
                 });
               }}
             >
@@ -146,7 +191,9 @@ class MyInfo extends React.Component {
                   this.changeSpecialties(index);
                 }}
               >
-                <Text style={data[1] ? styles.selected : styles.notSelected}>#{data}</Text>
+                <Text style={data[1] ? styles.selected : styles.notSelected}>
+                  #{data}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -183,7 +230,9 @@ class MyInfo extends React.Component {
                   this.changeKindOfCenters(index);
                 }}
               >
-                <Text style={data[1] ? styles.selected : styles.notSelected}>{data}</Text>
+                <Text style={data[1] ? styles.selected : styles.notSelected}>
+                  {data}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -199,21 +248,37 @@ class MyInfo extends React.Component {
             </View>
             <View style={styles.phoneStyle}>
               <Text style={styles.section}>연락처</Text>
-              <Text style={styles.info}>{phone.slice(0, 3) + '-' + phone.slice(3, 7) + '-' + phone.slice(7)}</Text>
+              <Text style={styles.info}>
+                {phone.slice(0, 3) +
+                  '-' +
+                  phone.slice(3, 7) +
+                  '-' +
+                  phone.slice(7)}
+              </Text>
             </View>
           </View>
 
-          <View style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }} />
+          <View
+            style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }}
+          />
           <View style={styles.preference}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
               <Text style={styles.section}>Preference</Text>
               <TouchableOpacity
                 style={{ marginRight: '2%' }}
                 onPress={() => {
                   this.setState({
                     isModify: true,
-                    userSpecialties: Specialties.length === 0 ? [] : this.getUserSpecialties(currentSpecialties),
-                    userKindOfCenters: KindOfCenters.length === 0 ? [] : this.getUserKindOfCenters(currentKindOfCenters),
+                    userSpecialties:
+                      Specialties.length === 0
+                        ? []
+                        : this.getUserSpecialties(currentSpecialties),
+                    userKindOfCenters:
+                      KindOfCenters.length === 0
+                        ? []
+                        : this.getUserKindOfCenters(currentKindOfCenters),
                   });
                 }}
               >
@@ -247,7 +312,13 @@ class MyInfo extends React.Component {
 
             <Text style={styles.preSection}>선호센터</Text>
             <View style={styles.favor}>
-              {currentKindOfCenters.length === 0 ? <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다.</Text> : currentKindOfCenters.map((data) => <Text style={styles.selected}>{data}</Text>)}
+              {currentKindOfCenters.length === 0 ? (
+                <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다.</Text>
+              ) : (
+                currentKindOfCenters.map((data) => (
+                  <Text style={styles.selected}>{data}</Text>
+                ))
+              )}
             </View>
           </View>
         </ScrollView>
@@ -331,7 +402,7 @@ const styles = StyleSheet.create({
     padding: 3,
     paddingLeft: 10,
     paddingRight: 10,
-    backgroundColor: '#B2BEC3',
+    backgroundColor: '#d1d1d1',
     borderRadius: 10,
     color: '#FFFFFF',
   },
