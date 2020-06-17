@@ -56,9 +56,11 @@ class Map extends React.Component {
       this
     );
     this.goToMarked = this.goToMarked.bind(this);
+    this.filterMarkerBySpecialties = this.filterMarkerBySpecialties.bind(this);
   }
 
   changeFilter(index) {
+    const { showDetails, showDetailsIndex } = this.state;
     let newState = this.state.specialties;
     let present = newState[index][1];
     newState[index][1] = !present;
@@ -66,6 +68,14 @@ class Map extends React.Component {
     this.setState({
       specialties: newState,
     });
+    if (
+      this.props[showDetails] &&
+      this.filterMarkerBySpecialties(
+        this.props[showDetails][showDetailsIndex]
+      ) === false
+    ) {
+      this.handleShowDetails(false, null);
+    }
   }
 
   changeCenterFilter(index) {
@@ -75,6 +85,9 @@ class Map extends React.Component {
     this.setState({
       centerTags: newState,
     });
+    if (this.state.showDetails === newState[index][0]) {
+      this.handleShowDetails(false, null);
+    }
   }
 
   changeAllFilter(status) {
@@ -304,6 +317,21 @@ class Map extends React.Component {
     this.props.navigation.popToTop();
   }
 
+  filterMarkerBySpecialties(centerInfo) {
+    let result = false;
+    centerInfo.specialties.forEach((centerSpecialty) => {
+      this.state.specialties.forEach((specialtyFilter) => {
+        if (
+          centerSpecialty.name === specialtyFilter[0] &&
+          specialtyFilter[1] === true
+        ) {
+          result = true;
+        }
+      });
+    });
+    return result;
+  }
+
   render() {
     this.props.bookmarkClicked ? this.goToMarked() : '';
 
@@ -421,22 +449,11 @@ class Map extends React.Component {
           {this.state.centerTags.map((center) =>
             center[1] && this.props[center[0]] ? (
               this.props[center[0]].map((centerInfo, index) => {
-                let result = false;
-                centerInfo.specialties.map((centerSpecialty) => {
-                  this.state.specialties.forEach((specialtyFilter) => {
-                    if (
-                      centerSpecialty.name === specialtyFilter[0] &&
-                      specialtyFilter[1] === true
-                    ) {
-                      result = true;
-                    }
-                  });
-                });
                 if (
                   (centerInfo.specialties.length === 0 &&
                     this.state.countSpecialties > 0) ||
                   this.state.countSpecialties === 10 ||
-                  result === true
+                  this.filterMarkerBySpecialties(centerInfo) === true
                 ) {
                   return (
                     <Markers
