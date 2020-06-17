@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
   },
   review: {
     backgroundColor: 'white',
-    padding: 7,
+    padding: 10,
+    paddingTop: 15,
     left: '2%',
     width: '96%',
     marginTop: 15,
@@ -136,6 +137,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttons: {
+    marginTop: 10,
     position: 'absolute',
     right: 0,
     flexDirection: 'row',
@@ -155,14 +157,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   specialty: {
+    marginTop: 3,
     color: 'white',
     marginRight: 8,
     backgroundColor: '#62CCAD',
-    paddingHorizontal: 5,
+    paddingHorizontal: 7,
     borderRadius: 10,
   },
   content: {
-    marginVertical: 10,
+    marginTop: 17,
+    marginBottom: 10,
     fontSize: 15,
   },
 });
