@@ -71,7 +71,6 @@ class MyReviews extends React.Component {
   }
 
   render() {
-    console.log(this.state.myReviews);
     const { myReviews } = this.state;
     return (
       <View style={styles.container}>
