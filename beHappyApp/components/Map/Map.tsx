@@ -383,7 +383,7 @@ class Map extends React.Component {
                 onPress={() => this.changeCenterFilter(index)}
               >
                 <Text style={tagArr[1] ? styles.selected : styles.notSelected}>
-                  {tagArr[0]}
+                  {tagArr[0] === 'psychiatric' ? '정신과' : '심리센터'}
                 </Text>
               </Button>
             ))}
