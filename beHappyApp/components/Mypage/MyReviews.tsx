@@ -9,6 +9,8 @@ import {
 import { Button } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 class MyReviews extends React.Component {
   constructor(props) {
@@ -20,6 +22,8 @@ class MyReviews extends React.Component {
     this.handleMyReviewInState = this.handleMyReviewInState.bind(this);
     this.drawStars = this.drawStars.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
+    this.goToMarker = this.goToMarker.bind(this);
+    this.deleteReview = this.deleteReview.bind(this);
   }
 
   handleLoading(status) {
@@ -87,6 +91,47 @@ class MyReviews extends React.Component {
     return stars;
   }
 
+  goToMarker(centerId) {
+    let url = ec2 + '/center?centerId=' + centerId;
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          console.log('datat', data);
+          this.props.controlCoordinate(data.latitude, data.longitude);
+          this.props.controlBookmarkClicked(true);
+          this.props.controlCenterData([data], [data]);
+          this.props.navigation.navigate('MapStack', {
+            screen: 'MapContainer',
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
+  deleteReview(index) {
+    console.log('deleteReview');
+    let newState = Object.assign([], this.state.myReviews);
+    newState.splice(index, 1);
+    this.setState({
+      myReviews: newState,
+    });
+  }
+
   render() {
     const { myReviews, isLoading } = this.state;
     return (
@@ -98,7 +143,7 @@ class MyReviews extends React.Component {
         ) : (
           <View style={styles.container}>
             <ScrollView>
-              {myReviews.map((review) => (
+              {myReviews.map((review, index) => (
                 <View style={styles.review}>
                   <View style={styles.buttons}>
                     <Button
@@ -112,15 +157,23 @@ class MyReviews extends React.Component {
                       }}
                     >
                       <SimpleLineIcons name='pencil' size={23} />
-                      {/* <Text style={styles.modifyDeleteText}>수정</Text> */}
                     </Button>
-                    <Button small transparent style={styles.modifyDeleteButton}>
+                    <Button
+                      small
+                      transparent
+                      style={styles.modifyDeleteButton}
+                      onPress={() => this.deleteReview(index)}
+                    >
                       <FontAwesome name='trash-o' size={23} />
-                      {/* <Text style={styles.modifyDeleteText}>삭제</Text> */}
                     </Button>
                   </View>
                   <Text>진료일자 : {review.date}</Text>
-                  <Text style={styles.centername}>{review.centerName}</Text>
+                  <Text
+                    style={styles.centername}
+                    onPress={() => this.goToMarker(review.centerId)}
+                  >
+                    {review.centerName}
+                  </Text>
                   <View style={{ flexDirection: 'row' }}>
                     <View style={styles.rate}>
                       {this.drawStars(review.rate)}
@@ -181,8 +234,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     alignItems: 'center',
     marginHorizontal: 5,
-    width: 35,
-    height: 35,
+    width: 40,
+    height: 50,
   },
   modifyDeleteText: {
     fontSize: 12,
@@ -190,25 +243,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   centername: {
+    alignSelf: 'flex-start',
+    textDecorationLine: 'underline',
     marginVertical: 6,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   rate: {
     flexDirection: 'row',
   },
   specialty: {
+    fontSize: 14,
     marginTop: 3,
     color: 'white',
     marginRight: 8,
+    paddingVertical: 1,
     backgroundColor: '#62CCAD',
-    paddingHorizontal: 7,
+    paddingHorizontal: 8,
     borderRadius: 10,
   },
   content: {
     marginTop: 17,
     marginBottom: 10,
-    fontSize: 15,
+    fontSize: 14,
   },
 });
 

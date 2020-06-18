@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import LogoutContainer from '../../containers/LogoutContainer';
-import getEnvVars from '../../environment';
-const { ec2 } = getEnvVars();
 
 class Mypage extends React.Component {
   constructor(props) {
@@ -19,15 +18,18 @@ class Mypage extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.title}>
-          <Text style={styles.mypageText}>MyPage</Text>
-          <LogoutContainer />
+          <Text style={styles.mypageText}>오늘도 좋은 하루 되세요</Text>
+          <MaterialCommunityIcons
+            name='weather-sunny'
+            color='brown'
+            size={23}
+            style={{ top: 18 }}
+          />
         </View>
 
         <View style={styles.userInfo}>
           <Text style={styles.user}>{this.props.username}</Text>
-          <Text style={{ color: '#62CCAD', fontWeight: 'bold', fontSize: 20 }}>
-            님
-          </Text>
+          <Text style={{ fontSize: 20 }}>님</Text>
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('MyInfo', {
@@ -36,9 +38,19 @@ class Mypage extends React.Component {
               });
             }}
           >
-            {<Entypo name='chevron-right' size={26} color={'#62CCAD'} />}
+            {<Entypo name='chevron-right' size={23} color={'black'} />}
           </TouchableOpacity>
         </View>
+
+        <View
+          style={{
+            alignSelf: 'center',
+            width: '98%',
+            marginVertical: '2%',
+            height: 1,
+            backgroundColor: '#e6e6e6',
+          }}
+        />
 
         <View style={styles.list}>
           <TouchableOpacity
@@ -47,9 +59,23 @@ class Mypage extends React.Component {
               this.props.navigation.navigate('BookMarkContainer');
             }}
           >
+            <MaterialCommunityIcons
+              name='bookmark-multiple-outline'
+              color='black'
+              size={25}
+              style={{ marginRight: 10 }}
+            />
             <Text style={styles.itemText}>즐겨찾기</Text>
-            {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
+            {/* {<Entypo name='chevron-right' size={40} color={'black'} />} */}
           </TouchableOpacity>
+          <View
+            style={{
+              alignSelf: 'center',
+              width: '98%',
+              height: 1,
+              backgroundColor: '#f5f5f5',
+            }}
+          />
 
           <TouchableOpacity
             style={styles.listItem}
@@ -57,9 +83,23 @@ class Mypage extends React.Component {
               this.props.navigation.navigate('MyReviewsContainer');
             }}
           >
+            <MaterialCommunityIcons
+              name='comment-text-multiple-outline'
+              color='black'
+              size={25}
+              style={{ marginRight: 10 }}
+            />
             <Text style={styles.itemText}>리뷰관리</Text>
-            {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
+            {/* {<Entypo name='chevron-right' size={40} color={'black'} />} */}
           </TouchableOpacity>
+          <View
+            style={{
+              alignSelf: 'center',
+              width: '98%',
+              height: 1,
+              backgroundColor: '#f5f5f5',
+            }}
+          />
 
           <TouchableOpacity
             style={styles.listItem}
@@ -67,9 +107,25 @@ class Mypage extends React.Component {
               this.props.navigation.navigate('MyBookings');
             }}
           >
+            <MaterialCommunityIcons
+              name='calendar'
+              color='black'
+              size={25}
+              style={{ marginRight: 10 }}
+            />
             <Text style={styles.itemText}>예약관리</Text>
-            {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
+            {/* {<Entypo name='chevron-right' size={40} color={'black'} />} */}
           </TouchableOpacity>
+          <View
+            style={{
+              alignSelf: 'center',
+              width: '98%',
+              height: 1,
+              backgroundColor: '#f5f5f5',
+            }}
+          />
+
+          <LogoutContainer />
         </View>
       </View>
     );
@@ -78,26 +134,25 @@ class Mypage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   title: {
     paddingTop: '12%',
-    paddingLeft: '6%',
+    paddingLeft: '10%',
     height: 100,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   mypageText: {
     marginTop: 30,
-    height: 40,
-    color: '#62CCAD',
-    fontSize: 20,
-    fontWeight: 'bold',
+    height: 30,
+    color: 'black',
+    fontSize: 17,
     paddingTop: '2%',
   },
   userInfo: {
-    marginBottom: 10,
+    marginBottom: 20,
     paddingLeft: '8%',
     height: 40,
     flexDirection: 'row',
@@ -105,25 +160,21 @@ const styles = StyleSheet.create({
   },
   user: {
     paddingLeft: 10,
-    fontWeight: 'bold',
     fontSize: 20,
   },
   list: {
     padding: 10,
   },
   listItem: {
-    borderColor: '#62CCAD',
+    borderColor: 'grey',
+    backgroundColor: 'white',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
-    borderWidth: 3,
     padding: '6%',
-    marginBottom: 10,
   },
   itemText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#62CCAD',
+    fontSize: 18,
+    color: 'black',
   },
 });
 

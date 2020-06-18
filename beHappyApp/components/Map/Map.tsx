@@ -237,7 +237,6 @@ class Map extends React.Component {
       latitudeDelta: this.props.coordinate[3],
     });
     this.props.controlBookmarkClicked(false);
-    // this.props.navigation.popToTop();
   }
 
   filterMarkerBySpecialties(centerInfo) {
@@ -265,10 +264,14 @@ class Map extends React.Component {
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
-        <Header searchBar rounded style={{ backgroundColor: 'white' }}>
+        <Header
+          searchBar
+          rounded
+          style={{ backgroundColor: 'white', height: 60 }}
+        >
           <Item>
             <Image
-              source={require('../../assets/behappy.png')}
+              source={require('../../assets/mini.png')}
               style={styles.logo}
             />
             <Button
@@ -403,13 +406,13 @@ class Map extends React.Component {
 const styles = StyleSheet.create({
   logo: {
     width: '25%',
-    height: 53,
+    height: 33,
     marginRight: 10,
   },
   searchButton: {
     backgroundColor: '#ebebeb',
-    width: '57%',
-    height: '80%',
+    width: '60%',
+    height: '85%',
     borderRadius: 20,
     paddingHorizontal: 5,
   },
@@ -420,10 +423,11 @@ const styles = StyleSheet.create({
   },
   filter: {
     position: 'absolute',
-    right: 15,
+    right: 13,
     transform: [{ rotate: '90deg' }],
   },
   map: {
+    top: 50,
     flex: 1,
     zIndex: -1,
     width: '100%',
