@@ -61,10 +61,16 @@ class Mypage extends React.Component {
             {<Entypo name='chevron-right' size={40} color={'#62CCAD'} />}
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.listItem}
             onPress={() => {
               this.props.navigation.navigate('MyBookings');
+            }}
+          > */}
+          <TouchableOpacity
+            style={styles.listItem}
+            onPress={() => {
+              this.props.navigation.navigate('MyBookingContainer');
             }}
           >
             <Text style={styles.itemText}>예약관리</Text>

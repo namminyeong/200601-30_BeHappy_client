@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableHighlight,
   Modal,
 } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
@@ -12,6 +13,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import getEnvVars from '../../environment';
 
 import CenterList from './centerList';
+import AddressModal from './AddressModal';
 
 const { ec2, kakaoApi } = getEnvVars();
 
@@ -317,7 +319,6 @@ const states = {
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       username: '',
       password: '',
@@ -336,8 +337,10 @@ export default class SignUp extends React.Component {
       stateSelecdted: false,
       centerSelected: false,
       centerInfo: [],
+      isModalVisible: false,
     };
 
+    this.changeModalVisible = this.changeModalVisible.bind(this);
     this.userSignup = this.userSignup.bind(this);
     this.centerSignup = this.centerSignup.bind(this);
     this.selectCity = this.selectCity.bind(this);
@@ -355,6 +358,12 @@ export default class SignUp extends React.Component {
     this.setRoadAddressName = this.setRoadAddressName.bind(this);
     this.selectCenter = this.selectCenter.bind(this);
     this.setCenterName = this.setCenterName.bind(this);
+  }
+
+  changeModalVisible(bool) {
+    this.setState({
+      isModalVisible: bool,
+    });
   }
 
   goBack() {
@@ -624,6 +633,7 @@ export default class SignUp extends React.Component {
       addressName,
       roadAddressName,
       centerInfo,
+      isModalVisible,
     } = this.state;
 
     return (
@@ -633,7 +643,7 @@ export default class SignUp extends React.Component {
           <View style={styles.radioForm}>
             <RadioForm
               radio_props={radio_props}
-              initial={0}
+              initial={1}
               formHorizontal={false}
               labelHorizontal={true}
               buttonSize={12}
@@ -642,12 +652,13 @@ export default class SignUp extends React.Component {
               }}
             />
           </View>
-          {value === 0 ? (
+          {value === 1 ? (
             <Fragment>
               <TextInput
                 style={styles.inputBox}
                 underlineColorAndroid={'transparent'}
                 placeholder='username'
+                placeholderTextColor={'gray'}
                 onChangeText={(username) => this.setState({ username })}
               />
               <TextInput
@@ -655,18 +666,21 @@ export default class SignUp extends React.Component {
                 underlineColorAndroid={'transparent'}
                 placeholder='password'
                 secureTextEntry={true}
+                placeholderTextColor={'gray'}
                 onChangeText={(password) => this.setState({ password })}
               />
               <TextInput
                 style={styles.inputBox}
                 underlineColorAndroid={'transparent'}
                 placeholder='nickname'
+                placeholderTextColor={'gray'}
                 onChangeText={(nickname) => this.setState({ nickname })}
               />
               <TextInput
                 style={styles.inputBox}
                 underlineColorAndroid={'transparent'}
                 placeholder='phone'
+                placeholderTextColor={'gray'}
                 onChangeText={(phone) => this.setState({ phone })}
               />
               <TouchableOpacity
@@ -682,6 +696,7 @@ export default class SignUp extends React.Component {
                 style={styles.inputBox}
                 underlineColorAndroid={'transparent'}
                 placeholder='username'
+                placeholderTextColor={'gray'}
                 onChangeText={(username) => this.setState({ username })}
               />
               <TextInput
@@ -689,75 +704,137 @@ export default class SignUp extends React.Component {
                 underlineColorAndroid={'transparent'}
                 placeholder='password'
                 secureTextEntry={true}
+                placeholderTextColor={'gray'}
                 onChangeText={(password) => this.setState({ password })}
               />
               <TextInput
                 style={styles.inputBox}
                 underlineColorAndroid={'transparent'}
                 placeholder='사업자 번호'
+                placeholderTextColor={'gray'}
                 onChangeText={(businessNumber) =>
                   this.setState({ businessNumber })
                 }
               />
-              <View style={styles.pickerContainer}>
-                <RNPickerSelect
-                  useNativeAndroidPickerStyle={false}
-                  style={{
-                    inputAndroid: {
-                      width: 100,
-                      height: 30,
-                      fontSize: 16,
-                      textAlign: 'center',
-                    },
-                  }}
-                  placeholder={{ label: '지역 선택', value: '' }}
-                  onValueChange={(value) => this.inputCity(value)}
-                  onOpen={this.resetState}
-                  items={cities.map((ele) => {
-                    return { label: `${ele}`, value: `${ele}` };
-                  })}
-                />
-                {this.state.citySelected ? (
+              <View style={styles.searchContainer}>
+                <View style={styles.pickerContainer}>
                   <RNPickerSelect
                     useNativeAndroidPickerStyle={false}
                     style={{
                       inputAndroid: {
-                        width: 100,
+                        width: 200,
                         height: 30,
                         fontSize: 16,
                         textAlign: 'center',
+                        color: 'black',
+                        paddingRight: 35,
+                        marginVertical: 10,
                       },
                     }}
-                    selectedValue={this.state.stateSelected}
-                    placeholder={{
-                      label: '시/구/군 선택',
-                      value: '',
-                    }}
-                    value={state}
-                    onValueChange={(value) => this.inputState(value)}
-                    items={states[city].sort().map((ele) => {
+                    placeholder={{ label: '지역 선택', value: '' }}
+                    onValueChange={(value) => this.inputCity(value)}
+                    onOpen={this.resetState}
+                    items={cities.map((ele) => {
                       return { label: `${ele}`, value: `${ele}` };
                     })}
                   />
-                ) : (
-                  <Text />
-                )}
-                <TouchableOpacity
-                  style={styles.searchAddress}
-                  onPress={this.getCoordinate}
-                >
-                  <Text>주소 찾기</Text>
-                </TouchableOpacity>
+                  {this.state.citySelected ? (
+                    <RNPickerSelect
+                      useNativeAndroidPickerStyle={false}
+                      style={{
+                        inputAndroid: {
+                          width: 200,
+                          height: 30,
+                          fontSize: 16,
+                          textAlign: 'center',
+                          color: 'black',
+                          paddingRight: 35,
+                          marginVertical: 10,
+                        },
+                      }}
+                      selectedValue={this.state.stateSelected}
+                      placeholder={{
+                        label: '시/구/군 선택',
+                        value: '',
+                      }}
+                      value={state}
+                      onValueChange={(value) => this.inputState(value)}
+                      items={states[city].sort().map((ele) => {
+                        return { label: `${ele}`, value: `${ele}` };
+                      })}
+                    />
+                  ) : (
+                    <RNPickerSelect
+                      useNativeAndroidPickerStyle={false}
+                      style={{
+                        inputAndroid: {
+                          width: 200,
+                          height: 30,
+                          fontSize: 16,
+                          textAlign: 'center',
+                          color: 'black',
+                          paddingRight: 35,
+                          marginVertical: 10,
+                        },
+                      }}
+                      placeholder={{
+                        label: '시/구/군 선택',
+                        value: '',
+                      }}
+                      onValueChange={(value) => this.inputState(value)}
+                      items={[{ label: ``, value: `` }]}
+                    />
+                  )}
+                </View>
+                <View style={styles.searchBtnContainer}>
+                  {/* <TouchableOpacity
+                    style={styles.searchAddress}
+                    onPress={this.getCoordinate}
+                  >
+                    <Text style={{ color: 'white' }}>주소 찾기</Text>
+                  </TouchableOpacity> */}
+                  <TouchableHighlight
+                    style={styles.searchAddress}
+                    onPress={() => this.changeModalVisible(true)}
+                  >
+                    <Text style={{ color: 'white' }}>주소 찾기</Text>
+                  </TouchableHighlight>
+                  <Modal
+                    transparent={true}
+                    visible={isModalVisible}
+                    onRequestClose={() => this.changeModalVisible(false)}
+                    animationType='fade'
+                  >
+                    <AddressModal
+                      changeModalVisible={this.changeModalVisible}
+                      getCoordinate={this.getCoordinate}
+                      centerInfo={centerInfo}
+                      setPhone={this.setPhone}
+                      setLatitude={this.setLatitude}
+                      setLongitude={this.setLongitude}
+                      setAddressName={this.setAddressName}
+                      setRoadAddressName={this.setRoadAddressName}
+                      selectCenter={this.selectCenter}
+                      setCenterName={this.setCenterName}
+                    />
+                  </Modal>
+                </View>
               </View>
 
               <View style={styles.selectedCity}>
-                <Text>{centerName}</Text>
-                <Text>{addressName}</Text>
-                <Text>{roadAddressName}</Text>
-                <Text>{phone}</Text>
+                <Text style={styles.selectedCityText}>
+                  센터 이름: {centerName}
+                </Text>
+                <Text style={styles.selectedCityText}>
+                  지번 주소: {addressName}
+                </Text>
+                <Text style={styles.selectedCityText}>
+                  도로명 주소: {roadAddressName}
+                </Text>
+                <Text style={styles.selectedCityText}>전화번호: {phone}</Text>
               </View>
 
-              {this.state.centerSelected ? (
+              {/* {this.state.centerSelected ? (
                 centerInfo.map((center, index) => (
                   <CenterList
                     key={index}
@@ -779,7 +856,7 @@ export default class SignUp extends React.Component {
                 ))
               ) : (
                 <Text />
-              )}
+              )} */}
               <TouchableOpacity
                 style={styles.submitBtn}
                 onPress={this.centerSignup}
@@ -808,6 +885,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
+    fontWeight: 'bold',
     paddingBottom: 10,
     marginBottom: 20,
     borderBottomColor: '#199187',
@@ -824,30 +902,41 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   selectedCity: {
-    height: 70,
+    flex: 1,
+    marginTop: 20,
+  },
+  selectedCityText: {
+    marginBottom: 5,
   },
   submitBtn: {
     alignSelf: 'stretch',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#59cbbd',
+    backgroundColor: '#62CCAD',
     marginTop: 30,
   },
   btnText: {
-    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'white',
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
   },
   pickerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
     color: '#000000',
     fontSize: 50,
-    marginBottom: 30,
+  },
+  searchBtnContainer: {
+    justifyContent: 'center',
   },
   searchAddress: {
     width: 80,
     height: 30,
-    backgroundColor: '#59cbbd',
+    backgroundColor: '#62CCAD',
     fontSize: 16,
     justifyContent: 'center',
     alignItems: 'center',

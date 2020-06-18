@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const BookmarkList = ({ changeModalVisible }) => {
+const BookingDeleteModal = ({ changeModalVisible }) => {
   const [width, setWidth] = useState(Dimensions.get('window').width);
 
   const closeModal = () => {
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BookmarkList;
+export default BookingDeleteModal;

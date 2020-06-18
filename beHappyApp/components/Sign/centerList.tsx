@@ -16,14 +16,13 @@ const CenterList = ({
   setRoadAddressName,
   selectCenter,
   setCenterName,
+  closeModal,
 }) => (
   <Fragment>
-    <Text>{centerName}</Text>
-    <Text>{latitude}</Text>
-    <Text>{longitude}</Text>
-    <Text>{phone}</Text>
-    <Text>{addressName}</Text>
-    <Text>{roadAddressName}</Text>
+    <Text>센터 이름: {centerName}</Text>
+    <Text>지번 주소: {addressName}</Text>
+    <Text>도로명 주소: {roadAddressName}</Text>
+    <Text>전화 번호: {phone}</Text>
     <TouchableOpacity
       onPress={() => {
         setCenterName(centerName);
@@ -33,6 +32,7 @@ const CenterList = ({
         setAddressName(addressName);
         setRoadAddressName(roadAddressName);
         selectCenter(false);
+        closeModal();
       }}
     >
       <Text>선택</Text>

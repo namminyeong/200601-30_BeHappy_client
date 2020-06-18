@@ -7,6 +7,8 @@ import MyReviewsContainer from '../../containers/MyReviewsContainer';
 import ModifyReview from './ModifyReview';
 import MyBookings from './MyBookings';
 import BookMarkContainer from '../../containers/BookmarkContainer';
+import MyBookingContainer from '../../containers/MyBookingContainer';
+import BookingReview from './booking/BookingReview';
 
 const Stack = createStackNavigator();
 
@@ -41,7 +43,21 @@ function IndexMypage() {
         component={ModifyReview}
         options={{ title: '리뷰 수정하기' }}
       />
-      <Stack.Screen name='MyBookings' component={MyBookings} />
+      {/* <Stack.Screen
+        name='MyBookings'
+        component={MyBookings}
+        options={{ title: '예약 관리' }}
+      /> */}
+      <Stack.Screen
+        name='MyBookingContainer'
+        component={MyBookingContainer}
+        options={{ title: '예약 관리' }}
+      />
+      <Stack.Screen
+        name='BookingReview'
+        component={BookingReview}
+        options={{ title: '리뷰 작성' }}
+      />
     </Stack.Navigator>
   );
 }

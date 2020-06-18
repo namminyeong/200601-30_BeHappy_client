@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,7 +10,12 @@ import {
 
 import BookingDeleteModal from './BookingDeleteModal';
 
-const MyBookingList = () => {
+const MyBookingList = ({ token, navigation }) => {
+  console.log('MyBookingList 진입');
+  console.log('token: ', token);
+  console.log('navigation: ', navigation);
+  // console.log('booking: ', booking);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const changeModalVisible = (bool) => {
@@ -19,12 +24,20 @@ const MyBookingList = () => {
 
   return (
     <View style={styles.container}>
+      {/* {booking.length > 0 ? (
+        <Fragment> */}
       <View>
-        <Text style={styles.bookingDate}>2020-06-17 / 18:00</Text>
+        <Text style={styles.bookingDate}>
+          2020-12-12 / 18:00
+          {/* {booking.date} / {booking.time} */}
+        </Text>
         <Text style={styles.bookingCenter}>기린정신건강의학과의원</Text>
       </View>
       <View style={styles.btnSection}>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => navigation.navigate('BookingReview')}
+        >
           <Text style={styles.btnText}>리뷰 쓰기</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn}>
@@ -45,6 +58,10 @@ const MyBookingList = () => {
           <BookingDeleteModal changeModalVisible={changeModalVisible} />
         </Modal>
       </View>
+      {/* </Fragment>
+      ) : (
+        <Text>예약 목록이 없습니다.</Text>
+      )} */}
     </View>
   );
 };
