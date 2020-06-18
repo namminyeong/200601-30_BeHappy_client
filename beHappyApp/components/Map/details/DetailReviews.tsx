@@ -17,7 +17,7 @@ export default class DetailsReviews extends React.Component {
       reviewsData: [],
       stars: [5, 4, 3, 2, 1]
     };
-    this.getUserPreference = this.getUserPreference.bind(this)
+    this.getCenterReviews = this.getCenterReviews.bind(this)
   }
 
   handleRateFilter = (value) => {
@@ -26,11 +26,11 @@ export default class DetailsReviews extends React.Component {
 
   componentDidMount() {
     DeviceStorage.loadJWT().then((value) => {
-      this.getUserPreference(value);
+      this.getCenterReviews(value);
     });
   }
 
-  getUserPreference(token) {
+  getCenterReviews(token) {
     fetch('http://13.209.16.103:4000/review/center?centerId=' + this.props.route.params.id, {
       method: 'GET',
       credentials: 'include',
