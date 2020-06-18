@@ -6,6 +6,7 @@ import {
   controlCenterData,
   controlCoordinate,
   controlBookmarkClicked,
+  controlShowDetail,
 } from '../modules(reducers)/currentOnMap';
 import { controlBookmark } from '../modules(reducers)/userInfo';
 import Map from '../components/Map/Map';
@@ -22,6 +23,11 @@ const MapContainer = ({
   bookmark,
   bookmarkClicked,
   controlBookmarkClicked,
+  specialties,
+  centerTags,
+  controlShowDetail,
+  showDetailsIndex,
+  showDetails,
 }) => {
   return (
     <Map
@@ -36,6 +42,11 @@ const MapContainer = ({
       bookmark={bookmark}
       bookmarkClicked={bookmarkClicked}
       controlBookmarkClicked={controlBookmarkClicked}
+      specialties={specialties}
+      centerTags={centerTags}
+      controlShowDetail={controlShowDetail}
+      showDetailsIndex={showDetailsIndex}
+      showDetails={showDetails}
     />
   );
 };
@@ -47,6 +58,10 @@ const mapStateToProps = (state) => ({
   token: state.handleLogin.token,
   bookmark: state.handleUserInfo.bookmark,
   bookmarkClicked: state.handleCurrentOnMap.bookmarkClicked,
+  specialties: state.handleCurrentOnMap.specialties,
+  centerTags: state.handleCurrentOnMap.centerTags,
+  showDetailsIndex: state.handleCurrentOnMap.showDetailsIndex,
+  showDetails: state.handleCurrentOnMap.showDetails,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -56,6 +71,7 @@ const mapDispatchToProps = (dispatch) => {
       controlCoordinate,
       controlBookmark,
       controlBookmarkClicked,
+      controlShowDetail,
     },
     dispatch
   );

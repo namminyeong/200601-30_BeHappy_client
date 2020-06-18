@@ -3,14 +3,25 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import SearchName from '../components/Map/SearchName';
-import { controlCenterData } from '../modules(reducers)/currentOnMap';
+import {
+  controlCenterData,
+  controlShowDetail,
+} from '../modules(reducers)/currentOnMap';
 
-const SearchNameContainer = ({ controlCenterData, navigation, token }) => {
+const SearchNameContainer = ({
+  controlCenterData,
+  navigation,
+  token,
+  controlShowDetail,
+  route,
+}) => {
   return (
     <SearchName
       controlCenterData={controlCenterData}
       navigation={navigation}
       token={token}
+      controlShowDetail={controlShowDetail}
+      goSpecificLocationAfterSearch={route.params.goSpecificLocationAfterSearch}
     />
   );
 };
@@ -23,6 +34,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       controlCenterData,
+      controlShowDetail,
     },
     dispatch
   );

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { Header, Button, Icon, Item, Input, Container } from 'native-base';
-import RNPickerSelect from 'react-native-picker-select';
+import { Button } from 'native-base';
 import getEnvVars from '../../environment';
 const { ec2, kakaoApi } = getEnvVars();
 import { Cities, States } from '../../Data/Preference';
@@ -15,6 +14,7 @@ class SearchGeo extends React.Component {
       state: '',
       citySelected: false,
       stateSelected: false,
+      range: null,
     };
     this.inputCity = this.inputCity.bind(this);
     this.inputState = this.inputState.bind(this);
@@ -22,7 +22,13 @@ class SearchGeo extends React.Component {
     this.resetState = this.resetState.bind(this);
     this.getCoordinate = this.getCoordinate.bind(this);
     this.getCenterWithCoordinate = this.getCenterWithCoordinate.bind(this);
-    this.goBack = this.goBack.bind(this);
+    this.inputRange = this.inputRange.bind(this);
+  }
+
+  componentDidUpdate() {
+    if (this.state.state) {
+      this.getCoordinate();
+    }
   }
 
   getCoordinate() {
@@ -45,22 +51,21 @@ class SearchGeo extends React.Component {
         return '';
       })
       .then((data) => {
-        console.log('data', data);
         if (typeof data === 'object') {
           if (data.length === 0) {
             alert(
               '검색 결과가 없습니다, 다른 곳으로 이동하시거나 조금 더 확대하여 검색해보세요'
             );
-            this.props.handleShowDetails(false, null);
+            this.props.controlShowDetail(false, null);
           }
           let lon = parseFloat(data.documents[0].address.x).toFixed(6);
           let lat = parseFloat(data.documents[0].address.y).toFixed(6);
           this.getCenterWithCoordinate(lon, lat);
-          this.props.navigation.state.params.goSpecificLocationAfterSearch({
+          this.props.goSpecificLocationAfterSearch({
             latitude: Number(lat),
             longitude: Number(lon),
-            latitudeDelta: 0.06,
-            longitudeDelta: 0.07,
+            latitudeDelta: 1.5,
+            longitudeDelta: 2,
           });
         }
       });
@@ -94,19 +99,15 @@ class SearchGeo extends React.Component {
           this.props.controlCenterData(counseling, psychiatric);
         }
       });
-    this.goBack();
+    this.props.goBack();
   }
 
-  goBack() {
-    this.props.navigation.navigate('MapContainer');
-  }
-
-  inputCity(value) {
+  inputCity(city) {
     this.setState({
-      city: value,
+      city,
     });
     this.resetState();
-    if (value !== null) {
+    if (city !== null) {
       this.selectCity(true);
     } else {
       this.selectCity(false);
@@ -117,13 +118,24 @@ class SearchGeo extends React.Component {
     if (this.state.stateSelected === true) {
       this.inputState('');
       this.selectState(false);
+      this.inputRange(null);
     }
   }
 
-  inputState(value) {
+  inputRange(value) {
     this.setState({
-      state: value,
+      range: value,
     });
+  }
+
+  inputState(value) {
+    if (this.state.city === '경기도' && !this.state.range) {
+      this.inputRange(value);
+    } else {
+      this.setState({
+        state: value,
+      });
+    }
     if (value !== null) {
       this.selectState(true);
     } else {
@@ -145,87 +157,178 @@ class SearchGeo extends React.Component {
 
   render() {
     return (
-      <View style={{ width: '100%', height: '100%' }}>
-        <Container style={styles.container}>
-          <Header searchBar rounded style={{ backgroundColor: 'white' }}>
-            <Item style={{ width: '80%' }}>
-              <Icon active name='search' />
-              <Button transparent>
-                <Text style={{ fontSize: 17 }}>지역으로 검색 </Text>
-              </Button>
-            </Item>
-          </Header>
-          <View style={styles.pickerContainer}>
-            <RNPickerSelect
-              useNativeAndroidPickerStyle={false}
-              style={{
-                inputAndroid: {
-                  fontSize: 20,
-                  marginBottom: 40,
-                  textAlign: 'center',
-                },
-              }}
-              placeholder={{ label: '지역을 선택해주세요', value: null }}
-              onValueChange={(value) => this.inputCity(value)}
-              onOpen={this.resetState}
-              items={Cities.map((ele) => {
-                return { label: `${ele}`, value: `${ele}` };
-              })}
-            />
-            {this.state.citySelected ? (
-              <RNPickerSelect
-                useNativeAndroidPickerStyle={false}
-                style={{
-                  inputAndroid: {
-                    fontSize: 20,
-                    marginBottom: 40,
-                    textAlign: 'center',
-                  },
-                }}
-                selectedValue={this.state.stateSelected}
-                placeholder={{ label: '시/구/군을 선택해주세요', value: null }}
-                value={this.state.state}
-                onValueChange={(value) => this.inputState(value)}
-                items={States[this.state.city].sort().map((ele) => {
-                  return { label: `${ele}`, value: `${ele}` };
-                })}
-              />
-            ) : (
-              <Text />
-            )}
-          </View>
-          {this.state.stateSelected ? (
-            <Button style={styles.button} onPress={this.getCoordinate}>
-              <Text>검색하기</Text>
+      <View>
+        <View style={styles.cities}>
+          {Cities.map((city) => (
+            <Button
+              key={city}
+              transparent
+              style={styles.citiesBtn}
+              onPress={() => this.inputCity(city)}
+            >
+              <Text
+                style={
+                  this.state.city !== city
+                    ? styles.citiesText
+                    : [styles.citiesText, styles.citiesTextSelcted]
+                }
+              >
+                {city}
+              </Text>
             </Button>
+          ))}
+        </View>
+        <View style={styles.statesStart}>
+          {this.state.citySelected ? (
+            this.state.city !== '경기도' ? (
+              <>
+                <Text>시/군/구도 선택해주세요</Text>
+                <View style={styles.states}>
+                  {States[this.state.city].sort().map((state) => (
+                    <Button
+                      key={state}
+                      transparent
+                      style={styles.citiesBtn}
+                      onPress={() => this.inputState(state)}
+                    >
+                      <Text
+                        style={
+                          this.state.state !== state
+                            ? styles.citiesText
+                            : [styles.citiesText, styles.citiesTextSelcted]
+                        }
+                      >
+                        {state}
+                      </Text>
+                    </Button>
+                  ))}
+                </View>
+              </>
+            ) : (
+              <>
+                <Text>
+                  선택하실 경기도 내의 시/군/구가 포함된 자음을 선택해주세요
+                </Text>
+                <View style={styles.states}>
+                  <Button
+                    key='before'
+                    transparent
+                    style={styles.citiesBtn}
+                    onPress={() => this.inputState('ㄱ~ㅅ')}
+                  >
+                    <Text
+                      style={
+                        this.state.range !== 'ㄱ~ㅅ'
+                          ? styles.citiesText
+                          : [styles.citiesText, styles.citiesTextSelcted]
+                      }
+                    >
+                      ㄱ~ㅅ
+                    </Text>
+                  </Button>
+                  <Button
+                    key='after'
+                    transparent
+                    style={styles.citiesBtn}
+                    onPress={() => this.inputState('ㅇ~ㅎ')}
+                  >
+                    <Text
+                      style={
+                        this.state.range !== 'ㅇ~ㅎ'
+                          ? styles.citiesText
+                          : [styles.citiesText, styles.citiesTextSelcted]
+                      }
+                    >
+                      ㅇ~ㅎ
+                    </Text>
+                  </Button>
+                </View>
+              </>
+            )
           ) : (
-            <Text />
+            <></>
           )}
-        </Container>
+        </View>
+        <View style={styles.statesStart}>
+          {this.state.stateSelected && this.state.range ? (
+            <>
+              <Text>시/군/구를 선택해주세요</Text>
+              <View style={styles.states}>
+                {States[this.state.city]
+                  .sort()
+                  .filter((state) => {
+                    let code = state.charCodeAt(0);
+                    if (
+                      this.state.range === 'ㄱ~ㅅ' &&
+                      Number(code.toString().slice(0, 2)) <= 49
+                    ) {
+                      return true;
+                    } else if (
+                      this.state.range === 'ㅇ~ㅎ' &&
+                      Number(code.toString().slice(0, 2)) > 49
+                    ) {
+                      return true;
+                    }
+                    return false;
+                  })
+                  .map((state) => {
+                    return (
+                      <Button
+                        key={state}
+                        transparent
+                        style={styles.citiesBtn}
+                        onPress={() => this.inputState(state)}
+                      >
+                        <Text
+                          style={
+                            this.state.state !== state
+                              ? styles.citiesText
+                              : [styles.citiesText, styles.citiesTextSelcted]
+                          }
+                        >
+                          {state}
+                        </Text>
+                      </Button>
+                    );
+                  })}
+              </View>
+            </>
+          ) : (
+            <></>
+          )}
+        </View>
+        <View />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    height: '100%',
-    textAlign: 'center',
+  cities: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
-  pickerContainer: {
-    marginTop: 30,
-    color: 'black',
-    marginLeft: 60,
-    marginRight: 60,
-    fontSize: 50,
+  citiesBtn: {
+    height: 40,
   },
-  button: {
+  citiesText: {
+    color: 'white',
+    marginRight: 8,
     marginTop: 10,
-    width: 300,
-    backgroundColor: 'white',
-    alignSelf: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    backgroundColor: '#ababab',
+  },
+  citiesTextSelcted: {
+    backgroundColor: '#62CCAD',
+  },
+  statesStart: {
+    marginTop: 20,
+  },
+  states: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 });
 

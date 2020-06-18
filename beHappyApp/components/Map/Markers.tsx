@@ -7,14 +7,15 @@ function Markers({
   index,
   latitude,
   longitude,
-  handleShowDetails,
+  controlShowDetail,
+  name,
 }) {
   const onPressEvent = () => {
-    handleShowDetails(center, index);
+    controlShowDetail(center, index);
   };
-
   const lat = parseFloat(latitude);
   const lon = parseFloat(longitude);
+
   return (
     <Marker
       key={latitude}
@@ -22,11 +23,8 @@ function Markers({
         latitude: lat,
         longitude: lon,
       }}
-      title='Reviews'
-      description='5.0'
-      pinColor={
-        importance === 0 ? 'yellow' : importance === 1 ? 'orange' : 'red'
-      }
+      title={name}
+      pinColor={importance === 0 ? 'gold' : importance === 1 ? 'orange' : 'red'}
       onPress={onPressEvent}
       identifier={'centers'}
     />

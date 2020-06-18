@@ -30,8 +30,10 @@ export default function DetailHomeBody(props) {
 
 const styles = StyleSheet.create({
   container: {
-    top: 10,
-    left: 20,
+    backgroundColor: 'white',
+    width: '100%',
+    height: '100%',
+    padding: 20,
   },
   text: {
     fontSize: 20,

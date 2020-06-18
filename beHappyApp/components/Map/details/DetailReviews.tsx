@@ -6,7 +6,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ShowStarRateAvg from './ShowStarRateAvg';
 import ShowReviews from './ShowReviews';
 import DeviceStorage from '../../../service/DeviceStorage';
-import { FakeReviewsData } from '../../../Data/FakeReviewsData';
+
 
 export default class DetailsReviews extends React.Component {
   constructor(props) {
