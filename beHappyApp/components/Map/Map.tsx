@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Header, Icon, Item, Button } from 'native-base';
 import Markers from './Markers';
 import Details from './details/Details';
-import TagFilters from './TagFilters';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
 
@@ -17,36 +17,15 @@ class Map extends React.Component {
     this.state = {
       myLatitude: 37.02,
       myLongitude: 127.17,
-      showDetails: false,
-      showDetailsIndex: null,
-      countSpecialties: 10,
-      specialties: [
-        ['스트레스', true],
-        ['가족', true],
-        ['우울증', true],
-        ['식이', true],
-        ['부부', true],
-        ['불면증', true],
-        ['학교폭력', true],
-        ['아동', true],
-        ['불안', true],
-        ['강박', true],
-      ],
-      centerTags: [['psychiatric', true], ['counseling', true]],
     };
 
-    this.handleShowDetails = this.handleShowDetails.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
     this.findCentersFromCurrentLocation = this.findCentersFromCurrentLocation.bind(
       this
     );
     this.goCurrentLocation = this.goCurrentLocation.bind(this);
-    this.changeFilter = this.changeFilter.bind(this);
     this.countSpecialties = this.countSpecialties.bind(this);
-    this.changeAllFilter = this.changeAllFilter.bind(this);
-    this.pressAll = this.pressAll.bind(this);
     this.checkSpecialtiesForUrl = this.checkSpecialtiesForUrl.bind(this);
-    this.changeCenterFilter = this.changeCenterFilter.bind(this);
     this.getBookmark = this.getBookmark.bind(this);
     this.deleteBookmarkState = this.deleteBookmarkState.bind(this);
     this.postBookmarkState = this.postBookmarkState.bind(this);
@@ -59,64 +38,13 @@ class Map extends React.Component {
     this.filterMarkerBySpecialties = this.filterMarkerBySpecialties.bind(this);
   }
 
-  changeFilter(index) {
-    const { showDetails, showDetailsIndex } = this.state;
-    let newState = this.state.specialties;
-    let present = newState[index][1];
-    newState[index][1] = !present;
-    this.countSpecialties(!present);
-    this.setState({
-      specialties: newState,
-    });
-    if (
-      this.props[showDetails] &&
-      this.filterMarkerBySpecialties(
-        this.props[showDetails][showDetailsIndex]
-      ) === false
-    ) {
-      this.handleShowDetails(false, null);
-    }
-  }
-
-  changeCenterFilter(index) {
-    let newState = this.state.centerTags;
-    let present = newState[index][1];
-    newState[index][1] = !present;
-    this.setState({
-      centerTags: newState,
-    });
-    if (this.state.showDetails === newState[index][0]) {
-      this.handleShowDetails(false, null);
-    }
-  }
-
-  changeAllFilter(status) {
-    let newState = this.state.specialties;
-    newState = newState.map((ele) => [ele[0], status]);
-    this.countSpecialties(null, status);
-    this.setState({
-      specialties: newState,
-    });
-  }
-
-  countSpecialties(status, allStatus) {
-    if (status === true) {
-      this.state.countSpecialties += 1;
-    } else if (status === false) {
-      this.state.countSpecialties -= 1;
-    } else if (allStatus === true) {
-      this.state.countSpecialties = 10;
-    } else {
-      this.state.countSpecialties = 0;
-    }
-  }
-
-  pressAll() {
-    if (this.state.countSpecialties === 10) {
-      this.changeAllFilter(false);
-    } else {
-      this.changeAllFilter(true);
-    }
+  countSpecialties() {
+    return Object.keys(this.props.specialties).reduce((acc, cur) => {
+      if (this.props.specialties[cur]) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
   }
 
   componentDidMount() {
@@ -146,20 +74,15 @@ class Map extends React.Component {
     })();
   }
 
-  handleShowDetails(center, index) {
-    this.setState({
-      showDetails: center,
-      showDetailsIndex: index,
-    });
-  }
-
   checkSpecialtiesForUrl() {
-    if (this.state.countSpecialties === (this.state.specialties.length || 0)) {
+    const { specialties } = this.props;
+    let keys = Object.keys(specialties);
+    if (this.countSpecialties() === (keys.length || 0)) {
       return '';
     }
-    let allSpecialties = this.state.specialties.reduce((acc, cur) => {
-      if (cur[1] === true) {
-        acc.push(cur[0]);
+    let allSpecialties = keys.reduce((acc, cur) => {
+      if (specialties[cur]) {
+        acc.push(specialties[cur]);
         return acc;
       }
       return acc;
@@ -202,7 +125,7 @@ class Map extends React.Component {
             );
           }
           this.props.controlCenterData(counseling, psychiatric);
-          this.handleShowDetails(false, null);
+          this.props.controlShowDetail(false, null);
         }
       });
   }
@@ -318,12 +241,14 @@ class Map extends React.Component {
   }
 
   filterMarkerBySpecialties(centerInfo) {
+    const { specialties } = this.props;
+    let keys = Object.keys(specialties);
     let result = false;
     centerInfo.specialties.forEach((centerSpecialty) => {
-      this.state.specialties.forEach((specialtyFilter) => {
+      keys.forEach((specialtyFilter) => {
         if (
-          centerSpecialty.name === specialtyFilter[0] &&
-          specialtyFilter[1] === true
+          centerSpecialty.name === specialtyFilter &&
+          specialties[specialtyFilter]
         ) {
           result = true;
         }
@@ -335,89 +260,43 @@ class Map extends React.Component {
   render() {
     this.props.bookmarkClicked ? this.goToMarked() : '';
 
-    const {
-      myLatitude,
-      myLongitude,
-      showDetails,
-      showDetailsIndex,
-    } = this.state;
+    const { myLatitude, myLongitude } = this.state;
+
+    const { centerTags, showDetailsIndex, showDetails } = this.props;
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
-        <View style={styles.container}>
-          <Header searchBar rounded style={{ backgroundColor: 'white' }}>
-            <Item>
-              <Icon active name='search' />
-              <Button
-                transparent
-                style={styles.buttonGeo}
-                onPress={() => {
-                  this.props.navigation.navigate('SearchGeoContainer', {
-                    goSpecificLocationAfterSearch: this
-                      .goSpecificLocationAfterSearch,
-                    handleShowDetails: this.handleShowDetails,
-                  });
-                }}
-              >
-                <Text>지역으로 검색</Text>
-              </Button>
-              <Button
-                transparent
-                style={styles.button}
-                onPress={() => {
-                  this.props.navigation.navigate('SearchNameContainer', {
-                    goSpecificLocationAfterSearch: this
-                      .goSpecificLocationAfterSearch,
-                    handleShowDetails: this.handleShowDetails,
-                  });
-                }}
-              >
-                <Text>이름으로 검색</Text>
-              </Button>
-            </Item>
-          </Header>
-          <View style={{ flexDirection: 'row' }}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
+        <Header searchBar rounded style={{ backgroundColor: 'white' }}>
+          <Item>
+            <Image
+              source={require('../../assets/behappy.png')}
+              style={styles.logo}
+            />
+            <Button
+              transparent
+              style={styles.searchButton}
+              onPress={() => {
+                this.props.navigation.navigate('SearchNameContainer', {
+                  goSpecificLocationAfterSearch: this
+                    .goSpecificLocationAfterSearch,
+                });
+              }}
             >
-              {this.state.specialties.map((tagArr, index) => (
-                <TagFilters
-                  key={tagArr[0]}
-                  tag={tagArr[0]}
-                  index={index}
-                  changeFilter={this.changeFilter}
-                  selected={tagArr[1]}
-                />
-              ))}
-            </ScrollView>
-            <Button transparent onPress={this.pressAll}>
-              <Text style={styles.allText}>All</Text>
+              <Icon active name='search' style={{ color: 'grey' }} />
+              <Text style={styles.searchText}>검색어를 입력해주세요</Text>
             </Button>
-          </View>
-          <View
-            style={{
-              left: 10,
-              width: '95%',
-              borderBottomWidth: 1,
-              borderColor: 'lightgrey',
-            }}
-          />
-          <View style={{ flexDirection: 'row' }}>
-            {this.state.centerTags.map((tagArr, index) => (
-              <Button
-                key={tagArr[0]}
-                transparent
-                onPress={() => this.changeCenterFilter(index)}
-              >
-                <Text style={tagArr[1] ? styles.selected : styles.notSelected}>
-                  {tagArr[0] === 'psychiatric' ? '정신과' : '심리센터'}
-                </Text>
-              </Button>
-            ))}
-          </View>
-        </View>
+            <SimpleLineIcons
+              name='equalizer'
+              size={22}
+              style={styles.filter}
+              onPress={() => {
+                this.props.navigation.navigate('FilterContainer');
+              }}
+            />
+          </Item>
+        </Header>
         <MapView
+          toolbarEnabled={false}
           ref={(component) => (this._map = component)}
           style={styles.map}
           showsUserLocation={false}
@@ -437,7 +316,7 @@ class Map extends React.Component {
             );
           }}
           onPress={() => {
-            this.handleShowDetails(false, null);
+            this.props.controlShowDetail(false, null);
           }}
         >
           <Marker
@@ -446,13 +325,13 @@ class Map extends React.Component {
             image={require('../../assets/mylocation.png')}
           />
 
-          {this.state.centerTags.map((center) =>
-            center[1] && this.props[center[0]] ? (
-              this.props[center[0]].map((centerInfo, index) => {
+          {Object.keys(centerTags).map((center) =>
+            centerTags[center] === true && this.props[center] ? (
+              this.props[center].map((centerInfo, index) => {
                 if (
                   (centerInfo.specialties.length === 0 &&
-                    this.state.countSpecialties > 0) ||
-                  this.state.countSpecialties === 10 ||
+                    this.countSpecialties() > 0) ||
+                  this.countSpecialties() === 10 ||
                   this.filterMarkerBySpecialties(centerInfo) === true
                 ) {
                   return (
@@ -462,8 +341,10 @@ class Map extends React.Component {
                       latitude={centerInfo.latitude}
                       longitude={centerInfo.longitude}
                       importance={centerInfo.importance}
-                      center={center[0]}
-                      handleShowDetails={this.handleShowDetails}
+                      center={center}
+                      controlShowDetail={this.props.controlShowDetail}
+                      specialties={centerInfo.specialties}
+                      name={centerInfo.centerName}
                     />
                   );
                 }
@@ -473,7 +354,7 @@ class Map extends React.Component {
             )
           )}
         </MapView>
-        {this.state.showDetails ? (
+        {showDetails ? (
           <Details
             centerInfo={
               showDetailsIndex > this.props[showDetails].length
@@ -516,44 +397,39 @@ class Map extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  logo: {
+    width: '25%',
+    height: 53,
+    marginRight: 10,
+  },
+  searchButton: {
+    backgroundColor: '#ebebeb',
+    width: '57%',
+    height: '80%',
+    borderRadius: 20,
+    paddingHorizontal: 5,
+  },
+  searchText: {
+    position: 'absolute',
+    left: 45,
+    color: 'grey',
+  },
+  filter: {
+    position: 'absolute',
+    right: 15,
+    transform: [{ rotate: '90deg' }],
+  },
   map: {
     flex: 1,
     zIndex: -1,
     width: '100%',
-    height: '80%',
-    top: '20%',
+    height: '100%',
     position: 'absolute',
-  },
-  text: {
-    fontSize: 30,
-  },
-  container: {
-    backgroundColor: 'white',
-    height: '20%',
-  },
-  buttonGeo: {
-    color: 'white',
-    width: '40%',
-  },
-  button: {
-    width: '40%',
-  },
-  hashtag: {
-    fontSize: 15,
-    marginTop: 9,
-    left: 20,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginRight: 10,
-    backgroundColor: '#62CCAD',
-    color: 'white',
-    borderRadius: 10,
   },
   searchNowContainer: {
     position: 'absolute',
-    left: 6,
-    top: 150,
+    left: 8,
+    top: 65,
     padding: 5,
     alignSelf: 'flex-start',
   },
@@ -588,43 +464,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
-  },
-  allText: {
-    marginTop: -2,
-    marginLeft: 10,
-    marginRight: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    fontWeight: 'bold',
-    color: 'black',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  selected: {
-    backgroundColor: '#62ccad',
-    marginTop: -2,
-    borderRadius: 12,
-    padding: 3,
-    marginLeft: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  notSelected: {
-    backgroundColor: '#D1D1D1',
-    marginTop: -2,
-    borderRadius: 12,
-    padding: 3,
-    marginLeft: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    color: 'white',
-    fontSize: 16,
-    textAlign: 'center',
   },
 });
 

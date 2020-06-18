@@ -14,7 +14,7 @@ class DetailsHome extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { bookmark: this.props.navigation.state.params.bookmark };
+    this.state = { bookmark: this.props.route.params.bookmark };
 
     this.call = this.call.bind(this);
     this.bookmark = this.bookmark.bind(this);
@@ -22,9 +22,7 @@ class DetailsHome extends React.Component {
   }
 
   call() {
-    Linking.openURL(
-      `tel:${this.props.navigation.state.params.theCenterInfo.phone}`
-    );
+    Linking.openURL(`tel:${this.props.route.params.theCenterInfo.phone}`);
   }
 
   bookmark() {
@@ -32,7 +30,7 @@ class DetailsHome extends React.Component {
       postDeletebookmark,
       bookmark,
       theCenterInfo,
-    } = this.props.navigation.state.params;
+    } = this.props.route.params;
     postDeletebookmark(bookmark, theCenterInfo.id);
     this.handleBookmarkColor();
   }
@@ -44,9 +42,9 @@ class DetailsHome extends React.Component {
   }
 
   render() {
-    const { theCenterInfo } = this.props.navigation.state.params;
+    const { theCenterInfo } = this.props.route.params;
     const { bookmark } = this.state;
-    console.log(theCenterInfo);
+    console.log(this.props);
     return (
       <Fragment>
         <View style={styles.container}>
@@ -127,12 +125,12 @@ class DetailsHome extends React.Component {
           <Tab.Screen
             name='홈'
             component={DetailHomeBody}
-            initialParams={this.props.navigation.state.params.theCenterInfo}
+            initialParams={this.props.route.params.theCenterInfo}
           />
           <Tab.Screen
             name='리뷰'
             component={DetailReviews}
-            initialParams={this.props.navigation.state.params.theCenterInfo}
+            initialParams={this.props.route.params.theCenterInfo}
           />
           <Tab.Screen name='예약' component={Booking} />
         </Tab.Navigator>
