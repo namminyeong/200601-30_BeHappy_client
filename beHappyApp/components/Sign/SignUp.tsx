@@ -12,7 +12,6 @@ import RadioForm from 'react-native-simple-radio-button';
 import RNPickerSelect from 'react-native-picker-select';
 import getEnvVars from '../../environment';
 
-import CenterList from './centerList';
 import AddressModal from './AddressModal';
 
 const { ec2, kakaoApi } = getEnvVars();
@@ -643,7 +642,7 @@ export default class SignUp extends React.Component {
           <View style={styles.radioForm}>
             <RadioForm
               radio_props={radio_props}
-              initial={1}
+              initial={0}
               formHorizontal={false}
               labelHorizontal={true}
               buttonSize={12}
@@ -652,7 +651,7 @@ export default class SignUp extends React.Component {
               }}
             />
           </View>
-          {value === 1 ? (
+          {value === 0 ? (
             <Fragment>
               <TextInput
                 style={styles.inputBox}
@@ -787,12 +786,6 @@ export default class SignUp extends React.Component {
                   )}
                 </View>
                 <View style={styles.searchBtnContainer}>
-                  {/* <TouchableOpacity
-                    style={styles.searchAddress}
-                    onPress={this.getCoordinate}
-                  >
-                    <Text style={{ color: 'white' }}>주소 찾기</Text>
-                  </TouchableOpacity> */}
                   <TouchableHighlight
                     style={styles.searchAddress}
                     onPress={() => this.changeModalVisible(true)}
@@ -833,30 +826,6 @@ export default class SignUp extends React.Component {
                 </Text>
                 <Text style={styles.selectedCityText}>전화번호: {phone}</Text>
               </View>
-
-              {/* {this.state.centerSelected ? (
-                centerInfo.map((center, index) => (
-                  <CenterList
-                    key={index}
-                    center={center}
-                    centerName={center.centerName}
-                    latitude={center.latitude}
-                    longitude={center.longitude}
-                    phone={center.phone}
-                    addressName={center.addressName}
-                    roadAddressName={center.roadAddressName}
-                    setPhone={this.setPhone}
-                    setLatitude={this.setLatitude}
-                    setLongitude={this.setLongitude}
-                    setAddressName={this.setAddressName}
-                    setRoadAddressName={this.setRoadAddressName}
-                    selectCenter={this.selectCenter}
-                    setCenterName={this.setCenterName}
-                  />
-                ))
-              ) : (
-                <Text />
-              )} */}
               <TouchableOpacity
                 style={styles.submitBtn}
                 onPress={this.centerSignup}

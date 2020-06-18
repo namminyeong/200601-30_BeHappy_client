@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
+  ScrollView,
   TouchableOpacity,
-  TouchableHighlight,
   Dimensions,
 } from 'react-native';
 
@@ -40,30 +39,38 @@ const AddressModal = ({
       disabled={true}
       style={styles.container}
     >
-      <View style={[styles.modal, { width: width - 40, height: height - 60 }]}>
-        {centerInfo.map((center, index) => (
-          <CenterList
-            key={index}
-            center={center}
-            centerName={center.centerName}
-            latitude={center.latitude}
-            longitude={center.longitude}
-            phone={center.phone}
-            addressName={center.addressName}
-            roadAddressName={center.roadAddressName}
-            setPhone={setPhone}
-            setLatitude={setLatitude}
-            setLongitude={setLongitude}
-            setAddressName={setAddressName}
-            setRoadAddressName={setRoadAddressName}
-            selectCenter={selectCenter}
-            setCenterName={setCenterName}
-            closeModal={closeModal}
-          />
-        ))}
-        <TouchableHighlight onPress={() => closeModal()}>
-          <Text style={styles.text}>아니오</Text>
-        </TouchableHighlight>
+      <View
+        style={[
+          styles.modal,
+          {
+            width: width - 20,
+            height: height - 60,
+          },
+        ]}
+      >
+        <ScrollView>
+          {centerInfo.map((center, index) => (
+            <View style={styles.centerInfo}>
+              <CenterList
+                key={index}
+                centerName={center.centerName}
+                latitude={center.latitude}
+                longitude={center.longitude}
+                phone={center.phone}
+                addressName={center.addressName}
+                roadAddressName={center.roadAddressName}
+                setPhone={setPhone}
+                setLatitude={setLatitude}
+                setLongitude={setLongitude}
+                setAddressName={setAddressName}
+                setRoadAddressName={setRoadAddressName}
+                selectCenter={selectCenter}
+                setCenterName={setCenterName}
+                closeModal={closeModal}
+              />
+            </View>
+          ))}
+        </ScrollView>
       </View>
     </TouchableOpacity>
   );
@@ -75,32 +82,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modal: {
-    // height: 100,
-    paddingTop: 10,
+    marginVertical: 20,
+    paddingVertical: 10,
     alignSelf: 'center',
     alignItems: 'center',
-    textAlign: 'center',
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderRadius: 10,
   },
-  textView: {
+  centerInfo: {
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    padding: 10,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   text: {
     margin: 5,
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  btnView: {
-    width: '60%',
-    flexDirection: 'row',
-  },
-  touchableHighlight: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
   },
 });
 
