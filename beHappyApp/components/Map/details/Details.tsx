@@ -46,15 +46,15 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
         <MaterialCommunityIcons
           name='bookmark'
           color={bookmark ? 'black' : 'lightgrey'}
-          size={45}
-          style={{ left: 20, marginHorizontal: 2 }}
+          size={40}
+          style={{ marginHorizontal: 2 }}
           onPress={() => postDeletebookmark(bookmark, centerInfo.id)}
         />
         <MaterialCommunityIcons
           name='phone'
           color='black'
-          size={45}
-          style={{ left: 30, marginHorizontal: 2 }}
+          size={40}
+          style={{ left: 10, marginHorizontal: 2 }}
           onPress={call}
         />
         <View
@@ -93,20 +93,27 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '20%',
     backgroundColor: 'white',
-    zIndex: 1,
-    paddingHorizontal: 3,
+    paddingHorizontal: 17,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 11.14,
+    elevation: 17,
   },
   center: {
-    top: 7,
-    fontSize: 25,
+    left: 10,
+    top: 15,
+    fontSize: 22,
     fontWeight: 'bold',
-    textAlign: 'center',
     height: 40,
   },
   address: {
-    top: 3,
-    fontSize: 17,
-    textAlign: 'center',
+    left: 10,
+    top: 7,
+    fontSize: 16,
     height: 40,
   },
   distance: {
@@ -121,10 +128,11 @@ const styles = StyleSheet.create({
   review: {
     marginHorizontal: 7,
     fontSize: 20,
-    left: 35,
+    left: 27,
+    fontWeight: 'bold',
   },
   star: {
-    left: 35,
+    left: 30,
   },
 });
 

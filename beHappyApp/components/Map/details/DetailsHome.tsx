@@ -14,7 +14,7 @@ class DetailsHome extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { bookmark: this.props.navigation.state.params.bookmark };
+    this.state = { bookmark: this.props.route.params.bookmark };
 
     this.call = this.call.bind(this);
     this.bookmark = this.bookmark.bind(this);
@@ -22,9 +22,7 @@ class DetailsHome extends React.Component {
   }
 
   call() {
-    Linking.openURL(
-      `tel:${this.props.navigation.state.params.theCenterInfo.phone}`
-    );
+    Linking.openURL(`tel:${this.props.route.params.theCenterInfo.phone}`);
   }
 
   bookmark() {
@@ -32,7 +30,7 @@ class DetailsHome extends React.Component {
       postDeletebookmark,
       bookmark,
       theCenterInfo,
-    } = this.props.navigation.state.params;
+    } = this.props.route.params;
     postDeletebookmark(bookmark, theCenterInfo.id);
     this.handleBookmarkColor();
   }
@@ -44,18 +42,13 @@ class DetailsHome extends React.Component {
   }
 
   render() {
-    const { theCenterInfo } = this.props.navigation.state.params;
+    const { theCenterInfo } = this.props.route.params;
     const { bookmark } = this.state;
-    console.log(theCenterInfo);
     return (
       <Fragment>
         <View style={styles.container}>
           <Text style={styles.centerName}>{theCenterInfo.centerName}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}
-          >
+          <View style={styles.specialtyContainer}>
             {theCenterInfo.specialties.map((specialty) => (
               <Text style={styles.specialty} key={specialty.name}>
                 #{specialty.name}
@@ -117,22 +110,26 @@ class DetailsHome extends React.Component {
             </View>
           </View>
         </View>
+
         <Tab.Navigator
           tabBarOptions={{
-            labelStyle: { fontSize: 15 },
+            labelStyle: { fontSize: 15, color: 'white' },
             tabStyle: { width: 70 },
-            // style: { backgroundColor: 'white' },
+            style: { backgroundColor: '#62CCAD' },
+            activeTintColor: 'white',
+            indicatorStyle: { backgroundColor: 'white' },
           }}
         >
           <Tab.Screen
             name='홈'
             component={DetailHomeBody}
-            initialParams={this.props.navigation.state.params.theCenterInfo}
+            initialParams={this.props.route.params.theCenterInfo}
           />
           <Tab.Screen
             name='리뷰'
             component={DetailReviews}
-            initialParams={this.props.navigation.state.params.theCenterInfo}
+            initialParams={this.props.route.params.theCenterInfo}
+            options={{}}
           />
           <Tab.Screen name='예약' component={Booking} />
         </Tab.Navigator>
@@ -147,9 +144,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centerName: {
+    top: 40,
+    fontSize: 25,
+    fontWeight: 'bold',
+    height: 60,
+  },
+  specialtyContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     top: 20,
-    fontSize: 28,
-    height: 70,
   },
   specialty: {
     fontSize: 15,
@@ -160,11 +163,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#62CCAD',
   },
   noReviewContainer: {
+    top: 5,
     marginTop: 23,
     marginBottom: 15,
     fontSize: 17,
   },
   reviewContainer: {
+    top: 10,
     width: 235,
     marginTop: 20,
     marginBottom: 12,

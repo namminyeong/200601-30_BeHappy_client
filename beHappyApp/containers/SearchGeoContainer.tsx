@@ -3,14 +3,25 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import SearchGeo from '../components/Map/SearchGeo';
-import { controlCenterData } from '../modules(reducers)/currentOnMap';
+import {
+  controlCenterData,
+  controlShowDetail,
+} from '../modules(reducers)/currentOnMap';
 
-const SearchGeoContainer = ({ controlCenterData, navigation, token }) => {
+const SearchGeoContainer = ({
+  controlCenterData,
+  goSpecificLocationAfterSearch,
+  token,
+  goBack,
+  controlShowDetail,
+}) => {
   return (
     <SearchGeo
       controlCenterData={controlCenterData}
-      navigation={navigation}
       token={token}
+      goSpecificLocationAfterSearch={goSpecificLocationAfterSearch}
+      goBack={goBack}
+      controlShowDetail={controlShowDetail}
     />
   );
 };
@@ -23,6 +34,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       controlCenterData,
+      controlShowDetail,
     },
     dispatch
   );
