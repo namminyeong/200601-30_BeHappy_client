@@ -13,7 +13,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
               name='star'
               key={'full' + i.toString()}
               size={33}
-              style={{ color: '#D61A3C', marginHorizontal: 3 }}
+              style={{ color: '#D61A3C', marginHorizontal: 1 }}
             />
           );
         }
@@ -23,7 +23,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
           name='star-half-empty'
           key={'half'}
           size={33}
-          style={{ color: '#D61A3C', marginHorizontal: 3 }}
+          style={{ color: '#D61A3C', marginHorizontal: 1 }}
         />
       );
       for (let i = rateAvg - 1; i > -5; i--) {
@@ -35,7 +35,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
               size={33}
               style={{
                 color: '#B2BEC3',
-                marginHorizontal: 3,
+                marginHorizontal: 1,
               }}
             />
           );
@@ -52,7 +52,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
               size={33}
               style={{
                 color: '#D61A3C',
-                marginHorizontal: 3,
+                marginHorizontal: 1,
               }}
             />
           );
@@ -64,7 +64,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
               size={33}
               style={{
                 color: '#B2BEC3',
-                marginHorizontal: 3,
+                marginHorizontal: 1,
               }}
             />
           );

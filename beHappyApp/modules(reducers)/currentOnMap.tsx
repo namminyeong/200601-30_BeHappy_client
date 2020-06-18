@@ -31,7 +31,6 @@ export const controlCenterTags = (centerTags) => {
 };
 
 export const controlShowDetail = (status, index) => {
-  console.log('controlShowDetail', status, index);
   return { type: SHOWDETAIL, status, index };
 };
 

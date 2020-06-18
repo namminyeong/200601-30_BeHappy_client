@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '20%',
     backgroundColor: 'white',
-    zIndex: 1,
+    zIndex: 2,
     paddingHorizontal: 3,
   },
   center: {
@@ -121,10 +121,11 @@ const styles = StyleSheet.create({
   review: {
     marginHorizontal: 7,
     fontSize: 20,
-    left: 35,
+    left: 32,
+    fontWeight: 'bold',
   },
   star: {
-    left: 35,
+    left: 32,
   },
 });
 

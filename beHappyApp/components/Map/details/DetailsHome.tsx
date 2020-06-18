@@ -44,16 +44,11 @@ class DetailsHome extends React.Component {
   render() {
     const { theCenterInfo } = this.props.route.params;
     const { bookmark } = this.state;
-    console.log(this.props);
     return (
       <Fragment>
         <View style={styles.container}>
           <Text style={styles.centerName}>{theCenterInfo.centerName}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}
-          >
+          <View style={styles.specialtyContainer}>
             {theCenterInfo.specialties.map((specialty) => (
               <Text style={styles.specialty} key={specialty.name}>
                 #{specialty.name}
@@ -115,11 +110,14 @@ class DetailsHome extends React.Component {
             </View>
           </View>
         </View>
+
         <Tab.Navigator
           tabBarOptions={{
-            labelStyle: { fontSize: 15 },
+            labelStyle: { fontSize: 15, color: 'white' },
             tabStyle: { width: 70 },
-            // style: { backgroundColor: 'white' },
+            style: { backgroundColor: '#62CCAD' },
+            activeTintColor: 'white',
+            indicatorStyle: { backgroundColor: 'white' },
           }}
         >
           <Tab.Screen
@@ -131,6 +129,7 @@ class DetailsHome extends React.Component {
             name='리뷰'
             component={DetailReviews}
             initialParams={this.props.route.params.theCenterInfo}
+            options={{}}
           />
           <Tab.Screen name='예약' component={Booking} />
         </Tab.Navigator>
@@ -145,9 +144,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centerName: {
-    top: 20,
+    top: 35,
     fontSize: 28,
     height: 70,
+  },
+  specialtyContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    top: 10,
   },
   specialty: {
     fontSize: 15,

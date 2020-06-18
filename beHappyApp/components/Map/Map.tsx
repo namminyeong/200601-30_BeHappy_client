@@ -237,7 +237,7 @@ class Map extends React.Component {
       latitudeDelta: this.props.coordinate[3],
     });
     this.props.controlBookmarkClicked(false);
-    this.props.navigation.popToTop();
+    // this.props.navigation.popToTop();
   }
 
   filterMarkerBySpecialties(centerInfo) {
@@ -261,7 +261,6 @@ class Map extends React.Component {
     this.props.bookmarkClicked ? this.goToMarked() : '';
 
     const { myLatitude, myLongitude } = this.state;
-
     const { centerTags, showDetailsIndex, showDetails } = this.props;
 
     return (
@@ -343,7 +342,6 @@ class Map extends React.Component {
                       importance={centerInfo.importance}
                       center={center}
                       controlShowDetail={this.props.controlShowDetail}
-                      specialties={centerInfo.specialties}
                       name={centerInfo.centerName}
                     />
                   );
@@ -357,13 +355,13 @@ class Map extends React.Component {
         {showDetails ? (
           <Details
             centerInfo={
-              showDetailsIndex > this.props[showDetails].length
+              showDetailsIndex > this.props[showDetails].length - 1
                 ? this.props[showDetails][0]
                 : this.props[showDetails][showDetailsIndex]
             }
             navigation={this.props.navigation}
             bookmark={
-              showDetailsIndex > this.props[showDetails].length
+              showDetailsIndex > this.props[showDetails].length - 1
                 ? this.checkBookmark(this.props[showDetails][0].id)[0]
                 : this.checkBookmark(
                     this.props[showDetails][showDetailsIndex].id
@@ -384,7 +382,13 @@ class Map extends React.Component {
             <Text style={styles.searchNow}>현 위치에서 검색하기</Text>
           </Button>
         </View>
-        <View style={styles.goCurrentLocation}>
+        <View
+          style={
+            showDetails !== false
+              ? [styles.goCurrentLocation, styles.goCurrentLocationUp]
+              : styles.goCurrentLocation
+          }
+        >
           <MaterialCommunityIcons
             name='crosshairs-gps'
             size={26}
@@ -453,7 +457,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     right: 15,
-    bottom: 30,
+    bottom: 16,
     padding: 5,
     borderRadius: 20,
     alignSelf: 'flex-end',
@@ -465,6 +469,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
+  },
+  goCurrentLocationUp: {
+    bottom: 155,
   },
 });
 
