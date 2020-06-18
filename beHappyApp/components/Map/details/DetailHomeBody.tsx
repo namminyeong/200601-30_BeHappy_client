@@ -10,11 +10,16 @@ export default function DetailHomeBody(props) {
         {'    '}
         {props.route.params.roadAddressName}
       </Text>
-      <Text style={styles.text}>
-        <MaterialCommunityIcons name='phone-classic' size={20} />
-        {'    '}
-        {props.route.params.phone}
-      </Text>
+      {props.route.params.phone ? (
+        <Text style={styles.text}>
+          <MaterialCommunityIcons name='phone-classic' size={20} />
+          {'    '}
+          {props.route.params.phone}
+        </Text>
+      ) : (
+        <></>
+      )}
+
       <Text style={styles.text}>
         <MaterialCommunityIcons name='clock-outline' size={20} />
         {'   '}오전 09:00 ~ 오후 10:00

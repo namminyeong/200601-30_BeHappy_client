@@ -1,18 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { Button } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+
 class MyReviews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       myReviews: [],
+      isLoading: false,
     };
     this.handleMyReviewInState = this.handleMyReviewInState.bind(this);
     this.drawStars = this.drawStars.bind(this);
+    this.handleLoading = this.handleLoading.bind(this);
   }
 
+  handleLoading(status) {
+    this.setState({
+      isLoading: status,
+    });
+  }
   componentDidMount() {
+    this.handleLoading(true);
     fetch('http://13.209.16.103:4000/review', {
       method: 'GET',
       credentials: 'include',
@@ -30,6 +46,7 @@ class MyReviews extends React.Component {
       .then((data) => {
         if (typeof data === 'object') {
           this.handleMyReviewInState(data);
+          this.handleLoading(false);
         }
       })
       .catch((error) => {
@@ -71,42 +88,67 @@ class MyReviews extends React.Component {
   }
 
   render() {
-    const { myReviews } = this.state;
+    const { myReviews, isLoading } = this.state;
     return (
-      <View style={styles.container}>
-        <ScrollView>
-          {myReviews.map((review) => (
-            <View style={styles.review}>
-              <Text>진료일자 : {review.date}</Text>
-              <Text style={styles.centername}>{review.centerName}</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.rate}>{this.drawStars(review.rate)}</View>
-                <View style={styles.buttons}>
-                  <Button small transparent style={styles.modifyDeleteButton}>
-                    <Text style={styles.modifyDeleteText}>수정</Text>
-                  </Button>
-                  <Button small transparent style={styles.modifyDeleteButton}>
-                    <Text style={styles.modifyDeleteText}>삭제</Text>
-                  </Button>
+      <>
+        {isLoading ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size='large' color='#0000ff' />
+          </View>
+        ) : (
+          <View style={styles.container}>
+            <ScrollView>
+              {myReviews.map((review) => (
+                <View style={styles.review}>
+                  <View style={styles.buttons}>
+                    <Button
+                      small
+                      transparent
+                      style={styles.modifyDeleteButton}
+                      onPress={() => {
+                        this.props.navigation.navigate('ModifyReview', {
+                          review,
+                        });
+                      }}
+                    >
+                      <SimpleLineIcons name='pencil' size={23} />
+                      {/* <Text style={styles.modifyDeleteText}>수정</Text> */}
+                    </Button>
+                    <Button small transparent style={styles.modifyDeleteButton}>
+                      <FontAwesome name='trash-o' size={23} />
+                      {/* <Text style={styles.modifyDeleteText}>삭제</Text> */}
+                    </Button>
+                  </View>
+                  <Text>진료일자 : {review.date}</Text>
+                  <Text style={styles.centername}>{review.centerName}</Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.rate}>
+                      {this.drawStars(review.rate)}
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    {review.specialties.map((specialty) => (
+                      <Text style={styles.specialty}>#{specialty}</Text>
+                    ))}
+                  </View>
+                  <Text numberOfLines={3} style={styles.content}>
+                    {review.content}
+                  </Text>
                 </View>
-              </View>
-              <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                {review.specialties.map((specialty) => (
-                  <Text style={styles.specialty}>#{specialty}</Text>
-                ))}
-              </View>
-              <Text numberOfLines={3} style={styles.content}>
-                {review.content}
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   container: {
     alignItems: 'center',
     flex: 1,
@@ -128,6 +170,25 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  buttons: {
+    marginTop: 10,
+    position: 'absolute',
+    right: 10,
+    flexDirection: 'row',
+  },
+  modifyDeleteButton: {
+    flexDirection: 'column',
+    marginLeft: 10,
+    alignItems: 'center',
+    marginHorizontal: 5,
+    width: 35,
+    height: 35,
+  },
+  modifyDeleteText: {
+    fontSize: 12,
+    width: '100%',
+    textAlign: 'center',
+  },
   centername: {
     marginVertical: 6,
     fontSize: 20,
@@ -135,26 +196,6 @@ const styles = StyleSheet.create({
   },
   rate: {
     flexDirection: 'row',
-  },
-  buttons: {
-    marginTop: 10,
-    position: 'absolute',
-    right: 0,
-    flexDirection: 'row',
-  },
-  modifyDeleteButton: {
-    marginLeft: 15,
-    alignItems: 'center',
-    marginHorizontal: 5,
-    width: 60,
-    height: 35,
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  modifyDeleteText: {
-    fontSize: 14,
-    width: 57,
-    textAlign: 'center',
   },
   specialty: {
     marginTop: 3,
