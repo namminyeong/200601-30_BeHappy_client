@@ -13,7 +13,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
               name='star'
               key={'full' + i.toString()}
               size={33}
-              style={{ color: '#D61A3C', marginHorizontal: 1 }}
+              style={{ color: '#D61A3C', marginHorizontal: 5 }}
             />
           );
         }
@@ -23,7 +23,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
           name='star-half-empty'
           key={'half'}
           size={33}
-          style={{ color: '#D61A3C', marginHorizontal: 1 }}
+          style={{ color: '#D61A3C', marginHorizontal: 5 }}
         />
       );
       for (let i = rateAvg - 1; i > -5; i--) {
@@ -35,7 +35,7 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
               size={33}
               style={{
                 color: '#B2BEC3',
-                marginHorizontal: 1,
+                marginHorizontal: 5,
               }}
             />
           );
@@ -49,10 +49,10 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
             <FontAwesome
               name='star'
               key={'full' + i.toString()}
-              size={33}
+              size={30}
               style={{
                 color: '#D61A3C',
-                marginHorizontal: 1,
+                marginHorizontal: 5,
               }}
             />
           );
@@ -61,10 +61,10 @@ export default function DetailsMiniStarRateAvg({ rateAvg }) {
             <FontAwesome
               name='star-o'
               key={'o' + i.toString()}
-              size={33}
+              size={30}
               style={{
                 color: '#B2BEC3',
-                marginHorizontal: 1,
+                marginHorizontal: 5,
               }}
             />
           );

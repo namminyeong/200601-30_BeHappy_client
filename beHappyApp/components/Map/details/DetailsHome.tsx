@@ -144,14 +144,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   centerName: {
-    top: 35,
-    fontSize: 28,
-    height: 70,
+    top: 40,
+    fontSize: 25,
+    fontWeight: 'bold',
+    height: 60,
   },
   specialtyContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    top: 10,
+    top: 20,
   },
   specialty: {
     fontSize: 15,
@@ -162,11 +163,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#62CCAD',
   },
   noReviewContainer: {
+    top: 5,
     marginTop: 23,
     marginBottom: 15,
     fontSize: 17,
   },
   reviewContainer: {
+    top: 10,
     width: 235,
     marginTop: 20,
     marginBottom: 12,
