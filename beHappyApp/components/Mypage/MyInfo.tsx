@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     padding: 3,
     paddingLeft: 10,
     paddingRight: 10,
-    backgroundColor: '#B2BEC3',
+    backgroundColor: '#D1D1D1',
     borderRadius: 10,
     color: '#FFFFFF',
   },
