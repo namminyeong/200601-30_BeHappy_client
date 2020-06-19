@@ -4,35 +4,70 @@ import { Button } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
 import { Specialties } from '../../../Data/Preference';
 import Entypo from 'react-native-vector-icons/Entypo';
+import getEnvVars from '../../../environment';
+const { ec2 } = getEnvVars();
 
 class BookingReview extends React.Component {
   constructor(props) {
     super(props);
     console.log('BookingReview 진입');
     console.log('props: ', this.props);
-    // this.state = {
-    //   modifyingReview: this.props.route.params.review,
-    // };
+    console.log('props: ', this.props.route.params);
+    this.state = {
+      token: this.props.route.params.token,
+      centerId: this.props.route.params.booking.center.id,
+      bookingId: this.props.route.params.booking.id,
+      rate: 0,
+      content: '',
+      specialties: ['스트레스', '강박'],
+      newReview: this.props.route.params.booking,
+    };
+    this.submitReview = this.submitReview.bind(this);
     // this.onChangeText = this.onChangeText.bind(this);
-    // this.completedModify = this.completedModify.bind(this);
     // this.ratingCompleted = this.ratingCompleted.bind(this);
     // this.checkSpecialties = this.checkSpecialties.bind(this);
     // this.handleSpecialties = this.handleSpecialties.bind(this);
   }
 
+  submitReview() {
+    const { centerId, bookingId, rate, content, specialties } = this.state;
+
+    fetch(ec2 + '/review', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.state.token}`,
+      },
+      body: JSON.stringify({ centerId, bookingId, rate, content, specialties }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+      })
+      .then((payload) => {
+        console.log('payload: ', payload);
+        this.props.navigation.navigate('MyBookingContainer');
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
   // onChangeText(text) {
-  //   let newState = Object.assign({}, this.state.modifyingReview);
+  //   let newState = Object.assign({}, this.state.newReview);
   //   newState.content = text;
   //   this.setState({
-  //     modifyingReview: newState,
+  //     newReview: newState,
   //   });
   // }
 
   // ratingCompleted(rate) {
-  //   let newState = Object.assign({}, this.state.modifyingReview);
+  //   let newState = Object.assign({}, this.state.newReview);
   //   newState.rate = rate;
   //   this.setState({
-  //     modifyingReview: newState,
+  //     newReview: newState,
   //   });
   // }
 
@@ -47,7 +82,7 @@ class BookingReview extends React.Component {
   // }
 
   // handleSpecialties(specialty) {
-  //   let newState = Object.assign({}, this.state.modifyingReview);
+  //   let newState = Object.assign({}, this.state.newReview);
   //   let index = newState.specialties.indexOf(specialty);
   //   if (index === -1) {
   //     newState.specialties.push(specialty);
@@ -55,85 +90,78 @@ class BookingReview extends React.Component {
   //     newState.specialties.splice(index, 1);
   //   }
   //   this.setState({
-  //     modifyingReview: newState,
+  //     newReview: newState,
   //   });
   // }
 
-  // completedModify() {
-  //   console.log('completedModify');
-  // }
-
   render() {
-    // const { modifyingReview } = this.state;
+    const { newReview } = this.state;
 
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.review}>
-            {/* <Text>진료일자 : {modifyingReview.date}</Text>
-            <Text style={styles.centername}>{modifyingReview.centerName}</Text> */}
-            <Text>진료일자 : 2020-12-12</Text>
-            <Text style={styles.centername}>기린정신건강의학과의원</Text>
-
-            {/* <AirbnbRating
-              showRating={false}
-              size={40}
-              selectedColor='#D61A3C'
-              startingValue={modifyingReview.rate}
-              fractions={1}
-              defaultRating={modifyingReview.rate}
-              onFinishRating={(rating) => console.log('rating: ', rating)}
-            /> */}
-            {/* onFinishRating={(rating) => this.ratingCompleted(rating)} */}
-
-            <View style={styles.SpecialtiesContainer}>
-              {/* {Specialties.map((specialtyArr) => {
+        {/* <ScrollView> */}
+        <View style={styles.review}>
+          <Text>진료일자 : {newReview.date}</Text>
+          <Text style={styles.centername}>{newReview.center.centerName}</Text>
+          <AirbnbRating
+            showRating={false}
+            size={40}
+            selectedColor='#D61A3C'
+            fractions={1}
+            defaultRating={0}
+            onFinishRating={(rating) => {
+              this.setState({
+                rate: rating,
+              });
+            }}
+          />
+          {/* <View style={styles.SpecialtiesContainer}>
+          // this.ratingCompleted(rating)}
+              {Specialties.map((specialtyArr) => {
                 const [specialty] = specialtyArr;
                 let color = this.checkSpecialties(
-                  modifyingReview.specialties,
+                  newReview.specialties,
                   specialty
                 )
                   ? '#62CCAD'
-                  : '#D1D1D1'; */}
-              {/* return ( */}
-              <Button
-                // key={specialty}
-                transparent
-                // onPress={() => this.handleSpecialties(specialty)}
-              >
-                {/* <Text style={[styles.specialties, { backgroundColor: color }]}> */}
-                <Text
-                  style={[styles.specialties, { backgroundColor: '#62CCAD' }]}
-                >
-                  {/* #{specialty} */}#전문분야
-                </Text>
-              </Button>
-              {/* ); */}
-              {/* })} */}
-            </View>
-
-            <TextInput
-              multiline={true}
-              // defaultValue={modifyingReview.content}
-              style={styles.content}
-              // onChangeText={(text) => {
-              //   this.onChangeText(text);
-              // }}
-            />
-
-            <View style={{ alignItems: 'center' }}>
-              <Button
-                small
-                transparent
-                style={styles.completeButton}
-                // onPress={this.completedModify}
-              >
-                <Entypo name='check' size={27} />
-                <Text style={styles.completeText}>완료</Text>
-              </Button>
-            </View>
+                  : '#D1D1D1';
+                return (
+                  <Button
+                    key={specialty}
+                    transparent
+                    onPress={() => this.handleSpecialties(specialty)}
+                  >
+                    <Text
+                      style={[styles.specialties, { backgroundColor: color }]}
+                    >
+                      #{specialty}
+                    </Text>
+                  </Button>
+                );
+              })}
+            </View> */}
+          <TextInput
+            multiline={true}
+            style={styles.content}
+            onChangeText={(text) => {
+              this.setState({
+                content: text,
+              });
+            }}
+          />
+          <View style={{ alignItems: 'center' }}>
+            <Button
+              small
+              transparent
+              style={styles.completeButton}
+              onPress={this.submitReview}
+            >
+              <Entypo name='check' size={27} />
+              <Text style={styles.completeText}>완료</Text>
+            </Button>
           </View>
-        </ScrollView>
+        </View>
+        {/* </ScrollView> */}
       </View>
     );
   }

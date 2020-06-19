@@ -24,43 +24,44 @@ const MyBookingList = ({ token, navigation, booking }) => {
 
   return (
     <View style={styles.container}>
-      {booking.length > 0 ? (
-        <Fragment>
-          <View>
-            <Text style={styles.bookingDate}>
-              {booking.date} / {booking.time}
-            </Text>
-            <Text style={styles.bookingCenter}>센터 이름</Text>
-          </View>
-          <View style={styles.btnSection}>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => navigation.navigate('BookingReview')}
-            >
-              <Text style={styles.btnText}>리뷰 쓰기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btn}>
-              <Text style={styles.btnText}>예약 수정</Text>
-            </TouchableOpacity>
-            <TouchableHighlight
-              style={styles.btn}
-              onPress={() => changeModalVisible(true)}
-            >
-              <Text style={styles.btnText}>예약 취소</Text>
-            </TouchableHighlight>
-            <Modal
-              transparent={true}
-              visible={isModalVisible}
-              onRequestClose={() => changeModalVisible(false)}
-              animationType='fade'
-            >
-              <BookingDeleteModal changeModalVisible={changeModalVisible} />
-            </Modal>
-          </View>
-        </Fragment>
-      ) : (
-        <Text>예약 목록이 없습니다.</Text>
-      )}
+      <Fragment>
+        <View>
+          <Text style={styles.bookingDate}>
+            {booking.date} / {booking.time}
+          </Text>
+          <Text style={styles.bookingCenter}>{booking.center.centerName}</Text>
+        </View>
+        <View style={styles.btnSection}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() =>
+              navigation.navigate('BookingReview', {
+                token,
+                booking,
+              })
+            }
+          >
+            <Text style={styles.btnText}>리뷰 쓰기</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn}>
+            <Text style={styles.btnText}>예약 수정</Text>
+          </TouchableOpacity>
+          <TouchableHighlight
+            style={styles.btn}
+            onPress={() => changeModalVisible(true)}
+          >
+            <Text style={styles.btnText}>예약 취소</Text>
+          </TouchableHighlight>
+          <Modal
+            transparent={true}
+            visible={isModalVisible}
+            onRequestClose={() => changeModalVisible(false)}
+            animationType='fade'
+          >
+            <BookingDeleteModal changeModalVisible={changeModalVisible} />
+          </Modal>
+        </View>
+      </Fragment>
     </View>
   );
 };
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   bookingCenter: {
-    marginBottom: 10,
+    // marginBottom: 10,
     fontSize: 16,
   },
   btnSection: {

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet, SafeAreaView, Text } from 'react-native';
+
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 import MyBookingList from './booking/MyBookingList';
 
@@ -10,8 +13,12 @@ export default function MyBookings({ token, navigation }) {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
+    getBookingList();
+  }, bookings);
+
+  const getBookingList = () => {
     console.log('MyBookings Get 실행');
-    fetch('http://13.209.16.103:4000/booking', {
+    fetch(ec2 + '/booking', {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -20,7 +27,6 @@ export default function MyBookings({ token, navigation }) {
       },
     })
       .then((res) => {
-        console.log('res: ', res);
         if (res.status === 200 || res.status === 403) {
           return res.json();
         }
@@ -31,6 +37,7 @@ export default function MyBookings({ token, navigation }) {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
             setBookings(payload);
+            console.log('bookings: ', bookings);
           } else if (payload.errorCode === 8) {
             console.log('there is no booking by userId');
           }
@@ -39,17 +46,22 @@ export default function MyBookings({ token, navigation }) {
       .catch((error) => {
         console.log(error);
       });
-  }, bookings);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {bookings.map((booking) => (
-        <MyBookingList
-          token={token}
-          navigation={navigation}
-          booking={booking}
-        />
-      ))}
+      {bookings.length > 0 ? (
+        bookings.map((booking, index) => (
+          <MyBookingList
+            key={index}
+            token={token}
+            navigation={navigation}
+            booking={booking}
+          />
+        ))
+      ) : (
+        <Text>예약 목록이 없습니다.</Text>
+      )}
     </SafeAreaView>
   );
 }

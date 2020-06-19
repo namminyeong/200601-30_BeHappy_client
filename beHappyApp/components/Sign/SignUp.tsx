@@ -781,7 +781,9 @@ export default class SignUp extends React.Component {
                         value: '',
                       }}
                       onValueChange={(value) => this.inputState(value)}
-                      items={[{ label: ``, value: `` }]}
+                      items={[
+                        { label: `먼저 지역을 선택해주세요.`, value: `` },
+                      ]}
                     />
                   )}
                 </View>
