@@ -64,8 +64,8 @@ class SearchGeo extends React.Component {
           this.props.goSpecificLocationAfterSearch({
             latitude: Number(lat),
             longitude: Number(lon),
-            latitudeDelta: 1.5,
-            longitudeDelta: 2,
+            latitudeDelta: 0.06,
+            longitudeDelta: 0.06,
           });
         }
       });

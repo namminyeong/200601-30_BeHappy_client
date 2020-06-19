@@ -1,19 +1,27 @@
 import React from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IndexMypage from './Mypage/IndexMypage';
 import MapStack from './Map/MapStack';
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 class Main extends React.Component {
   render() {
     return (
       <Tab.Navigator
         initialRouteName='Main'
-        activeColor='black'
-        inactiveColor='white'
-        barStyle={{ backgroundColor: '#62CCAD', height: 55 }}
+        tabBarOptions={{
+          // inactiveTintColor: 'white',
+          // activeTintColor: 'black',
+          // activeBackgroundColor: '#62CCAD',
+          // inactiveBackgroundColor: '#62CCAD',
+          inactiveTintColor: 'grey',
+          activeTintColor: '#62CCAD',
+          activeBackgroundColor: 'white',
+          inactiveBackgroundColor: 'white',
+          showLabel: false,
+        }}
       >
         <Tab.Screen
           name='MapStack'
@@ -24,7 +32,7 @@ class Main extends React.Component {
               <MaterialCommunityIcons
                 name='map-marker-radius'
                 color={color}
-                size={26}
+                size={30}
               />
             ),
           }}
@@ -35,7 +43,7 @@ class Main extends React.Component {
           options={{
             tabBarLabel: 'Mypage',
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name='account' color={color} size={26} />
+              <MaterialCommunityIcons name='account' color={color} size={30} />
             ),
           }}
         />
