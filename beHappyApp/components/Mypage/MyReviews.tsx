@@ -24,6 +24,7 @@ class MyReviews extends React.Component {
     this.handleLoading = this.handleLoading.bind(this);
     this.goToMarker = this.goToMarker.bind(this);
     this.deleteReview = this.deleteReview.bind(this);
+    this.modifyReview = this.modifyReview.bind(this);
   }
 
   handleLoading(status) {
@@ -109,7 +110,6 @@ class MyReviews extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log('datat', data);
           this.props.controlCoordinate(data.latitude, data.longitude);
           this.props.controlBookmarkClicked(true);
           this.props.controlCenterData([data], [data]);
@@ -124,9 +124,35 @@ class MyReviews extends React.Component {
   }
 
   deleteReview(index) {
-    console.log('deleteReview');
+    let reviewId = this.state.myReviews[index].reviewId;
     let newState = Object.assign([], this.state.myReviews);
     newState.splice(index, 1);
+    this.setState({
+      myReviews: newState,
+    });
+
+    fetch(ec2 + '/review', {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+      body: JSON.stringify({ reviewId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('리뷰를 삭제했습니다.');
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
+  }
+
+  modifyReview(index, review) {
+    let newState = Object.assign([], this.state.myReviews);
+    newState.splice(index, 1, review);
     this.setState({
       myReviews: newState,
     });
@@ -141,56 +167,55 @@ class MyReviews extends React.Component {
             <ActivityIndicator size='large' color='#0000ff' />
           </View>
         ) : (
-          <View style={styles.container}>
-            <ScrollView>
-              {myReviews.map((review, index) => (
-                <View style={styles.review}>
-                  <View style={styles.buttons}>
-                    <Button
-                      small
-                      transparent
-                      style={styles.modifyDeleteButton}
-                      onPress={() => {
-                        this.props.navigation.navigate('ModifyReview', {
-                          review,
-                        });
-                      }}
-                    >
-                      <SimpleLineIcons name='pencil' size={23} />
-                    </Button>
-                    <Button
-                      small
-                      transparent
-                      style={styles.modifyDeleteButton}
-                      onPress={() => this.deleteReview(index)}
-                    >
-                      <FontAwesome name='trash-o' size={23} />
-                    </Button>
-                  </View>
-                  <Text>진료일자 : {review.date}</Text>
-                  <Text
-                    style={styles.centername}
-                    onPress={() => this.goToMarker(review.centerId)}
+          <ScrollView style={styles.container}>
+            {myReviews.map((review, index) => (
+              <View style={styles.review} key={index}>
+                <View style={styles.buttons}>
+                  <Button
+                    small
+                    transparent
+                    style={styles.modifyDeleteButton}
+                    onPress={() => {
+                      this.props.navigation.navigate('ModifyReview', {
+                        review,
+                        token: this.props.token,
+                        index,
+                        modifyReview: this.modifyReview,
+                      });
+                    }}
                   >
-                    {review.centerName}
-                  </Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.rate}>
-                      {this.drawStars(review.rate)}
-                    </View>
-                  </View>
-                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                    {review.specialties.map((specialty) => (
-                      <Text style={styles.specialty}>#{specialty}</Text>
-                    ))}
-                  </View>
-                  <Text numberOfLines={3} style={styles.content}>
-                    {review.content}
-                  </Text>
+                    <SimpleLineIcons name='pencil' size={23} />
+                  </Button>
+                  <Button
+                    small
+                    transparent
+                    style={styles.modifyDeleteButton}
+                    onPress={() => this.deleteReview(index)}
+                  >
+                    <FontAwesome name='trash-o' size={23} />
+                  </Button>
                 </View>
-              ))}
-            </ScrollView>
-          </View>
+                <Text>진료일자 : {review.date}</Text>
+                <Text
+                  style={styles.centername}
+                  onPress={() => this.goToMarker(review.centerId)}
+                >
+                  {review.centerName}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={styles.rate}>{this.drawStars(review.rate)}</View>
+                </View>
+                <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                  {review.specialties.map((specialty) => (
+                    <Text style={styles.specialty}>#{specialty}</Text>
+                  ))}
+                </View>
+                <Text numberOfLines={3} style={styles.content}>
+                  {review.content}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
         )}
       </>
     );
@@ -203,8 +228,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    alignItems: 'center',
     flex: 1,
+    width: '100%',
   },
   review: {
     backgroundColor: 'white',
