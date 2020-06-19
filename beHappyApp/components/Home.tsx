@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-
 import DeviceStorage from '../service/DeviceStorage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import getEnvVars from '../environment';
+const { ec2 } = getEnvVars();
 
 import Main from './Main';
 import LoginContainer from '../containers/LoginContainer';
@@ -21,6 +22,7 @@ export default class Home extends React.Component {
     };
     this.checkUser = this.checkUser.bind(this);
     this.changeLoading = this.changeLoading.bind(this);
+    this.getCenterInfo = this.getCenterInfo.bind(this);
   }
 
   componentDidMount() {
@@ -37,7 +39,7 @@ export default class Home extends React.Component {
   }
 
   checkUser(token) {
-    fetch('http://13.209.16.103:4000/auth', {
+    fetch(ec2 + '/auth', {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -55,7 +57,7 @@ export default class Home extends React.Component {
         if (typeof payload === 'object') {
           if (payload.isAdmin !== undefined) {
             if (payload.isAdmin) {
-              this.props.controlLogin(1, token);
+              this.getCenterInfo();
             } else {
               this.props.controlLogin(0, token);
             }
@@ -64,6 +66,32 @@ export default class Home extends React.Component {
           }
         }
         this.changeLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  getCenterInfo() {
+    fetch(ec2 + '/user/admin', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          this.props.controlCenterInfo(data);
+          this.props.controlLogin(1, token);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -86,10 +114,19 @@ export default class Home extends React.Component {
             >
               {this.props.authState === -1 ? (
                 <>
-                  <Stack.Screen name='LoginContainer' component={LoginContainer} />
+                  <Stack.Screen
+                    name='LoginContainer'
+                    component={LoginContainer}
+                  />
                   <Stack.Screen name='Signup' component={Signup} />
-                  <Stack.Screen name='UserPreference' component={UserPreference} />
-                  <Stack.Screen name='SpecialtyPreference' component={SpecialtyPreference} />
+                  <Stack.Screen
+                    name='UserPreference'
+                    component={UserPreference}
+                  />
+                  <Stack.Screen
+                    name='SpecialtyPreference'
+                    component={SpecialtyPreference}
+                  />
                 </>
               ) : this.props.authState === 0 ? (
                 <Stack.Screen name='Main' component={Main} />

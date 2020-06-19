@@ -1,28 +1,35 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
-import CenterMainContainer from '../../containers/CenterMainContainer';
+import CenterMainContainer from '../../containers/center/CenterMainContainer';
 import IndexCenterPage from './IndexCenterPage';
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function EntryCenter() {
   return (
     <NavigationContainer independent={true}>
       <Tab.Navigator
-        initialRouteName='CenterPage'
-        activeColor='black'
-        inactiveColor='white'
-        barStyle={{ backgroundColor: '#62CCAD' }}
+        initialRouteName='CenterMainContainer'
+        tabBarOptions={{
+          // inactiveTintColor: 'white',
+          // activeTintColor: 'black',
+          // activeBackgroundColor: '#62CCAD',
+          // inactiveBackgroundColor: '#62CCAD',
+          inactiveTintColor: 'grey',
+          activeTintColor: '#62CCAD',
+          activeBackgroundColor: 'white',
+          inactiveBackgroundColor: 'white',
+        }}
       >
         <Tab.Screen
-          name='CenterMain'
+          name='CenterMainContainer'
           component={CenterMainContainer}
           options={{
-            tabBarLabel: 'Main',
+            tabBarLabel: '메인',
             tabBarIcon: ({ color }) => (
               <Fontisto name='nursing-home' color={color} size={26} />
             ),
@@ -32,7 +39,7 @@ export default function EntryCenter() {
           name='CenterPage'
           component={IndexCenterPage}
           options={{
-            tabBarLabel: 'Mypage',
+            tabBarLabel: '예약관리',
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name='calendar-check'

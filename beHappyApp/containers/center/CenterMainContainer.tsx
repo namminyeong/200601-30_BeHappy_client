@@ -1,15 +1,22 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import CenterMain from '../components/Center/CenterMain';
-import { controlLogin } from '../modules(reducers)/auth';
+import CenterMain from '../../components/Center/CenterMain';
+import { controlLogin } from '../../modules(reducers)/auth';
 
-const CenterMainContainer = ({ controlLogin, token }) => {
-  return <CenterMain controlLogin={controlLogin} token={token} />;
+const CenterMainContainer = ({ controlLogin, token, CenterInfo }) => {
+  return (
+    <CenterMain
+      controlLogin={controlLogin}
+      token={token}
+      CenterInfo={CenterInfo}
+    />
+  );
 };
 
 const mapStateToProps = (state) => ({
   token: state.handleLogin.token,
+  CenterInfo: state.handleCenterInfo.CenterInfo,
 });
 
 const mapDispatchToProps = (dispatch) => {
