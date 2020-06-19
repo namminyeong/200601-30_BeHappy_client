@@ -179,10 +179,11 @@ const styles = StyleSheet.create({
   inputBox: {
     width: WIDTH - 100,
     height: 40,
-    borderRadius: 25,
     fontSize: 20,
     paddingLeft: 45,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    marginBottom: 10,
+    borderBottomColor: '#199187',
+    borderBottomWidth: 1,
   },
   btnEye: {
     position: 'absolute',
