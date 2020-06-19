@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { Header, Icon, Item, Button } from 'native-base';
+import { Icon, Button } from 'native-base';
 import Markers from './Markers';
 import Details from './details/Details';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -237,7 +237,6 @@ class Map extends React.Component {
       latitudeDelta: this.props.coordinate[3],
     });
     this.props.controlBookmarkClicked(false);
-    // this.props.navigation.popToTop();
   }
 
   filterMarkerBySpecialties(centerInfo) {
@@ -265,35 +264,34 @@ class Map extends React.Component {
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
-        <Header searchBar rounded style={{ backgroundColor: 'white' }}>
-          <Item>
-            <Image
-              source={require('../../assets/behappy.png')}
-              style={styles.logo}
-            />
-            <Button
-              transparent
-              style={styles.searchButton}
-              onPress={() => {
-                this.props.navigation.navigate('SearchNameContainer', {
-                  goSpecificLocationAfterSearch: this
-                    .goSpecificLocationAfterSearch,
-                });
-              }}
-            >
-              <Icon active name='search' style={{ color: 'grey' }} />
-              <Text style={styles.searchText}>검색어를 입력해주세요</Text>
-            </Button>
-            <SimpleLineIcons
-              name='equalizer'
-              size={22}
-              style={styles.filter}
-              onPress={() => {
-                this.props.navigation.navigate('FilterContainer');
-              }}
-            />
-          </Item>
-        </Header>
+        <View style={styles.searchContainer}>
+          <Image
+            source={require('../../assets/mini.png')}
+            style={styles.logo}
+          />
+          <Button
+            transparent
+            style={styles.searchButton}
+            onPress={() => {
+              this.props.navigation.navigate('SearchNameContainer', {
+                goSpecificLocationAfterSearch: this
+                  .goSpecificLocationAfterSearch,
+              });
+            }}
+          >
+            <Icon active name='search' style={{ color: 'grey' }} />
+            <Text style={styles.searchText}>검색어를 입력해주세요</Text>
+          </Button>
+          <SimpleLineIcons
+            name='equalizer'
+            size={24}
+            style={styles.filter}
+            onPress={() => {
+              this.props.navigation.navigate('FilterContainer');
+            }}
+          />
+        </View>
+
         <MapView
           toolbarEnabled={false}
           ref={(component) => (this._map = component)}
@@ -401,15 +399,38 @@ class Map extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    borderRadius: 5,
+    alignSelf: 'center',
+    height: 54,
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    position: 'absolute',
+    top: 25,
+    width: '95%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
   logo: {
+    justifyContent: 'center',
     width: '25%',
-    height: 53,
-    marginRight: 10,
+    height: 32,
+    top: 10,
+    left: 5,
+    marginLeft: '2%',
+    marginRight: '4%',
   },
   searchButton: {
     backgroundColor: '#ebebeb',
-    width: '57%',
-    height: '80%',
+    width: '55%',
+    top: 10,
+    height: 34,
     borderRadius: 20,
     paddingHorizontal: 5,
   },
@@ -419,21 +440,22 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   filter: {
+    top: 15,
     position: 'absolute',
-    right: 15,
+    right: 17,
     transform: [{ rotate: '90deg' }],
   },
   map: {
+    top: 0,
     flex: 1,
     zIndex: -1,
     width: '100%',
     height: '100%',
-    position: 'absolute',
   },
   searchNowContainer: {
     position: 'absolute',
     left: 8,
-    top: 65,
+    top: 85,
     padding: 5,
     alignSelf: 'flex-start',
   },
@@ -442,7 +464,6 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 15,
     color: 'black',
-    fontWeight: 'bold',
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {

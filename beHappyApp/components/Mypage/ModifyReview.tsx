@@ -4,6 +4,13 @@ import { Button } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
 import { Specialties } from '../../Data/Preference';
 import Entypo from 'react-native-vector-icons/Entypo';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
+import { YellowBox } from 'react-native';
+
+YellowBox.ignoreWarnings([
+  'Non-serializable values were found in the navigation state',
+]);
 
 class ModifyReview extends React.Component {
   constructor(props) {
@@ -58,84 +65,101 @@ class ModifyReview extends React.Component {
   }
 
   completedModify() {
-    console.log('completedModify');
+    let review = this.state.modifyingReview;
+    let { token, modifyReview, index } = this.props.route.params;
+    fetch(ec2 + '/review', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(review),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('수정이 완료되었습니다.');
+          modifyReview(index, review);
+          this.props.navigation.navigate('MyReviewsContainer');
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
   }
 
   render() {
     const { modifyingReview } = this.state;
 
     return (
-      <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.review}>
-            <Text>진료일자 : {modifyingReview.date}</Text>
-            <Text style={styles.centername}>{modifyingReview.centerName}</Text>
+      <ScrollView style={styles.container}>
+        <View style={styles.review}>
+          <Text>진료일자 : {modifyingReview.date}</Text>
+          <Text style={styles.centername}>{modifyingReview.centerName}</Text>
 
-            <AirbnbRating
-              showRating={false}
-              size={40}
-              selectedColor='#D61A3C'
-              startingValue={modifyingReview.rate}
-              fractions={1}
-              defaultRating={modifyingReview.rate}
-              onFinishRating={(rating) => this.ratingCompleted(rating)}
-            />
+          <AirbnbRating
+            showRating={false}
+            size={40}
+            selectedColor='#D61A3C'
+            startingValue={modifyingReview.rate}
+            fractions={1}
+            defaultRating={modifyingReview.rate}
+            onFinishRating={(rating) => this.ratingCompleted(rating)}
+          />
 
-            <View style={styles.SpecialtiesContainer}>
-              {Specialties.map((specialtyArr) => {
-                const [specialty] = specialtyArr;
-                let color = this.checkSpecialties(
-                  modifyingReview.specialties,
-                  specialty
-                )
-                  ? '#62CCAD'
-                  : '#D1D1D1';
-                return (
-                  <Button
-                    key={specialty}
-                    transparent
-                    onPress={() => this.handleSpecialties(specialty)}
+          <View style={styles.SpecialtiesContainer}>
+            {Specialties.map((specialtyArr) => {
+              const [specialty] = specialtyArr;
+              let color = this.checkSpecialties(
+                modifyingReview.specialties,
+                specialty
+              )
+                ? '#62CCAD'
+                : '#D1D1D1';
+              return (
+                <Button
+                  key={specialty}
+                  transparent
+                  onPress={() => this.handleSpecialties(specialty)}
+                >
+                  <Text
+                    style={[styles.specialties, { backgroundColor: color }]}
                   >
-                    <Text
-                      style={[styles.specialties, { backgroundColor: color }]}
-                    >
-                      #{specialty}
-                    </Text>
-                  </Button>
-                );
-              })}
-            </View>
-
-            <TextInput
-              multiline={true}
-              defaultValue={modifyingReview.content}
-              style={styles.content}
-              onChangeText={(text) => {
-                this.onChangeText(text);
-              }}
-            />
-
-            <View style={{ alignItems: 'center' }}>
-              <Button
-                small
-                transparent
-                style={styles.completeButton}
-                onPress={this.completedModify}
-              >
-                <Entypo name='check' size={27} />
-                <Text style={styles.completeText}>완료</Text>
-              </Button>
-            </View>
+                    #{specialty}
+                  </Text>
+                </Button>
+              );
+            })}
           </View>
-        </ScrollView>
-      </View>
+
+          <TextInput
+            multiline={true}
+            defaultValue={modifyingReview.content}
+            style={styles.content}
+            onChangeText={(text) => {
+              this.onChangeText(text);
+            }}
+          />
+
+          <View style={{ alignItems: 'center' }}>
+            <Button
+              small
+              transparent
+              style={styles.completeButton}
+              onPress={this.completedModify}
+            >
+              <Entypo name='check' size={27} />
+              <Text style={styles.completeText}>완료</Text>
+            </Button>
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
     backgroundColor: 'white',
   },
@@ -194,6 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   completeText: {
+    left: -3,
     fontSize: 20,
   },
 });
