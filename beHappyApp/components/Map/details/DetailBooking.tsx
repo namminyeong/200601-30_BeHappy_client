@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   CheckBox,
 } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import Moment from 'moment';
@@ -16,13 +15,17 @@ import Moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import DeviceStorage from '../../../service/DeviceStorage';
+
+const checkNumber = /^[0-9]+$/;
 
 export default class Booking extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      centerId: this.props.route.params.id,
       isSelectDate: false,
       isSelectTime: false,
       date: '',
@@ -44,74 +47,83 @@ export default class Booking extends React.Component {
         ['16:00', false],
         ['17:00', false],
       ],
-      centerBookingData: [
-        {
-          date: '2020-06-20',
-          time: '14:00:00',
-        },
-        {
-          date: '2020-06-21',
-          time: '13:00:00',
-        },
-      ],
     };
     this.againSelectDate = this.againSelectDate.bind(this);
     this.againSelectTime = this.againSelectTime.bind(this);
-    this.resetAllState = this.resetAllState.bind(this);
+    this.completeBooking = this.completeBooking.bind(this);
     this.postBooking = this.postBooking.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.getCenterBooking = this.getCenterBooking.bind(this);
     this.blockTime = this.blockTime.bind(this);
+    this.resetTime = this.resetTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
   }
 
-  getCenterBooking() {
-    const { centerBookingData, date } = this.state;
+  getCenterBooking(token) {
+    const { centerId, date } = this.state;
 
-    // fetch(`http://13.209.16.103:4000/booking/center?centerId=${this.props.route.params.id}&date=${data}`, {
-    //   method: 'GET',
-    //   credentials: 'include',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // }).then((res) => {
-    //   this.setState({
-    //     centerBookingData: res.result
-    //    })
-    // });
-    //console.log('getCenterBooking', centerBookingData, date);
+    this.resetTime();
+    fetch(
+      `http://13.209.16.103:4000/booking/center?centerId=${centerId}&date=${date}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        let centerBookingData = payload === 'string' ? [] : payload;
+        this.blockTime(centerBookingData);
+      })
+      .then(() =>
+        this.setState({
+          isSelectDate: true,
+          isSelectTime: false,
+        })
+      )
+      .catch((error) => console.log('error', error));
   }
 
   postBooking(token) {
-    const { date, time, username, phone, content } = this.state;
+    const { centerId, date, time, username, phone, content } = this.state;
 
-    // fetch('http://13.209.16.103:4000/booking', {
-    //   method: 'POST',
-    //   credentials: 'include',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    //   body: JSON.stringify({
-    //     centerId: this.props.route.params.id,
-    //     date: date,
-    //     time: time + ':00',
-    //     name: username,
-    //     phone: phone,
-    //     content: content,
-    //   }),
-    // }).then((res) => {
-    //   return res.status;
-    // });
-    //console.log('postBooking', date, time, username, phone, content);
-    this.setState({
-      completeModal: true,
-    });
+    fetch('http://13.209.16.103:4000/booking', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        centerId: centerId,
+        date: date,
+        time: time + ':00',
+        name: username,
+        phone: phone,
+        content: content,
+      }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          this.setState({
+            completeModal: true,
+          });
+        }
+      })
+      .catch((error) => console.log('error', error));
   }
 
-  againSelectDate() {
+  againSelectDate(time) {
     this.setState({
       isSelectDate: false,
       isSelectTime: false,
@@ -121,20 +133,21 @@ export default class Booking extends React.Component {
       phone: '',
       content: '',
     });
+    time === '' ? null : this.backTime(time);
   }
 
-  againSelectTime() {
+  againSelectTime(time) {
     this.setState({
       isSelectTime: false,
       time: '',
       username: '',
       phone: '',
       content: '',
-      bookingTime: this.state.bookingTime,
     });
+    this.backTime(time);
   }
 
-  resetAllState() {
+  completeBooking() {
     this.setState({
       isSelectDate: false,
       isSelectTime: false,
@@ -160,21 +173,21 @@ export default class Booking extends React.Component {
     });
   }
 
-  blockTime(centerBookingData, selectDate) {
+  blockTime(centerBookingData) {
     const { bookingTime } = this.state;
-    let currentDate = Moment(new Date()).format('YYYY-MM-DD');
-    let currentTime = Moment(new Date()).format('HH');
 
     for (let i = 0; i < centerBookingData.length; i++) {
       bookingTime.map((time) =>
-        time.includes(centerBookingData[i].time.slice(0, 5)) ||
-        (selectDate.dateString === currentDate
-          ? time[0][0] + time[0][1] <= currentTime
-          : null)
+        time.includes(centerBookingData[i].time.slice(0, 5))
           ? (time[1] = true)
           : null
       );
     }
+  }
+
+  resetTime() {
+    const { bookingTime } = this.state;
+    bookingTime.map((data) => (data[1] = false));
   }
 
   backTime(time) {
@@ -186,14 +199,18 @@ export default class Booking extends React.Component {
 
   checkUserInfo() {
     const { username, phone, content } = this.state;
+
     username === '' || phone === '' || content === ''
       ? this.setState({
           isUserInfo: false,
         })
-      : this.setState({
+      : checkNumber.test(phone)
+      ? this.setState({
           isUserInfo: true,
+        })
+      : this.setState({
+          isUserInfo: false,
         });
-    console.log(this.state.isUserInfo);
   }
 
   render() {
@@ -208,7 +225,6 @@ export default class Booking extends React.Component {
       alertModal,
       isAgree,
       bookingTime,
-      centerBookingData,
       completeModal,
       isUserInfo,
     } = this.state;
@@ -219,20 +235,40 @@ export default class Booking extends React.Component {
           {!isAgree ? (
             <View>
               {!isSelectDate ? (
-                <Calendar
-                  current={new Date()}
-                  minDate={new Date()}
-                  monthFormat={'yyyy MM'}
-                  onDayPress={(selectDate) => {
-                    this.getCenterBooking();
-                    this.setState({
-                      date: selectDate.dateString,
-                      isSelectDate: true,
-                      isSelectTime: false,
-                    });
-                    this.blockTime(centerBookingData, selectDate);
-                  }}
-                />
+                <View>
+                  <Calendar
+                    current={new Date()}
+                    minDate={Moment(
+                      new Date().setDate(new Date().getDate() + 1)
+                    ).format('YYYY-MM-DD')}
+                    monthFormat={'yyyy MM'}
+                    onDayPress={(selectDate) => {
+                      this.setState({
+                        date: selectDate.dateString,
+                      });
+                      DeviceStorage.loadJWT().then((value) => {
+                        this.getCenterBooking(value);
+                      });
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name='alert-circle-outline'
+                      size={14}
+                      style={{ color: '#941818' }}
+                    />
+                    <Text style={{ margin: 6, color: '#941818' }}>
+                      금일 ({Moment(new Date()).format('M월 D일')}) 예약은
+                      불가능합니다.
+                    </Text>
+                  </View>
+                </View>
               ) : (
                 <View style={{ alignItems: 'center' }}>
                   <View style={styles.selectBox}>
@@ -245,8 +281,7 @@ export default class Booking extends React.Component {
                       size={20}
                       style={{ paddingRight: 4 }}
                       onPress={() => {
-                        this.againSelectDate();
-                        time === '' ? null : this.backTime(time);
+                        this.againSelectDate(time);
                       }}
                     />
                   </View>
@@ -254,25 +289,23 @@ export default class Booking extends React.Component {
               )}
 
               {isSelectDate && !isSelectTime ? (
-                <View style={{ alignContent: 'center' }}>
-                  <View style={styles.time}>
-                    {bookingTime.map((data, index) => (
-                      <TouchableOpacity
-                        key={'bookingTime_' + index}
-                        disabled={data[1] ? true : false}
-                        onPress={() => {
-                          this.changeTime(index);
-                          this.setState({ isSelectTime: true, time: data });
-                        }}
+                <View style={styles.time}>
+                  {bookingTime.map((data, index) => (
+                    <TouchableOpacity
+                      key={'bookingTime_' + index}
+                      disabled={data[1] ? true : false}
+                      onPress={() => {
+                        this.changeTime(index);
+                        this.setState({ isSelectTime: true, time: data });
+                      }}
+                    >
+                      <Text
+                        style={data[1] ? styles.notblocked : styles.blocked}
                       >
-                        <Text
-                          style={data[1] ? styles.notblocked : styles.blocked}
-                        >
-                          {data}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+                        {data}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
               ) : null}
 
@@ -288,8 +321,7 @@ export default class Booking extends React.Component {
                       size={20}
                       style={{ paddingRight: 4 }}
                       onPress={() => {
-                        this.backTime(time);
-                        this.againSelectTime();
+                        this.againSelectTime(time);
                       }}
                     />
                   </View>
@@ -310,12 +342,27 @@ export default class Booking extends React.Component {
                       <TextInput
                         style={styles.textBox}
                         value={phone}
+                        placeholder={` ' - '를 제외한 숫자를 입력해주세요`}
                         onChangeText={(phone) => {
                           this.setState({ phone: phone });
                           this.checkUserInfo();
                         }}
                       />
+                      {phone === '' || checkNumber.test(phone) ? null : (
+                        <MaterialCommunityIcons
+                          name='alert-circle-outline'
+                          size={18}
+                          style={{ color: '#941818', right: 20 }}
+                        />
+                      )}
                     </View>
+                    {phone === '' || checkNumber.test(phone) ? null : (
+                      <Text
+                        style={{ color: '#941818', left: 60, fontSize: 10 }}
+                      >
+                        숫자만 입력해주세요
+                      </Text>
+                    )}
                     <View
                       style={{ marginTop: 6, marginBottom: 6, marginLeft: 4 }}
                     >
@@ -337,6 +384,12 @@ export default class Booking extends React.Component {
                       onPress={() => {
                         this.setState({
                           alertModal: true,
+                          phone:
+                            phone.slice(0, 3) +
+                            '-' +
+                            phone.slice(3, 7) +
+                            '-' +
+                            phone.slice(7),
                         });
                       }}
                     >
@@ -369,8 +422,12 @@ export default class Booking extends React.Component {
               ) : null}
               <Modal isVisible={alertModal}>
                 <View style={styles.modal}>
+                  <MaterialCommunityIcons
+                    name='alert-circle-outline'
+                    size={24}
+                  />
                   <View>
-                    <Text style={{ marginTop: '10%' }}>
+                    <Text style={{ marginTop: '4%' }}>
                       개인정보 수집과 제공에 동의합니다.
                     </Text>
                     <Text>
@@ -420,11 +477,7 @@ export default class Booking extends React.Component {
               <View style={styles.selectBox}>
                 <Text>
                   연락처{'    '}
-                  {phone.slice(0, 3) +
-                    '-' +
-                    phone.slice(3, 7) +
-                    '-' +
-                    phone.slice(7)}
+                  {phone}
                 </Text>
               </View>
               <View style={styles.userinfo}>
@@ -440,7 +493,7 @@ export default class Booking extends React.Component {
                       this.postBooking(value);
                     })
                     .then(() => {
-                      this.resetAllState();
+                      this.completeBooking();
                     });
                 }}
               >
@@ -465,6 +518,7 @@ export default class Booking extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   time: {
     marginTop: '2%',
@@ -473,6 +527,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     flexWrap: 'wrap',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   selectBox: {
     backgroundColor: 'white',
@@ -597,8 +652,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: '2.5%',
-    width: '96%',
+    margin: '1%',
+    width: '100%',
     maxHeight: 200,
     backgroundColor: '#FFFFFF',
     borderWidth: 4,
