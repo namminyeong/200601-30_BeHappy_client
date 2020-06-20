@@ -4,15 +4,51 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import * as Linking from 'expo-linking';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import DeviceStorage from '../../service/DeviceStorage';
 import LogoutContainer from '../../containers/LogoutContainer';
+import { runInThisContext } from 'vm';
 
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: 'test',
+      username: '',
+      phone: '',
     };
+    this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
+  }
+
+  componentDidMount() {
+    DeviceStorage.loadJWT().then((value) => {
+      this.getUserBasicInfo(value);
+    });
+  }
+
+  getUserBasicInfo(token) {
+    const { username, phone } = this.state;
+
+    fetch('http://13.209.16.103:4000/user', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        this.setState({
+          username: payload.nickname,
+          phone: payload.phone,
+        });
+        return;
+      });
   }
 
   pressAds() {
@@ -20,6 +56,8 @@ class Mypage extends React.Component {
   }
 
   render() {
+    const { username, phone } = this.state;
+
     return (
       <View style={styles.container}>
         <Text style={styles.main}>마이페이지</Text>
@@ -32,16 +70,18 @@ class Mypage extends React.Component {
           />
         </View>
 
-        <View style={styles.userInfo}>
-          <Text style={styles.user}>{this.props.username}</Text>
+        <View>
           <TouchableOpacity
+            style={styles.userInfo}
             onPress={() => {
               this.props.navigation.navigate('MyInfo', {
-                username: this.props.username,
-                phone: this.props.phone,
+                username: username,
+                phone: phone,
               });
             }}
           >
+            <Text style={styles.user}>{username}</Text>
+
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontSize: 20, marginLeft: 5 }}>님</Text>
               {<Entypo name='chevron-right' size={23} color={'black'} />}
@@ -157,8 +197,8 @@ class Mypage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   main: {
     marginTop: 60,
