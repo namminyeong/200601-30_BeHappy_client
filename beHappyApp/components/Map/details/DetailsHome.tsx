@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import DetailHomeBody from './DetailHomeBody';
 import DetailReviews from './DetailReviews';
-import Booking from './Booking';
+import DetailBooking from './DetailBooking';
 import * as Linking from 'expo-linking';
 import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
 
@@ -131,7 +131,11 @@ class DetailsHome extends React.Component {
             initialParams={this.props.route.params.theCenterInfo}
             options={{}}
           />
-          <Tab.Screen name='예약' component={Booking} />
+          <Tab.Screen
+            name='예약'
+            component={DetailBooking}
+            initialParams={this.props.navigation.state.params.theCenterInfo}
+          />
         </Tab.Navigator>
       </Fragment>
     );

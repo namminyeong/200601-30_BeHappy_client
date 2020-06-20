@@ -34,12 +34,16 @@ function IndexMypage() {
       <Stack.Screen
         name='MyReviewsContainer'
         component={MyReviewsContainer}
-        options={{ title: '리뷰관리' }}
+        options={{
+          title: '리뷰관리',
+        }}
       />
       <Stack.Screen
         name='ModifyReview'
         component={ModifyReview}
-        options={{ title: '리뷰 수정하기' }}
+        options={{
+          title: '리뷰 수정하기',
+        }}
       />
       <Stack.Screen name='MyBookings' component={MyBookings} />
     </Stack.Navigator>
