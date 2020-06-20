@@ -41,7 +41,9 @@ export default class ShowReviews extends React.Component {
                   }}
                 >
                   <Text>{item.anonymousName}</Text>
-                  <Text style={{ color: '#636E72' }}>{item.date} 방문</Text>
+                  <Text style={{ color: '#636E72' }}>
+                    {item.date.slice(0, 4)}.{item.date.slice(5, 7)} 방문
+                  </Text>
                 </View>
                 <View style={styles.rateStar}>
                   {this.props.drawStars(item.rate, 15)}

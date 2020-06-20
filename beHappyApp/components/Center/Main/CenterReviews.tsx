@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -33,6 +39,10 @@ export default class CenterReviews extends React.Component {
             })}
           />
         </View>
+        <Text style={{ fontSize: 10, color: 'darkgrey', marginLeft: '3%' }}>
+          최근 작성된 리뷰부터 보여집니다.
+        </Text>
+
         <ScrollView showsHorizontalScrollIndicator={false} ref='_scrollView'>
           <ShowReviews
             reviewsData={reviewsData}

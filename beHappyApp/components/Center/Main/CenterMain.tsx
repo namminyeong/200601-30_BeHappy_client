@@ -20,7 +20,7 @@ export default class CenterMain extends React.Component {
       rateAvgOfEachMonth: [],
     };
 
-    this.handleReviews = this.handleReviews.bind(this);
+    this.saveReviews = this.saveReviews.bind(this);
     this.drawStars = this.drawStars.bind(this);
     this.getDataForGraph = this.getDataForGraph.bind(this);
     this.saveDataForGraph = this.saveDataForGraph.bind(this);
@@ -46,7 +46,7 @@ export default class CenterMain extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          this.handleReviews(data);
+          this.saveReviews(data);
         }
       })
       .catch((error) => {
@@ -119,17 +119,22 @@ export default class CenterMain extends React.Component {
       xAxisData.unshift(willUnshift);
     }
     let count = 0;
+    let reviewCountOfEachMonth = [];
     let rateAvgOfEachMonth = xAxisData.map((month, index) => {
       let keys = Object.keys(data.rateAvgOfEachMonth);
       if (4 - index > keys.length) {
         count += 1;
+        reviewCountOfEachMonth.push(0);
         return 0;
       }
+      reviewCountOfEachMonth.push(
+        +data.reviewCountOfEachMonth[keys[index - count]].toFixed(1)
+      );
       return +data.rateAvgOfEachMonth[keys[index - count]].toFixed(1);
     });
     this.setState({
       rateAvgOfEachMonth,
-      reviewCountOfEachMonth: data.reviewCountOfEachMonth,
+      reviewCountOfEachMonth,
       reviewCountOfEachRate: data.reviewCountOfEachRate,
       totalAvg: data.totalAvg.toFixed(1),
       totalCount,
@@ -137,9 +142,9 @@ export default class CenterMain extends React.Component {
     });
   }
 
-  handleReviews(reviewsData) {
+  saveReviews(reviewsData) {
     this.setState({
-      reviewsData,
+      reviewsData: reviewsData.reverse(),
     });
   }
 
@@ -267,6 +272,7 @@ export default class CenterMain extends React.Component {
         <ReviewGraph
           rateAvgOfEachMonth={this.state.rateAvgOfEachMonth}
           xAxisData={this.state.xAxisData}
+          reviewCountOfEachMonth={this.state.reviewCountOfEachMonth}
         />
 
         <CenterReviews
@@ -288,7 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignSelf: 'center',
     padding: 20,
-    paddingTop: 40,
+    paddingTop: 50,
     flex: 1,
   },
   centerName: {

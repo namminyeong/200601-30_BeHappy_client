@@ -64,7 +64,7 @@ class ReviewGraph extends React.PureComponent {
           gridMin={0}
           gridMax={5}
           numberOfTicks={5}
-          contentInset={{ top: 10, bottom: 5, left: 20, right: 20 }}
+          contentInset={{ top: 10, bottom: 5, left: 40, right: 40 }}
           svg={{ stroke: '#d3e6df', strokeWidth: 2 }}
         >
           <Grid svg={{ stroke: '#f2f2f2' }} />
@@ -72,15 +72,17 @@ class ReviewGraph extends React.PureComponent {
           <Decorator />
         </LineChart>
         <XAxis
-          formatLabel={(value) => `${value}月`}
+          formatLabel={(value, index) =>
+            `${value}月 (${this.props.reviewCountOfEachMonth[index]}개)`
+          }
           numberOfTicks={data.length}
           style={{
             height: 20,
           }}
           data={xAxisData}
           xAccessor={({ item }) => item}
-          contentInset={{ left: 25, right: 25 }}
-          svg={{ fontSize: 13, fill: 'black' }}
+          contentInset={{ left: 40, right: 40 }}
+          svg={{ fontSize: 11, fill: 'black' }}
         />
       </View>
     );
