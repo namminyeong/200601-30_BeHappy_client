@@ -4,6 +4,7 @@ const BOOKMARKCLICKED = 'handleCurrentOnMap_BOOKMARKCLICKED';
 const SPECIALTIES = 'handleCurrentOnMap_SPECIALTIES';
 const CENTERTAGS = 'handleCurrentOnMap_CENTERTAGS';
 const SHOWDETAIL = 'handleCurrentOnMap_SHOWDETAIL';
+const GEOMODALSHOWN = 'handleCurrentOnMap_GEOMODALSHOWN';
 
 export const controlCoordinate = (
   lon,
@@ -34,6 +35,10 @@ export const controlShowDetail = (status, index) => {
   return { type: SHOWDETAIL, status, index };
 };
 
+export const controlGeoModalShown = (status) => {
+  return { type: GEOMODALSHOWN, status };
+};
+
 const initialState = {
   coordinate: [0, 0, 0.03, 0.02],
   counseling: [],
@@ -54,6 +59,7 @@ const initialState = {
   centerTags: { psychiatric: true, counseling: true },
   showDetailsIndex: null,
   showDetails: false,
+  GeoModalShown: false,
 };
 
 function handleCurrentOnMap(state = initialState, action) {
@@ -88,6 +94,10 @@ function handleCurrentOnMap(state = initialState, action) {
       return Object.assign({}, state, {
         showDetailsIndex: action.index,
         showDetails: action.status,
+      });
+    case GEOMODALSHOWN:
+      return Object.assign({}, state, {
+        GeoModalShown: action.status,
       });
 
     default:

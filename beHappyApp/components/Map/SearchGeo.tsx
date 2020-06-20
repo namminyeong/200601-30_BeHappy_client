@@ -15,6 +15,7 @@ class SearchGeo extends React.Component {
       citySelected: false,
       stateSelected: false,
       range: null,
+      modalShown: false,
     };
     this.inputCity = this.inputCity.bind(this);
     this.inputState = this.inputState.bind(this);
@@ -91,13 +92,13 @@ class SearchGeo extends React.Component {
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           if (counseling.length === 0 && psychiatric.length === 0) {
-            alert('검색 결과가 없습니다, 다른 지역을 검색해보세요');
-            this.props.controlShowDetail(false, null);
+            this.props.controlGeoModalShown(true);
           }
+          this.props.controlShowDetail(false, null);
           this.props.controlCenterData(counseling, psychiatric);
         }
+        this.props.goBack();
       });
-    this.props.goBack();
   }
 
   inputCity(city) {
@@ -295,7 +296,6 @@ class SearchGeo extends React.Component {
             <></>
           )}
         </View>
-        <View />
       </View>
     );
   }

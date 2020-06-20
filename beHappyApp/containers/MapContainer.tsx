@@ -28,6 +28,7 @@ const MapContainer = ({
   controlShowDetail,
   showDetailsIndex,
   showDetails,
+  GeoModalShown,
 }) => {
   return (
     <Map
@@ -47,6 +48,7 @@ const MapContainer = ({
       controlShowDetail={controlShowDetail}
       showDetailsIndex={showDetailsIndex}
       showDetails={showDetails}
+      GeoModalShown={GeoModalShown}
     />
   );
 };
@@ -62,6 +64,7 @@ const mapStateToProps = (state) => ({
   centerTags: state.handleCurrentOnMap.centerTags,
   showDetailsIndex: state.handleCurrentOnMap.showDetailsIndex,
   showDetails: state.handleCurrentOnMap.showDetails,
+  GeoModalShown: state.handleCurrentOnMap.GeoModalShown,
 });
 
 const mapDispatchToProps = (dispatch) => {

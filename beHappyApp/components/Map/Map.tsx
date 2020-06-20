@@ -9,6 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
+import GeoModalContainer from '../../containers/GeoModalContainer';
 
 class Map extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Map extends React.Component {
     this.state = {
       myLatitude: 37.02,
       myLongitude: 127.17,
+      modalGeoShow: false,
     };
 
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -237,7 +239,6 @@ class Map extends React.Component {
       latitudeDelta: this.props.coordinate[3],
     });
     this.props.controlBookmarkClicked(false);
-    // this.props.navigation.popToTop();
   }
 
   filterMarkerBySpecialties(centerInfo) {
@@ -395,6 +396,7 @@ class Map extends React.Component {
             onPress={this.goCurrentLocation}
           />
         </View>
+        {this.props.GeoModalShown ? <GeoModalContainer /> : <></>}
       </View>
     );
   }
