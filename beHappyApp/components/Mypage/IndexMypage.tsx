@@ -24,10 +24,14 @@ function IndexMypage() {
         name='MyInfo'
         component={MyInfo}
         options={{
+          headerTitle: '내 정보',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
           headerStyle: {
             backgroundColor: '#62CCAD',
           },
-          headerTintColor: 'white',
+          headerTintColor: '#FFFFFF',
         }}
       />
       <Stack.Screen name='BookMarkContainer' component={BookMarkContainer} />
