@@ -1,15 +1,21 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import CenterMain from '../../components/Center/CenterMain';
+import CenterMain from '../../components/Center/Main/CenterMain';
 import { controlLogin } from '../../modules(reducers)/auth';
 
-const CenterMainContainer = ({ controlLogin, token, CenterInfo }) => {
+const CenterMainContainer = ({
+  controlLogin,
+  token,
+  CenterInfo,
+  navigation,
+}) => {
   return (
     <CenterMain
       controlLogin={controlLogin}
       token={token}
       CenterInfo={CenterInfo}
+      navigation={navigation}
     />
   );
 };

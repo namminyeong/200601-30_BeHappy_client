@@ -5,9 +5,8 @@ import { Text, Circle } from 'react-native-svg';
 
 class ReviewGraph extends React.PureComponent {
   render() {
-    const data = [2.7, 4.3, 5.0, 3.7];
-    const yAxisData = [0, 1, 2, 3, 4, 5];
-    const xAxisData = [4, 5, 6, 7];
+    const data = this.props.rateAvgOfEachMonth;
+    const xAxisData = this.props.xAxisData;
 
     const Decorator = ({ x, y, data }) => {
       return data.map((value, index) => (
@@ -38,35 +37,34 @@ class ReviewGraph extends React.PureComponent {
             alignmentBaseline={'middle'}
             textAnchor={'middle'}
           >
-            {value}
+            {Number.isInteger(value) && value !== 0 ? value + '.0' : value}
           </Text>
         </View>
       ));
 
     return (
-      <View style={{ height: 150, padding: 10 }}>
-        <YAxis
+      <View style={{ height: 110, padding: 10 }}>
+        {/* <YAxis
           style={{
-            height: 107,
+            height: 77,
             position: 'absolute',
             top: 10,
           }}
           data={yAxisData}
           formatLabel={(value) => ' '}
-          // yAccessor={({ item }) => item}
           contentInset={{ left: 10, right: 10, top: 10, bottom: 10 }}
-          svg={{ fontSize: 13, fill: 'black' }}
+          svg={{ fontSize: 8, fill: 'black' }}
           numberOfTicks={5}
-        />
+        /> */}
         <LineChart
-          style={{ flex: 1, height: 100 }}
+          style={{ flex: 1, height: 80 }}
           data={data}
           yMin={0}
           yMax={5}
           gridMin={0}
           gridMax={5}
           numberOfTicks={5}
-          contentInset={{ top: 10, bottom: 15, left: 20, right: 20 }}
+          contentInset={{ top: 10, bottom: 5, left: 20, right: 20 }}
           svg={{ stroke: '#d3e6df', strokeWidth: 2 }}
         >
           <Grid svg={{ stroke: '#f2f2f2' }} />
@@ -74,7 +72,7 @@ class ReviewGraph extends React.PureComponent {
           <Decorator />
         </LineChart>
         <XAxis
-          formatLabel={(value) => `${value}월`}
+          formatLabel={(value) => `${value}月`}
           numberOfTicks={data.length}
           style={{
             height: 20,

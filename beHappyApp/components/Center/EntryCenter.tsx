@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
-import CenterMainContainer from '../../containers/center/CenterMainContainer';
+import CenterMainStack from './Main/CenterMainStack';
 import IndexCenterPage from './IndexCenterPage';
 
 const Tab = createBottomTabNavigator();
@@ -13,7 +13,7 @@ export default function EntryCenter() {
   return (
     <NavigationContainer independent={true}>
       <Tab.Navigator
-        initialRouteName='CenterMainContainer'
+        initialRouteName='CenterMainStack'
         tabBarOptions={{
           // inactiveTintColor: 'white',
           // activeTintColor: 'black',
@@ -26,8 +26,8 @@ export default function EntryCenter() {
         }}
       >
         <Tab.Screen
-          name='CenterMainContainer'
-          component={CenterMainContainer}
+          name='CenterMainStack'
+          component={CenterMainStack}
           options={{
             tabBarLabel: '메인',
             tabBarIcon: ({ color }) => (
