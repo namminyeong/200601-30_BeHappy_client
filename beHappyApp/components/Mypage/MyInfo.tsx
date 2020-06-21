@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import Modal from 'react-native-modal';
+import Entypo from 'react-native-vector-icons/Entypo';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import DeviceStorage from '../../service/DeviceStorage';
 import { Specialties, States, KindOfCenters } from '../../Data/Preference';
@@ -164,11 +166,15 @@ class MyInfo extends React.Component {
         />
         <View style={styles.preference}>
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
           >
             <Text style={styles.section}>Preference</Text>
-            <TouchableOpacity
-              style={{ marginRight: '2%' }}
+            {/* <TouchableOpacity
+              style={styles.modifyButton}
               onPress={() => {
                 currentCity !== '' &&
                 !States[currentCity].includes(currentStates)
@@ -192,8 +198,39 @@ class MyInfo extends React.Component {
                 });
               }}
             >
-              <Text style={styles.modifyButton}>완료</Text>
-            </TouchableOpacity>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Entypo name='check' size={14} />
+                <Text style={{ paddingLeft: 4 }}>완료</Text>
+              </View>
+            </TouchableOpacity> */}
+
+            <Entypo
+              name='check'
+              size={24}
+              style={{ top: 2, right: 20 }}
+              onPress={() => {
+                currentCity !== '' &&
+                !States[currentCity].includes(currentStates)
+                  ? this.showAlertModal()
+                  : this.setState({
+                      isModify: false,
+                      currentSpecialties: userSpecialties
+                        .map((data) => (data[1] ? data[0] : null))
+                        .filter((el) => el !== null),
+                      currentKindOfCenters: userKindOfCenters
+                        .map((data) => (data[1] ? data[0] : null))
+                        .filter((el) => el !== null),
+                    });
+                DeviceStorage.loadJWT().then((value) => {
+                  this.modifyPreference(
+                    currentSpecialties,
+                    currentKindOfCenters,
+                    currentCity,
+                    currentStates
+                  );
+                });
+              }}
+            />
             <Modal isVisible={alertModal} animationIn='pulse'>
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
@@ -287,11 +324,15 @@ class MyInfo extends React.Component {
           />
           <View style={styles.preference}>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
             >
               <Text style={styles.section}>Preference</Text>
-              <TouchableOpacity
-                style={{ marginRight: '2%' }}
+              {/* <TouchableOpacity
+                style={styles.modifyButton}
                 onPress={() => {
                   this.setState({
                     isModify: true,
@@ -306,8 +347,30 @@ class MyInfo extends React.Component {
                   });
                 }}
               >
-                <Text style={styles.modifyButton}>수정</Text>
-              </TouchableOpacity>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <SimpleLineIcons name='pencil' size={14} />
+                  <Text style={{ paddingLeft: 4 }}>수정</Text>
+                </View>
+              </TouchableOpacity> */}
+
+              <SimpleLineIcons
+                name='pencil'
+                size={20}
+                style={{ top: 2, right: 20 }}
+                onPress={() => {
+                  this.setState({
+                    isModify: true,
+                    userSpecialties:
+                      Specialties.length === 0
+                        ? []
+                        : this.getUserSpecialties(currentSpecialties),
+                    userKindOfCenters:
+                      KindOfCenters.length === 0
+                        ? []
+                        : this.getUserKindOfCenters(currentKindOfCenters),
+                  });
+                }}
+              />
             </View>
             <Text style={styles.preSection}>관심분야</Text>
             <View style={styles.attention}>
@@ -376,7 +439,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   preference: {
-    marginTop: '4%',
+    marginTop: '2%',
   },
   preSection: {
     marginTop: '2%',
@@ -403,14 +466,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   modifyButton: {
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
+    borderRadius: 20,
+    paddingHorizontal: 17,
+    borderWidth: 1,
+    borderColor: 'grey',
+    marginTop: 15,
+    marginBottom: 20,
+    width: 70,
+    height: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   selected: {
     marginTop: 9,
