@@ -10,7 +10,7 @@ import {
 
 import BookingDeleteModal from './BookingDeleteModal';
 
-const MyBookingList = ({ token, navigation, booking }) => {
+const MyBookingList = ({ token, navigation, booking, controlSpecialties }) => {
   console.log('MyBookingList 진입');
   console.log('token: ', token);
   console.log('navigation: ', navigation);
@@ -37,6 +37,7 @@ const MyBookingList = ({ token, navigation, booking }) => {
             navigation.navigate('BookingReview', {
               token,
               booking,
+              controlSpecialties,
             })
           }
         >

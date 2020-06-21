@@ -15,8 +15,6 @@ import MyBookingList from './booking/MyBookingList';
 class MyBookings extends React.Component {
   constructor(props) {
     super(props);
-    console.log('MyBookings 진입');
-    console.log('props: ', this.props);
 
     this.state = {
       bookings: [],

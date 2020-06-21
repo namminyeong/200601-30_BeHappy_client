@@ -10,23 +10,20 @@ const { ec2 } = getEnvVars();
 class BookingReview extends React.Component {
   constructor(props) {
     super(props);
-    console.log('BookingReview 진입');
-    console.log('props: ', this.props);
-    console.log('props: ', this.props.route.params);
+
     this.state = {
       token: this.props.route.params.token,
       centerId: this.props.route.params.booking.center.id,
       bookingId: this.props.route.params.booking.id,
       rate: 0,
       content: '',
-      specialties: ['스트레스', '강박'],
-      newReview: this.props.route.params.booking,
+      specialties: [],
+      bookingInfo: this.props.route.params.booking,
     };
+
     this.submitReview = this.submitReview.bind(this);
-    // this.onChangeText = this.onChangeText.bind(this);
-    // this.ratingCompleted = this.ratingCompleted.bind(this);
-    // this.checkSpecialties = this.checkSpecialties.bind(this);
-    // this.handleSpecialties = this.handleSpecialties.bind(this);
+    this.checkSpecialties = this.checkSpecialties.bind(this);
+    this.handleSpecialties = this.handleSpecialties.bind(this);
   }
 
   submitReview() {
@@ -47,7 +44,6 @@ class BookingReview extends React.Component {
         }
       })
       .then((payload) => {
-        console.log('payload: ', payload);
         this.props.navigation.navigate('MyBookingContainer');
       })
       .catch((error) => {
@@ -55,74 +51,59 @@ class BookingReview extends React.Component {
       });
   }
 
-  // onChangeText(text) {
-  //   let newState = Object.assign({}, this.state.newReview);
-  //   newState.content = text;
-  //   this.setState({
-  //     newReview: newState,
-  //   });
-  // }
+  checkSpecialties(centerSpecialties, filterSpecialties) {
+    let result = false;
 
-  // ratingCompleted(rate) {
-  //   let newState = Object.assign({}, this.state.newReview);
-  //   newState.rate = rate;
-  //   this.setState({
-  //     newReview: newState,
-  //   });
-  // }
+    centerSpecialties.forEach((specialty) => {
+      if (filterSpecialties === specialty) {
+        result = true;
+      }
+    });
 
-  // checkSpecialties(centerSpecialties, filterSpecialties) {
-  //   let result = false;
-  //   centerSpecialties.forEach((specialty) => {
-  //     if (filterSpecialties === specialty) {
-  //       result = true;
-  //     }
-  //   });
-  //   return result;
-  // }
+    return result;
+  }
 
-  // handleSpecialties(specialty) {
-  //   let newState = Object.assign({}, this.state.newReview);
-  //   let index = newState.specialties.indexOf(specialty);
-  //   if (index === -1) {
-  //     newState.specialties.push(specialty);
-  //   } else {
-  //     newState.specialties.splice(index, 1);
-  //   }
-  //   this.setState({
-  //     newReview: newState,
-  //   });
-  // }
+  handleSpecialties(specialty) {
+    let newState = this.state.specialties;
+    let index = newState.indexOf(specialty);
+
+    if (index === -1) {
+      newState.push(specialty);
+    } else {
+      newState.splice(index, 1);
+    }
+
+    this.setState({
+      specialties: newState,
+    });
+  }
 
   render() {
-    const { newReview } = this.state;
+    const { bookingInfo, specialties } = this.state;
 
     return (
       <View style={styles.container}>
-        {/* <ScrollView> */}
-        <View style={styles.review}>
-          <Text>진료일자 : {newReview.date}</Text>
-          <Text style={styles.centername}>{newReview.center.centerName}</Text>
-          <AirbnbRating
-            showRating={false}
-            size={40}
-            selectedColor='#D61A3C'
-            fractions={1}
-            defaultRating={0}
-            onFinishRating={(rating) => {
-              this.setState({
-                rate: rating,
-              });
-            }}
-          />
-          {/* <View style={styles.SpecialtiesContainer}>
-          // this.ratingCompleted(rating)}
-              {Specialties.map((specialtyArr) => {
-                const [specialty] = specialtyArr;
-                let color = this.checkSpecialties(
-                  newReview.specialties,
-                  specialty
-                )
+        <ScrollView>
+          <View style={styles.review}>
+            <Text>진료일자 : {bookingInfo.date}</Text>
+            <Text style={styles.centername}>
+              {bookingInfo.center.centerName}
+            </Text>
+            <AirbnbRating
+              showRating={false}
+              size={40}
+              selectedColor='#D61A3C'
+              fractions={1}
+              defaultRating={0}
+              onFinishRating={(rating) => {
+                this.setState({
+                  rate: rating,
+                });
+              }}
+            />
+            <View style={styles.SpecialtiesContainer}>
+              {Specialties.map((specialty) => {
+                let color = this.checkSpecialties(specialties, specialty)
                   ? '#62CCAD'
                   : '#D1D1D1';
                 return (
@@ -139,29 +120,29 @@ class BookingReview extends React.Component {
                   </Button>
                 );
               })}
-            </View> */}
-          <TextInput
-            multiline={true}
-            style={styles.content}
-            onChangeText={(text) => {
-              this.setState({
-                content: text,
-              });
-            }}
-          />
-          <View style={{ alignItems: 'center' }}>
-            <Button
-              small
-              transparent
-              style={styles.completeButton}
-              onPress={this.submitReview}
-            >
-              <Entypo name='check' size={27} />
-              <Text style={styles.completeText}>완료</Text>
-            </Button>
+            </View>
+            <TextInput
+              multiline={true}
+              style={styles.content}
+              onChangeText={(text) => {
+                this.setState({
+                  content: text,
+                });
+              }}
+            />
+            <View style={{ alignItems: 'center' }}>
+              <Button
+                small
+                transparent
+                style={styles.completeButton}
+                onPress={this.submitReview}
+              >
+                <Entypo name='check' size={27} />
+                <Text style={styles.completeText}>완료</Text>
+              </Button>
+            </View>
           </View>
-        </View>
-        {/* </ScrollView> */}
+        </ScrollView>
       </View>
     );
   }
@@ -229,6 +210,30 @@ const styles = StyleSheet.create({
   },
   completeText: {
     fontSize: 20,
+  },
+  selected: {
+    backgroundColor: '#62ccad',
+    marginTop: -2,
+    borderRadius: 12,
+    padding: 3,
+    marginLeft: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  notSelected: {
+    backgroundColor: '#D1D1D1',
+    marginTop: -2,
+    borderRadius: 12,
+    padding: 3,
+    marginLeft: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

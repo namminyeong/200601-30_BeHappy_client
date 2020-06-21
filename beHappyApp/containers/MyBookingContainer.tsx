@@ -5,7 +5,6 @@ import MyBooking from '../components/Mypage/MyBookings';
 
 const MyBookingContainer = ({ token, navigation }) => {
   console.log('MyBookingContainer 진입');
-  console.log('token: ', token);
   return <MyBooking token={token} navigation={navigation} />;
 };
 
