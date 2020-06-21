@@ -5,10 +5,10 @@ import MypageContainer from '../../containers/MypageContainer';
 import MyInfo from './MyInfo';
 import MyReviewsContainer from '../../containers/MyReviewsContainer';
 import ModifyReview from './ModifyReview';
-import MyBookings from './MyBookings';
 import BookMarkContainer from '../../containers/BookmarkContainer';
 import MyBookingContainer from '../../containers/MyBookingContainer';
 import BookingReview from './booking/BookingReview';
+import BookingModify from './booking/BookingModify';
 
 const Stack = createStackNavigator();
 
@@ -56,6 +56,11 @@ function IndexMypage() {
         name='BookingReview'
         component={BookingReview}
         options={{ title: '리뷰 작성' }}
+      />
+      <Stack.Screen
+        name='BookingModify'
+        component={BookingModify}
+        options={{ title: '예약 수정' }}
       />
     </Stack.Navigator>
   );

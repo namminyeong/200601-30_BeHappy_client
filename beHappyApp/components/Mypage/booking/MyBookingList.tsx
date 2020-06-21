@@ -43,7 +43,15 @@ const MyBookingList = ({ token, navigation, booking }) => {
           >
             <Text style={styles.btnText}>리뷰 쓰기</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() =>
+              navigation.navigate('BookingModify', {
+                token,
+                booking,
+              })
+            }
+          >
             <Text style={styles.btnText}>예약 수정</Text>
           </TouchableOpacity>
           <TouchableHighlight
