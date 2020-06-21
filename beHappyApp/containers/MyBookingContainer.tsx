@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import MyBooking from '../components/Mypage/MyBookings';
 
 const MyBookingContainer = ({ token, navigation }) => {
-  console.log('MyBookingContainer 진입');
   return <MyBooking token={token} navigation={navigation} />;
 };
 

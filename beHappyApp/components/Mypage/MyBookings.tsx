@@ -31,7 +31,6 @@ class MyBookings extends React.Component {
   }
 
   getBookingList() {
-    console.log('MyBookings Get 실행');
     fetch(ec2 + '/booking', {
       method: 'GET',
       credentials: 'include',
@@ -47,7 +46,6 @@ class MyBookings extends React.Component {
         return '';
       })
       .then((payload) => {
-        console.log('payload: ', payload);
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
             this.setState({

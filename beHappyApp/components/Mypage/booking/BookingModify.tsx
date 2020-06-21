@@ -29,9 +29,6 @@ export default class BookingModify extends React.Component {
 
     console.log('BookingModify 진입');
     console.log('props: ', this.props);
-    console.log('centerId: ', this.props.route.params.booking.center.id);
-    console.log('bookedDate: ', this.props.route.params.booking.date);
-    console.log('token: ', this.props.route.params.token);
     this.state = {
       token: this.props.route.params.token,
       centerId: this.props.route.params.booking.center.id,
@@ -64,7 +61,6 @@ export default class BookingModify extends React.Component {
     this.updateBookingInfo = this.updateBookingInfo.bind(this);
     this.againSelectDate = this.againSelectDate.bind(this);
     this.againSelectTime = this.againSelectTime.bind(this);
-    this.modifyBooking = this.modifyBooking.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.blockTime = this.blockTime.bind(this);
     this.backTime = this.backTime.bind(this);
@@ -91,11 +87,9 @@ export default class BookingModify extends React.Component {
         return '';
       })
       .then((payload) => {
-        console.log('payload: ', payload);
         this.setState({
           centerBookingData: payload,
         });
-        // let centerBookingData = payload === 'string' ? [] : payload;
         this.blockTime(centerBookingData);
       })
       .then(() =>
@@ -108,9 +102,11 @@ export default class BookingModify extends React.Component {
   }
 
   updateBookingInfo() {
-    const { token, bookingId, date, time, name, phone, content } = this.state;
+    const { token, bookingId, date, name, phone, content } = this.state;
+
+    let time = this.state.time[0];
+
     console.log('updateBookingInfo 진입');
-    console.log('token: ', token);
     this.resetTime();
 
     fetch(ec2 + '/booking', {
@@ -124,21 +120,10 @@ export default class BookingModify extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          return res.json();
+          alert('예약이 수정됐습니다.');
+          this.props.navigation.navigate('MyBookingContainer');
         }
       })
-      .then((payload) => {
-        console.log('payload: ', payload);
-        this.props.navigation.navigate('MyBookingContainer');
-        // let centerBookingData = payload === 'string' ? [] : payload;
-        // this.blockTime(centerBookingData);
-      })
-      // .then(() =>
-      //   this.setState({
-      //     isSelectDate: true,
-      //     isSelectTime: false,
-      //   })
-      // )
       .catch((error) => console.log('error', error));
   }
 
@@ -178,24 +163,6 @@ export default class BookingModify extends React.Component {
     this.backTime(time);
   }
 
-  modifyBooking() {
-    this.setState({
-      isSelectDate: false,
-      isSelectTime: false,
-      date: '',
-      time: '',
-      name: '',
-      phone: '',
-      content: '',
-      alertModal: false,
-      isAgree: false,
-    });
-
-    setTimeout(() => {
-      this.setState({ completeModal: false });
-    }, 1500);
-  }
-
   changeTime(index) {
     let newState = this.state.bookingTime;
     let present = newState[index][1];
@@ -222,7 +189,6 @@ export default class BookingModify extends React.Component {
       : this.setState({
           isUserInfo: true,
         });
-    console.log(this.state.isUserInfo);
   }
 
   render() {
@@ -262,7 +228,6 @@ export default class BookingModify extends React.Component {
 
                       DeviceStorage.loadJWT().then(() => {
                         this.getCenterBooking();
-                        console.log('centerBookingData: ', centerBookingData);
                       });
                     }}
                   />
@@ -367,7 +332,7 @@ export default class BookingModify extends React.Component {
                         <MaterialIcons
                           name='alert-circle-outline'
                           size={18}
-                          style={{ color: '#941818, right:20' }}
+                          style={{ color: '#941818', right: 20 }}
                         />
                       )}
                     </View>
