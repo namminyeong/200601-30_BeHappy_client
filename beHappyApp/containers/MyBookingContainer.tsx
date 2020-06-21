@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import MyBooking from '../components/Mypage/MyBookings';
@@ -6,8 +6,6 @@ import MyBooking from '../components/Mypage/MyBookings';
 const MyBookingContainer = ({ token, navigation }) => {
   console.log('MyBookingContainer 진입');
   console.log('token: ', token);
-  console.log('navigation: ', navigation);
-
   return <MyBooking token={token} navigation={navigation} />;
 };
 

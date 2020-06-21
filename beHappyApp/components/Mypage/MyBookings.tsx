@@ -1,29 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, Text } from 'react-native';
+import React, { Fragment } from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
 
 import MyBookingList from './booking/MyBookingList';
 
-export default function MyBookings({ token, navigation }) {
-  console.log('MyBookings 진입');
-  console.log('token: ', token);
-  console.log('navigation: ', navigation);
-  const [bookings, setBookings] = useState([]);
+class MyBookings extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log('MyBookings 진입');
+    console.log('props: ', this.props);
 
-  useEffect(() => {
-    getBookingList();
-  }, bookings);
+    this.state = {
+      bookings: [],
+      isLoading: false,
+    };
 
-  const getBookingList = () => {
+    this.getBookingList = this.getBookingList.bind(this);
+    this.handleLoading = this.handleLoading.bind(this);
+  }
+
+  componentDidMount() {
+    this.handleLoading(true);
+    this.getBookingList();
+  }
+
+  getBookingList() {
     console.log('MyBookings Get 실행');
     fetch(ec2 + '/booking', {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -36,8 +52,11 @@ export default function MyBookings({ token, navigation }) {
         console.log('payload: ', payload);
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
-            setBookings(payload);
-            console.log('bookings: ', bookings);
+            this.setState({
+              bookings: payload,
+            });
+            this.handleLoading(false);
+            console.log('bookings: ', this.state.bookings);
           } else if (payload.errorCode === 8) {
             console.log('there is no booking by userId');
           }
@@ -46,24 +65,42 @@ export default function MyBookings({ token, navigation }) {
       .catch((error) => {
         console.log(error);
       });
-  };
+  }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      {bookings.length > 0 ? (
-        bookings.map((booking, index) => (
-          <MyBookingList
-            key={index}
-            token={token}
-            navigation={navigation}
-            booking={booking}
-          />
-        ))
-      ) : (
-        <Text>예약 목록이 없습니다.</Text>
-      )}
-    </SafeAreaView>
-  );
+  handleLoading(status) {
+    this.setState({
+      isLoading: status,
+    });
+  }
+
+  render() {
+    const { bookings, isLoading } = this.state;
+    return (
+      <Fragment>
+        {isLoading ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size='large' color='#0000ff' />
+          </View>
+        ) : (
+          <ScrollView style={styles.container}>
+            {bookings.length > 0 ? (
+              bookings.map((booking, index) => (
+                <View style={styles.booking} key={index}>
+                  <MyBookingList
+                    token={this.props.token}
+                    navigation={this.props.navigation}
+                    booking={booking}
+                  />
+                </View>
+              ))
+            ) : (
+              <Text>예약 목록이 없습니다.</Text>
+            )}
+          </ScrollView>
+        )}
+      </Fragment>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -74,4 +111,27 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 24,
   },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  booking: {
+    backgroundColor: 'white',
+    padding: 10,
+    paddingTop: 15,
+    left: '2%',
+    width: '96%',
+    marginTop: 15,
+    marginBottom: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
 });
+
+export default MyBookings;

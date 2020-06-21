@@ -91,13 +91,6 @@ class Mypage extends React.Component {
             <Text style={styles.itemText}>리뷰관리</Text>
           </TouchableOpacity>
           <View style={styles.lightBorder} />
-
-          {/* <TouchableOpacity
-            style={styles.listItem}
-            onPress={() => {
-              this.props.navigation.navigate('MyBookings');
-            }}
-          > */}
           <TouchableOpacity
             style={styles.listItem}
             onPress={() => {

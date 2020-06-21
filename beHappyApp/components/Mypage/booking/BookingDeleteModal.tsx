@@ -8,11 +8,39 @@ import {
   Dimensions,
 } from 'react-native';
 
-const BookingDeleteModal = ({ changeModalVisible }) => {
+import getEnvVars from '../../../environment';
+const { ec2 } = getEnvVars();
+
+const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
   const [width, setWidth] = useState(Dimensions.get('window').width);
+  const bookingId = booking.id;
 
   const closeModal = () => {
     changeModalVisible(false);
+  };
+
+  const deleteBooking = () => {
+    console.log('deleteBooking 진입');
+
+    fetch(ec2 + '/booking', {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ bookingId }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          alert('예약을 취소했습니다.');
+          closeModal();
+          navigation.navigate('MyBookingContainer');
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+      });
   };
 
   return (
@@ -30,7 +58,7 @@ const BookingDeleteModal = ({ changeModalVisible }) => {
         <View style={styles.btnView}>
           <TouchableHighlight
             style={styles.touchableHighlight}
-            onPress={() => closeModal()}
+            onPress={() => deleteBooking()}
           >
             <Text style={styles.text}>예</Text>
           </TouchableHighlight>
