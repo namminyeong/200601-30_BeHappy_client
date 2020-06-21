@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import deviceStorage from '../../../service/DeviceStorage';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 export default class CenterInfo extends React.Component {
   constructor(props) {
@@ -101,7 +102,11 @@ export default class CenterInfo extends React.Component {
               });
             }}
           >
-            <Text style={styles.modifyText}>수정</Text>
+            <SimpleLineIcons
+              name='pencil'
+              size={23}
+              style={styles.modifyIcon}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.specialtyBox}>
@@ -147,23 +152,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textDecorationLine: 'underline',
   },
-  modifyText: {
-    backgroundColor: 'white',
-    marginRight: 20,
-    borderWidth: 1,
-    borderColor: 'black',
-    paddingLeft: 12,
-    paddingRight: 10,
-    paddingVertical: 2,
-    borderRadius: 20,
-    shadowColor: 'grey',
-    shadowOffset: {
-      width: 1,
-      height: 1,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+  modifyIcon: {
+    marginRight: 25,
   },
   specialtyBox: {
     flexWrap: 'wrap',
@@ -186,7 +176,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     alignSelf: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     paddingVertical: 3,
     shadowColor: 'lightgrey',
     shadowOffset: {
@@ -200,6 +190,6 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: 'darkgrey',
-    fontSize: 17,
+    fontSize: 15,
   },
 });

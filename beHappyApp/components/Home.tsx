@@ -57,15 +57,17 @@ export default class Home extends React.Component {
         if (typeof payload === 'object') {
           if (payload.isAdmin !== undefined) {
             if (payload.isAdmin) {
+              this.props.controlLogin(1, token);
               this.getCenterInfo();
             } else {
               this.props.controlLogin(0, token);
+              this.changeLoading(false);
             }
           } else {
             this.props.controlLogin(-1, null);
+            this.changeLoading(false);
           }
         }
-        this.changeLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -90,7 +92,7 @@ export default class Home extends React.Component {
       .then((data) => {
         if (typeof data === 'object') {
           this.props.controlCenterInfo(data);
-          this.props.controlLogin(1, token);
+          this.changeLoading(false);
         }
       })
       .catch((error) => {
