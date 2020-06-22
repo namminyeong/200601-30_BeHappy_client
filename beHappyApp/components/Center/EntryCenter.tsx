@@ -36,7 +36,7 @@ export default function EntryCenter() {
           }}
         />
         <Tab.Screen
-          name='CenterPage'
+          name='IndexCenterPage'
           component={IndexCenterPage}
           options={{
             tabBarLabel: '예약관리',
