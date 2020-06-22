@@ -78,7 +78,7 @@ export default class CenterPage extends React.Component {
         <ScrollView showsHorizontalScrollIndicator={false}>
           <Calendar
             current={new Date()}
-            monthFormat={'yyyy MM'}
+            monthFormat={'yyyy-MM'}
             markedDates={markedSelectDate}
             onDayPress={(selectDate) => {
               this.setState({

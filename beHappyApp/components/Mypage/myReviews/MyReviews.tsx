@@ -179,61 +179,69 @@ class MyReviews extends React.Component {
           </View>
         ) : (
           <>
-            <ScrollView style={styles.container}>
-              {myReviews.map((review, index) => (
-                <View style={styles.review} key={index}>
-                  <View style={styles.buttons}>
-                    <Button
-                      small
-                      transparent
-                      style={styles.modifyDeleteButton}
-                      onPress={() => {
-                        this.props.navigation.navigate('ModifyReview', {
-                          review,
-                          token: this.props.token,
-                          index,
-                          modifyReview: this.modifyReview,
-                        });
-                      }}
-                    >
-                      <SimpleLineIcons name='pencil' size={23} />
-                    </Button>
-                    <Button
-                      small
-                      transparent
-                      style={styles.modifyDeleteButton}
-                      onPress={() => this.deleteReview(index)}
-                    >
-                      <FontAwesome name='trash-o' size={23} />
-                    </Button>
-                  </View>
-                  <Text>진료일자 : {review.date}</Text>
-                  <Text
-                    style={styles.centername}
-                    onPress={() => this.goToMarker(review.centerId)}
-                  >
-                    {review.centerName}
-                  </Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.rate}>
-                      {this.drawStars(review.rate)}
+            {myReviews.length > 0 ? (
+              <>
+                <ScrollView style={styles.container}>
+                  {myReviews.map((review, index) => (
+                    <View style={styles.review} key={index}>
+                      <View style={styles.buttons}>
+                        <Button
+                          small
+                          transparent
+                          style={styles.modifyDeleteButton}
+                          onPress={() => {
+                            this.props.navigation.navigate('ModifyReview', {
+                              review,
+                              token: this.props.token,
+                              index,
+                              modifyReview: this.modifyReview,
+                            });
+                          }}
+                        >
+                          <SimpleLineIcons name='pencil' size={23} />
+                        </Button>
+                        <Button
+                          small
+                          transparent
+                          style={styles.modifyDeleteButton}
+                          onPress={() => this.deleteReview(index)}
+                        >
+                          <FontAwesome name='trash-o' size={23} />
+                        </Button>
+                      </View>
+                      <Text>진료일자 : {review.date}</Text>
+                      <Text
+                        style={styles.centername}
+                        onPress={() => this.goToMarker(review.centerId)}
+                      >
+                        {review.centerName}
+                      </Text>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={styles.rate}>
+                          {this.drawStars(review.rate)}
+                        </View>
+                      </View>
+                      <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                        {review.specialties.map((specialty) => (
+                          <Text style={styles.specialty}>#{specialty}</Text>
+                        ))}
+                      </View>
+                      <Text numberOfLines={3} style={styles.content}>
+                        {review.content}
+                      </Text>
                     </View>
-                  </View>
-                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                    {review.specialties.map((specialty) => (
-                      <Text style={styles.specialty}>#{specialty}</Text>
-                    ))}
-                  </View>
-                  <Text numberOfLines={3} style={styles.content}>
-                    {review.content}
-                  </Text>
-                </View>
-              ))}
-            </ScrollView>
-            <DeleteReviewModal
-              handleModalDeleteReviewShown={this.handleModalDeleteReviewShown}
-              modalDeleteReviewShown={this.state.modalDeleteReviewShown}
-            />
+                  ))}
+                </ScrollView>
+                <DeleteReviewModal
+                  handleModalDeleteReviewShown={
+                    this.handleModalDeleteReviewShown
+                  }
+                  modalDeleteReviewShown={this.state.modalDeleteReviewShown}
+                />
+              </>
+            ) : (
+              <Text style={styles.noReview}>작성한 리뷰가 없습니다</Text>
+            )}
           </>
         )}
       </>
@@ -311,6 +319,11 @@ const styles = StyleSheet.create({
     marginTop: 17,
     marginBottom: 10,
     fontSize: 14,
+  },
+  noReview: {
+    top: '45%',
+    alignSelf: 'center',
+    fontSize: 20,
   },
 });
 

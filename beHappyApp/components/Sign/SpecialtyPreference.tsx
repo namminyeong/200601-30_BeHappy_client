@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  TouchableHighlight,
+} from 'react-native';
 
 class SpecialtyPreference extends React.Component {
   constructor(props) {
@@ -20,6 +26,8 @@ class SpecialtyPreference extends React.Component {
         '불안',
         '강박',
       ],
+      showAlertModal: false,
+      showAlertModalText: '',
     };
 
     this.submitPreference = this.submitPreference.bind(this);
@@ -39,12 +47,17 @@ class SpecialtyPreference extends React.Component {
     })
       .then((response) => {
         if (response.status === 200) {
-          alert('제출에 성공했습니다.');
-          this.props.navigation.navigate('LoginContainer');
+          this.setState({
+            showAlertModal: true,
+            showAlertModalText: '제출에 성공했습니다.',
+          });
         }
       })
       .catch((error) => {
-        alert('제출에 실패했습니다.');
+        this.setState({
+          showAlertModal: true,
+          showAlertModalText: '제출에 실패했습니다.',
+        });
       });
   }
 
@@ -111,6 +124,32 @@ class SpecialtyPreference extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
+        <Modal
+          animationType='none'
+          transparent={true}
+          visible={this.state.showAlertModal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                {this.state.showAlertModalText}
+              </Text>
+
+              <TouchableHighlight
+                style={styles.closeButton}
+                onPress={() => {
+                  this.setState({
+                    showAlertModal: false,
+                    showAlertModalText: '',
+                  });
+                  this.props.navigation.navigate('LoginContainer');
+                }}
+              >
+                <Text style={styles.textStyle}>닫기</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -189,6 +228,45 @@ const styles = {
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
+  },
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    backgroundColor: '#62CCAD',
+    borderRadius: 2,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
+    elevation: 2,
+  },
+  modalText: {
+    fontSize: 17,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 };
 

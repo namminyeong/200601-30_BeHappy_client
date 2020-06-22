@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView } from 'react-native';
+import { StyleSheet, Text, ScrollView, View } from 'react-native';
 
 import BookMarkList from './BookmarkList';
 import getEnvVars from '../../environment';
@@ -54,9 +54,9 @@ export default function MyBookmarks({
   };
 
   return (
-    <>
+    <View style={styles.container}>
       {bookmark.length > 0 ? (
-        <ScrollView style={styles.container}>
+        <ScrollView>
           {bookmark.map((eachBookmark) => (
             <BookMarkList
               bookmark={eachBookmark}
@@ -69,20 +69,21 @@ export default function MyBookmarks({
           ))}
         </ScrollView>
       ) : (
-        <Text style={styles.text}>즐겨찾기 목록이 없습니다.</Text>
+        <Text style={styles.noBookmark}>즐겨찾기 목록이 없습니다</Text>
       )}
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: 15,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: 'white',
     flex: 1,
   },
-  text: {
+  noBookmark: {
+    top: '45%',
     alignSelf: 'center',
-    fontSize: 24,
+    fontSize: 20,
   },
 });
