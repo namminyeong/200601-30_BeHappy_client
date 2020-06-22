@@ -5,7 +5,6 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
-  Modal,
 } from 'react-native';
 import { Button } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -248,6 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
+    paddingTop: 15,
     backgroundColor: '#f7f7f7',
     flex: 1,
     width: '100%',
@@ -258,8 +258,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     left: '2%',
     width: '96%',
-    marginTop: 15,
-    marginBottom: 2,
+    marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

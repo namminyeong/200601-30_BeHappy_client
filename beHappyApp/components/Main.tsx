@@ -12,10 +12,6 @@ class Main extends React.Component {
       <Tab.Navigator
         initialRouteName='Main'
         tabBarOptions={{
-          // inactiveTintColor: 'white',
-          // activeTintColor: 'black',
-          // activeBackgroundColor: '#62CCAD',
-          // inactiveBackgroundColor: '#62CCAD',
           inactiveTintColor: 'grey',
           activeTintColor: '#62CCAD',
           activeBackgroundColor: 'white',

@@ -36,7 +36,13 @@ function IndexMypage() {
           headerTintColor: '#FFFFFF',
         }}
       />
-      <Stack.Screen name='BookMarkContainer' component={BookMarkContainer} />
+      <Stack.Screen
+        name='BookMarkContainer'
+        component={BookMarkContainer}
+        options={{
+          title: '즐겨찾기',
+        }}
+      />
       <Stack.Screen
         name='MyReviewsContainer'
         component={MyReviewsContainer}
@@ -48,7 +54,7 @@ function IndexMypage() {
         name='ModifyReview'
         component={ModifyReview}
         options={{
-          title: '리뷰 수정하기',
+          title: '리뷰 수정',
         }}
       />
       <Stack.Screen

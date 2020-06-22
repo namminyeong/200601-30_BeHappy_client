@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 export default function MapModal(props) {
-  console.log('props', props);
   return (
     <Modal
       animationType='none'

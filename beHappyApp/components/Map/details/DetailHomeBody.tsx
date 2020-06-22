@@ -5,20 +5,25 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export default function DetailHomeBody(props) {
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row' }}>
-        <MaterialCommunityIcons
-          name='tag-multiple'
-          size={25}
-          style={{ marginRight: 13 }}
-        />
-        <View style={styles.specialtyContainer}>
-          {props.route.params.specialties.map((specialty) => (
-            <Text style={styles.specialty} key={specialty.name}>
-              #{specialty.name}
-            </Text>
-          ))}
+      {props.route.params.specialties.length > 0 ? (
+        <View style={{ flexDirection: 'row', marginTop: '10%' }}>
+          <MaterialCommunityIcons
+            name='tag-multiple'
+            size={25}
+            style={{ marginRight: 13 }}
+          />
+          <View style={styles.specialtyContainer}>
+            {props.route.params.specialties.map((specialty) => (
+              <Text style={styles.specialty} key={specialty.name}>
+                #{specialty.name}
+              </Text>
+            ))}
+          </View>
         </View>
-      </View>
+      ) : (
+        <></>
+      )}
+
       <View style={styles.lineBox}>
         <MaterialCommunityIcons name='city' size={25} />
         <Text style={styles.text}>
@@ -46,7 +51,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     height: '100%',
-    paddingVertical: '10%',
     paddingHorizontal: '8%',
   },
   lineBox: {

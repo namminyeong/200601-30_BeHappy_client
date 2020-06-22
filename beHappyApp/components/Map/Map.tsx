@@ -86,7 +86,7 @@ class Map extends React.Component {
     }
     let allSpecialties = keys.reduce((acc, cur) => {
       if (specialties[cur]) {
-        acc.push(specialties[cur]);
+        acc.push(cur);
         return acc;
       }
       return acc;
@@ -104,7 +104,6 @@ class Map extends React.Component {
       '&longitude=' +
       coordinate[0] +
       specialties;
-
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -260,7 +259,6 @@ class Map extends React.Component {
   }
 
   handleMapModalShows(status) {
-    console.log('handleMapModalShows', status);
     this.setState({
       modalMapShown: status,
     });
