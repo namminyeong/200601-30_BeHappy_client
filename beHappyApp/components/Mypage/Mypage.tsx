@@ -70,24 +70,22 @@ class Mypage extends React.Component {
           />
         </View>
 
-        <View>
-          <TouchableOpacity
-            style={styles.userInfo}
-            onPress={() => {
-              this.props.navigation.navigate('MyInfo', {
-                username: username,
-                phone: phone,
-              });
-            }}
-          >
-            <Text style={styles.user}>{username}</Text>
+        <TouchableOpacity
+          style={styles.userInfo}
+          onPress={() => {
+            this.props.navigation.navigate('MyInfo', {
+              username: username,
+              phone: phone,
+            });
+          }}
+        >
+          <Text style={styles.user}>{username}</Text>
 
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={{ fontSize: 20, marginLeft: 5 }}>님</Text>
-              {<Entypo name='chevron-right' size={23} color={'black'} />}
-            </View>
-          </TouchableOpacity>
-        </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontSize: 20, marginLeft: 5 }}>님</Text>
+            {<Entypo name='chevron-right' size={23} color={'black'} />}
+          </View>
+        </TouchableOpacity>
 
         <View
           style={{
@@ -150,31 +148,12 @@ class Mypage extends React.Component {
           <LogoutContainer />
         </View>
 
-        <TouchableOpacity
-          onPress={this.pressAds.bind(this)}
-          style={{
-            backgroundColor: 'white',
-            alignSelf: 'center',
-            position: 'absolute',
-            bottom: 10,
-            width: '95%',
-            borderColor: 'lightgrey',
-            borderWidth: 0.5,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 3,
-            },
-            shadowOpacity: 0.9,
-            shadowRadius: 4.14,
-            elevation: 7,
-          }}
-        >
+        <TouchableOpacity onPress={this.pressAds.bind(this)} style={styles.ads}>
           <Image
             source={require('../../assets/ad.png')}
             style={{
               width: '60%',
-              height: 120,
+              height: 110,
               bottom: -20,
               alignSelf: 'center',
             }}
@@ -183,7 +162,7 @@ class Mypage extends React.Component {
             style={{
               textAlign: 'center',
               width: '100%',
-              bottom: 110,
+              bottom: 105,
             }}
           >
             스트레스가 많으신가요? 스트레스 자가진단 테스트를 해보세요!
@@ -197,19 +176,19 @@ class Mypage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
   },
   main: {
-    marginTop: 60,
+    marginTop: '15%',
     paddingLeft: '10%',
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#62CCAD',
   },
   title: {
-    marginTop: 30,
+    marginTop: '10%',
     paddingLeft: '10%',
-    height: 30,
+    height: 20,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -218,9 +197,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   userInfo: {
-    marginBottom: 10,
+    marginTop: '3%',
+    marginBottom: '3%',
     paddingLeft: '8%',
-    height: 40,
+    height: 20,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -242,11 +222,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     width: '100%',
-    padding: '6%',
+    paddingHorizontal: '6%',
+    paddingVertical: '5%',
   },
   itemText: {
     fontSize: 18,
     color: 'black',
+  },
+  ads: {
+    backgroundColor: 'white',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 10,
+    width: '98%',
+    borderColor: 'lightgrey',
+    borderWidth: 0.5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 4.14,
+    elevation: 7,
   },
 });
 

@@ -61,7 +61,6 @@ export default class CenterPage extends React.Component {
         selectedColor: 'skyblue',
       },
     };
-    //console.log(this.props);
     return (
       <View style={styles.container}>
         <ScrollView showsHorizontalScrollIndicator={false}>

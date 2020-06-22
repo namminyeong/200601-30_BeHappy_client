@@ -1,28 +1,14 @@
-const CENTERINFO = 'handleCENTERINFO_LOGIN' as const;
+const CENTERINFO = 'handleCENTERINFO_LOGIN';
 
-export const controlCenterInfo = (info: object) => {
+export const controlCenterInfo = (info) => {
   return { type: CENTERINFO, info };
 };
 
-type CenterInfoAction = ReturnType<typeof controlCenterInfo>;
-
-type CenterInfo = {
-  id: number;
-  latitude: number;
-  longitude: number;
-  centerName: string;
-  addressName: string;
-  roadAddressName: string;
-  phone: string;
-  rateAvg: number;
+const initialState = {
+  CenterInfo: {},
 };
 
-const initialState: CenterInfo = {};
-
-function handleCenterInfo(
-  state: CenterInfo = initialState,
-  action: CenterInfoAction
-) {
+function handleCenterInfo(state = initialState, action) {
   switch (action.type) {
     case CENTERINFO:
       return Object.assign({}, state, {

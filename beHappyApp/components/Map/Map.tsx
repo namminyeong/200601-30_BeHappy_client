@@ -10,6 +10,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
 import GeoModalContainer from '../../containers/GeoModalContainer';
+import MapModal from './MapModal';
 
 class Map extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class Map extends React.Component {
     this.state = {
       myLatitude: 37.02,
       myLongitude: 127.17,
-      modalGeoShow: false,
+      modalMapShown: false,
     };
 
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -38,6 +39,7 @@ class Map extends React.Component {
     );
     this.goToMarked = this.goToMarked.bind(this);
     this.filterMarkerBySpecialties = this.filterMarkerBySpecialties.bind(this);
+    this.handleMapModalShows = this.handleMapModalShows.bind(this);
   }
 
   countSpecialties() {
@@ -84,7 +86,7 @@ class Map extends React.Component {
     }
     let allSpecialties = keys.reduce((acc, cur) => {
       if (specialties[cur]) {
-        acc.push(specialties[cur]);
+        acc.push(cur);
         return acc;
       }
       return acc;
@@ -102,7 +104,6 @@ class Map extends React.Component {
       '&longitude=' +
       coordinate[0] +
       specialties;
-
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -122,12 +123,11 @@ class Map extends React.Component {
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
           if (counseling.length === 0 && psychiatric.length === 0) {
-            alert(
-              '검색 결과가 없습니다, 다른 곳으로 이동하시거나 조금 더 확대하여 검색해보세요'
-            );
+            this.handleMapModalShows(true);
+          } else {
+            this.props.controlCenterData(counseling, psychiatric);
+            this.props.controlShowDetail(false, null);
           }
-          this.props.controlCenterData(counseling, psychiatric);
-          this.props.controlShowDetail(false, null);
         }
       });
   }
@@ -256,6 +256,12 @@ class Map extends React.Component {
       });
     });
     return result;
+  }
+
+  handleMapModalShows(status) {
+    this.setState({
+      modalMapShown: status,
+    });
   }
 
   render() {
@@ -396,6 +402,10 @@ class Map extends React.Component {
           />
         </View>
         {this.props.GeoModalShown ? <GeoModalContainer /> : <></>}
+        <MapModal
+          handleMapModalShows={this.handleMapModalShows}
+          modalMapShown={this.state.modalMapShown}
+        />
       </View>
     );
   }

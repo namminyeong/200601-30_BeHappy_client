@@ -28,7 +28,12 @@ export default class ShowReviews extends React.Component {
           });
 
     return (
-      <View style={{ marginLeft: '4%', marginRight: '4%' }}>
+      <View
+        style={{
+          marginLeft: '4%',
+          marginRight: '4%',
+        }}
+      >
         <FlatList
           keyExtractor={(item, index) => item.id}
           data={renderableData}
@@ -36,7 +41,13 @@ export default class ShowReviews extends React.Component {
             return (
               <View style={styles.review}>
                 <ShowStarRate data={item} />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingBottom: 5,
+                  }}
+                >
                   <Text>{item.anonymousName}</Text>
                   <Text style={{ color: '#636E72' }}>{item.date} 방문</Text>
                 </View>

@@ -87,9 +87,6 @@ export default class CenterInfo extends React.Component {
     const { centerSpeicialties } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.centerName}>
-          {this.props.route.params.centerName}
-        </Text>
         <View style={styles.titleBox}>
           <Text style={styles.title}>전문분야</Text>
           <TouchableOpacity
@@ -135,13 +132,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 30,
   },
-  centerName: {
-    marginTop: 20,
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 30,
-  },
   titleBox: {
+    marginTop: 20,
     marginLeft: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -153,6 +145,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   modifyIcon: {
+    top: 5,
     marginRight: 25,
   },
   specialtyBox: {

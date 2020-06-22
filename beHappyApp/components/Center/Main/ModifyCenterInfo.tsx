@@ -19,7 +19,6 @@ export default class ModifyCenterInfo extends React.Component {
 
   completedModify() {
     const body = Object.keys(this.state.centerSpeicialties);
-    console.log('body', body);
     fetch(ec2 + '/preference/center', {
       method: 'PATCH',
       credentials: 'include',
