@@ -372,30 +372,11 @@ const styles = {
     backgroundColor: '#D1D1D1',
     borderRadius: 20,
   },
-
-  areaButton: {
-    marginTop: 9,
-    marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
-  },
   favor: {
     flexDirection: 'row',
     paddingBottom: 10,
     marginLeft: '2%',
     marginRight: '2%',
-  },
-  favorButton: {
-    marginTop: 9,
-    marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
   },
   submitBtn: {
     backgroundColor: 'white',
