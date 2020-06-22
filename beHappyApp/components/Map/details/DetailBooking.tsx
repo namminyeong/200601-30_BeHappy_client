@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   CheckBox,
 } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import Moment from 'moment';
 
@@ -421,35 +421,37 @@ export default class Booking extends React.Component {
                 </View>
               ) : null}
               <Modal isVisible={alertModal}>
-                <View style={styles.modal}>
-                  <MaterialCommunityIcons
-                    name='alert-circle-outline'
-                    size={24}
-                  />
-                  <View>
-                    <Text style={{ marginTop: '4%' }}>
-                      개인정보 수집과 제공에 동의합니다.
-                    </Text>
-                    <Text>
-                      잦은 예약 변경과 취소시 이후 예약이 제한 될 수 있습니다.
-                    </Text>
-                    <Text style={{ color: '#941818', marginTop: 4 }}>
-                      예약 당일에는 수정과 취소가 불가능 합니다.
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: 20,
-                    }}
-                  >
-                    <CheckBox
-                      onValueChange={() =>
-                        this.setState({ isAgree: true, alertModal: false })
-                      }
+                <View style={styles.centeredView}>
+                  <View style={styles.agreeModal}>
+                    <MaterialCommunityIcons
+                      name='alert-circle-outline'
+                      size={24}
                     />
-                    <Text>확인</Text>
+                    <View>
+                      <Text style={{ marginTop: '4%' }}>
+                        개인정보 수집과 제공에 동의합니다.
+                      </Text>
+                      <Text style={{ marginTop: 4 }}>
+                        잦은 예약 변경과 취소시 이후 예약이 제한 될 수 있습니다.
+                      </Text>
+                      <Text style={{ color: '#941818' }}>
+                        예약 당일에는 수정과 취소가 불가능 합니다.
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 20,
+                      }}
+                    >
+                      <CheckBox
+                        onValueChange={() =>
+                          this.setState({ isAgree: true, alertModal: false })
+                        }
+                      />
+                      <Text>확인</Text>
+                    </View>
                   </View>
                 </View>
               </Modal>
@@ -506,8 +508,10 @@ export default class Booking extends React.Component {
           )}
         </ScrollView>
         <Modal isVisible={completeModal}>
-          <View style={styles.modal}>
-            <Text style={{ fontSize: 18 }}>예약이 완료되었습니다.</Text>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>예약이 완료되었습니다.</Text>
+            </View>
           </View>
         </Modal>
       </View>
@@ -648,15 +652,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modal: {
+
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  agreeModal: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: '1%',
     width: '100%',
     maxHeight: 200,
     backgroundColor: '#FFFFFF',
     borderWidth: 4,
+    borderRadius: 5,
     borderColor: '#62CCAD',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 17,
+    textAlign: 'center',
   },
 });
