@@ -15,10 +15,6 @@ export default function EntryCenter() {
       <Tab.Navigator
         initialRouteName='CenterMainStack'
         tabBarOptions={{
-          // inactiveTintColor: 'white',
-          // activeTintColor: 'black',
-          // activeBackgroundColor: '#62CCAD',
-          // inactiveBackgroundColor: '#62CCAD',
           inactiveTintColor: 'grey',
           activeTintColor: '#62CCAD',
           activeBackgroundColor: 'white',
@@ -36,7 +32,7 @@ export default function EntryCenter() {
           }}
         />
         <Tab.Screen
-          name='CenterPage'
+          name='IndexCenterPage'
           component={IndexCenterPage}
           options={{
             tabBarLabel: '예약관리',

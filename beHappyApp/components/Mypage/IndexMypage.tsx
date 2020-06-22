@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MypageContainer from '../../containers/MypageContainer';
 import MyInfo from './MyInfo';
 import MyReviewsContainer from '../../containers/MyReviewsContainer';
-import ModifyReview from './ModifyReview';
+import ModifyReview from './myReviews/ModifyReview';
 import BookMarkContainer from '../../containers/BookmarkContainer';
 import MyBookingContainer from '../../containers/MyBookingContainer';
 import BookingReview from './booking/BookingReview';
@@ -26,45 +26,78 @@ function IndexMypage() {
         name='MyInfo'
         component={MyInfo}
         options={{
-          headerTitle: '내 정보',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+          headerTitle: '나의 정보',
           headerStyle: {
             backgroundColor: '#62CCAD',
           },
           headerTintColor: '#FFFFFF',
         }}
       />
-      <Stack.Screen name='BookMarkContainer' component={BookMarkContainer} />
+      <Stack.Screen
+        name='BookMarkContainer'
+        component={BookMarkContainer}
+        options={{
+          title: '즐겨찾기',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
+      />
       <Stack.Screen
         name='MyReviewsContainer'
         component={MyReviewsContainer}
         options={{
           title: '리뷰관리',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
         }}
       />
       <Stack.Screen
         name='ModifyReview'
         component={ModifyReview}
         options={{
-          title: '리뷰 수정하기',
+          title: '리뷰 수정',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
         }}
       />
       <Stack.Screen
         name='MyBookingContainer'
         component={MyBookingContainer}
-        options={{ title: '예약 관리' }}
+        options={{
+          title: '예약 관리',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
       />
       <Stack.Screen
         name='BookingReview'
         component={BookingReview}
-        options={{ title: '리뷰 작성' }}
+        options={{
+          title: '리뷰 작성',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
       />
       <Stack.Screen
         name='BookingModify'
         component={BookingModify}
-        options={{ title: '예약 수정' }}
+        options={{
+          title: '예약 수정',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
       />
     </Stack.Navigator>
   );

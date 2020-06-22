@@ -6,22 +6,19 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { HeaderTitle } from 'react-navigation-stack';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import DeviceStorage from '../../service/DeviceStorage';
-import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 
 export default class BookingDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bookingState: false,
+      currentBookingState: false,
     };
   }
 
   patchBookingCheck(token, isCheck) {
-    const { id } = this.props.navigation.state.params.bookingData;
+    const { id } = this.props.route.params.bookingData;
 
     fetch('http://13.209.16.103:4000/booking/check', {
       method: 'PATCH',
@@ -38,7 +35,7 @@ export default class BookingDetail extends React.Component {
       .then((res) => {
         if (res.status === 200) {
           this.setState({
-            bookingState: true,
+            currentBookingState: true,
           });
         }
       })
@@ -52,31 +49,32 @@ export default class BookingDetail extends React.Component {
       name,
       phone,
       content,
-    } = this.props.navigation.state.params.bookingData;
-    const { bookingState } = this.state;
+      bookingState,
+    } = this.props.route.params.bookingData;
+    const { currentBookingState } = this.state;
 
     return (
       <View style={styles.container}>
         <View style={styles.bucket}>
           <Text style={styles.section}>날짜</Text>
-          <Text style={styles.info}>{date}</Text>
+          <Text>{date}</Text>
         </View>
         <View style={styles.bucket}>
           <Text style={styles.section}>시간</Text>
-          <Text style={styles.info}>{time}</Text>
+          <Text>{time.slice(0, 5)}</Text>
         </View>
         <View style={styles.bucket}>
           <Text style={styles.section}>이름</Text>
-          <Text style={styles.info}>{name}</Text>
+          <Text>{name}</Text>
         </View>
         <View style={styles.bucket}>
           <Text style={styles.section}>연락처</Text>
-          <Text style={styles.info}>{phone}</Text>
+          <Text>{phone}</Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.section}>상담 이유</Text>
           <ScrollView showsHorizontalScrollIndicator={false}>
-            <Text style={{ fontSize: 18, padding: 10 }}>{content}</Text>
+            <Text style={{ padding: 10 }}>{content}</Text>
           </ScrollView>
         </View>
         <View
@@ -87,8 +85,12 @@ export default class BookingDetail extends React.Component {
           }}
         >
           <TouchableOpacity
-            disabled={bookingState}
-            style={bookingState ? styles.deactivateButton : styles.Button}
+            disabled={bookingState !== 'booked' || currentBookingState}
+            style={
+              bookingState !== 'booked' || currentBookingState
+                ? styles.deactivateButton
+                : styles.Button
+            }
             onPress={() => {
               DeviceStorage.loadJWT().then((value) => {
                 this.patchBookingCheck(value, true);
@@ -97,7 +99,7 @@ export default class BookingDetail extends React.Component {
           >
             <Text
               style={
-                bookingState
+                bookingState !== 'booked' || currentBookingState
                   ? styles.deactivateButtonText
                   : { fontWeight: 'bold' }
               }
@@ -106,8 +108,12 @@ export default class BookingDetail extends React.Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            disabled={bookingState}
-            style={bookingState ? styles.deactivateButton : styles.Button}
+            disabled={bookingState !== 'booked' || currentBookingState}
+            style={
+              bookingState !== 'booked' || currentBookingState
+                ? styles.deactivateButton
+                : styles.Button
+            }
             onPress={() => {
               DeviceStorage.loadJWT().then((value) => {
                 this.patchBookingCheck(value, false);
@@ -116,7 +122,7 @@ export default class BookingDetail extends React.Component {
           >
             <Text
               style={
-                bookingState
+                bookingState !== 'booked' || currentBookingState
                   ? styles.deactivateButtonText
                   : { fontWeight: 'bold' }
               }
@@ -137,12 +143,8 @@ const styles = StyleSheet.create({
   },
   section: {
     color: '#62CCAD',
-    fontSize: 20,
     paddingRight: 20,
     fontWeight: 'bold',
-  },
-  info: {
-    fontSize: 18,
   },
   bucket: {
     paddingTop: 10,

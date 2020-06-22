@@ -5,25 +5,44 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export default function DetailHomeBody(props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
-        <MaterialCommunityIcons name='city' size={20} />
-        {'    '}
-        {props.route.params.roadAddressName}
-      </Text>
-      {props.route.params.phone ? (
-        <Text style={styles.text}>
-          <MaterialCommunityIcons name='phone-classic' size={20} />
-          {'    '}
-          {props.route.params.phone}
-        </Text>
+      {props.route.params.specialties.length > 0 ? (
+        <View style={{ flexDirection: 'row', marginTop: '10%' }}>
+          <MaterialCommunityIcons
+            name='tag-multiple'
+            size={25}
+            style={{ marginRight: 13 }}
+          />
+          <View style={styles.specialtyContainer}>
+            {props.route.params.specialties.map((specialty) => (
+              <Text style={styles.specialty} key={specialty.name}>
+                #{specialty.name}
+              </Text>
+            ))}
+          </View>
+        </View>
       ) : (
         <></>
       )}
 
-      <Text style={styles.text}>
-        <MaterialCommunityIcons name='clock-outline' size={20} />
-        {'   '}오전 09:00 ~ 오후 10:00
-      </Text>
+      <View style={styles.lineBox}>
+        <MaterialCommunityIcons name='city' size={25} />
+        <Text style={styles.text}>
+          {'    '}
+          {props.route.params.roadAddressName}
+        </Text>
+      </View>
+      {props.route.params.phone ? (
+        <View style={styles.lineBox}>
+          <MaterialCommunityIcons name='phone-classic' size={25} />
+
+          <Text style={styles.text}>
+            {'    '}
+            {props.route.params.phone}
+          </Text>
+        </View>
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
@@ -31,12 +50,30 @@ export default function DetailHomeBody(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    width: '100%',
     height: '100%',
-    padding: 20,
+    paddingHorizontal: '8%',
+  },
+  lineBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '10%',
+  },
+  specialtyContainer: {
+    width: '85%',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  specialty: {
+    fontSize: 17,
+    color: 'white',
+    paddingHorizontal: 7,
+    borderRadius: 10,
+    marginHorizontal: 5,
+    marginVertical: 6,
+    backgroundColor: '#62CCAD',
   },
   text: {
-    fontSize: 20,
-    marginVertical: 20,
+    fontSize: 17,
   },
 });

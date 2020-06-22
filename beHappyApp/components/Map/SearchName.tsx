@@ -4,6 +4,7 @@ import { Header, Button, Icon, Item, Input, Container } from 'native-base';
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
+import NameModal from './NameModal';
 
 class SearchName extends React.Component {
   constructor(props) {
@@ -11,10 +12,12 @@ class SearchName extends React.Component {
 
     this.state = {
       keyword: '',
+      modalNameShown: false,
     };
     this.inputKeyword = this.inputKeyword.bind(this);
     this.goBack = this.goBack.bind(this);
     this.getCenterWithKeyword = this.getCenterWithKeyword.bind(this);
+    this.handleModalNameShown = this.handleModalNameShown.bind(this);
   }
 
   inputKeyword(value) {
@@ -44,7 +47,7 @@ class SearchName extends React.Component {
         if (typeof data === 'object') {
           let keys = Object.keys(data);
           if (data.counseling.length + data.psychiatric.length === 0) {
-            alert('검색 결과가 없습니다');
+            this.handleModalNameShown(true);
             this.props.controlShowDetail(false, null);
           } else if (data.counseling.length + data.psychiatric.length === 1) {
             if (data.counseling.length === 1) {
@@ -108,12 +111,17 @@ class SearchName extends React.Component {
               longitudeDelta: maxLon - minLon,
               latitudeDelta: maxLat - minLat + 2,
             });
+            this.props.controlCenterData(data.counseling, data.psychiatric);
+            this.goBack();
           }
-          this.props.controlCenterData(data.counseling, data.psychiatric);
-
-          this.goBack();
         }
       });
+  }
+
+  handleModalNameShown(status) {
+    this.setState({
+      modalNameShown: status,
+    });
   }
 
   goBack() {
@@ -153,6 +161,10 @@ class SearchName extends React.Component {
             />
           </View>
         </Container>
+        <NameModal
+          modalNameShown={this.state.modalNameShown}
+          handleModalNameShown={this.handleModalNameShown}
+        />
       </View>
     );
   }

@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     width: '100%',
-    padding: '6%',
+    paddingHorizontal: '6%',
+    paddingVertical: '5%',
   },
   itemText: {
     fontSize: 18,

@@ -7,23 +7,22 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-export default function GeoModal(props) {
+export default function ModifyReviewModal(props) {
   return (
     <Modal
       animationType='none'
       transparent={true}
-      visible={props.GeoModalShown}
+      visible={props.modifyReviewModal}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>
-            검색 결과가 없습니다, 다른 지역을 검색해보세요
-          </Text>
+          <Text style={styles.modalText}>수정이 완료되었습니다</Text>
 
           <TouchableHighlight
             style={styles.closeButton}
             onPress={() => {
-              props.controlGeoModalShown(false);
+              props.handleModifyReviewModal(false);
+              props.navigation.navigate('MyReviewsContainer');
             }}
           >
             <Text style={styles.textStyle}>닫기</Text>
@@ -65,6 +64,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   modalText: {
+    marginHorizontal: '13%',
     fontSize: 17,
     marginBottom: 20,
     textAlign: 'center',

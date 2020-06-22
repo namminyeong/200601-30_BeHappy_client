@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native';
+import { StyleSheet, Text, ScrollView } from 'react-native';
 
 import BookMarkList from './BookmarkList';
 import getEnvVars from '../../environment';
@@ -54,33 +54,32 @@ export default function MyBookmarks({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       {bookmark.length > 0 ? (
-        <FlatList
-          keyExtractor={(item) => item.id.toString()}
-          data={bookmark}
-          renderItem={({ item }) => (
+        <ScrollView style={styles.container}>
+          {bookmark.map((eachBookmark) => (
             <BookMarkList
-              bookmark={item}
+              bookmark={eachBookmark}
               deleteBookmark={deleteBookmark}
               navigation={navigation}
               controlCenterData={controlCenterData}
               controlBookmarkClicked={controlBookmarkClicked}
               controlCoordinate={controlCoordinate}
             />
-          )}
-        />
+          ))}
+        </ScrollView>
       ) : (
         <Text style={styles.text}>즐겨찾기 목록이 없습니다.</Text>
       )}
-    </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 15,
+    backgroundColor: '#f7f7f7',
     flex: 1,
-    justifyContent: 'center',
   },
   text: {
     alignSelf: 'center',
