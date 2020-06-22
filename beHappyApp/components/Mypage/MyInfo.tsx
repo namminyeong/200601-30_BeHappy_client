@@ -7,6 +7,9 @@ import {
   ScrollView,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import Modal from 'react-native-modal';
+import Entypo from 'react-native-vector-icons/Entypo';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import DeviceStorage from '../../service/DeviceStorage';
 import { Specialties, States, KindOfCenters } from '../../Data/Preference';
@@ -20,6 +23,7 @@ class MyInfo extends React.Component {
       currentSpecialties: [],
       currentKindOfCenters: [],
       isModify: false,
+      alertModal: false,
       userSpecialties: [],
       userKindOfCenters: [],
     };
@@ -122,6 +126,17 @@ class MyInfo extends React.Component {
     });
   }
 
+  showAlertModal() {
+    this.setState({
+      alertModal: true,
+    });
+    {
+      setTimeout(() => {
+        this.setState({ alertModal: false });
+      }, 1500);
+    }
+  }
+
   render() {
     const { username, phone } = this.props.route.params;
     const {
@@ -131,6 +146,7 @@ class MyInfo extends React.Component {
       currentKindOfCenters,
       userSpecialties,
       userKindOfCenters,
+      alertModal,
     } = this.state;
 
     return this.state.isModify ? (
@@ -150,15 +166,21 @@ class MyInfo extends React.Component {
         />
         <View style={styles.preference}>
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
           >
             <Text style={styles.section}>Preference</Text>
-            <TouchableOpacity
-              style={{ marginRight: '2%' }}
+            <Entypo
+              name='check'
+              size={24}
+              style={{ top: 2, right: 20 }}
               onPress={() => {
                 currentCity !== '' &&
                 !States[currentCity].includes(currentStates)
-                  ? alert('시/구/군을 다시 선택해주세요.')
+                  ? this.showAlertModal()
                   : this.setState({
                       isModify: false,
                       currentSpecialties: userSpecialties
@@ -177,9 +199,14 @@ class MyInfo extends React.Component {
                   );
                 });
               }}
-            >
-              <Text style={styles.modifyButton}>완료</Text>
-            </TouchableOpacity>
+            />
+            <Modal isVisible={alertModal} animationIn='pulse'>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>시/구/군을 확인해주세요</Text>
+                </View>
+              </View>
+            </Modal>
           </View>
 
           <Text style={styles.preSection}>관심분야</Text>
@@ -266,11 +293,17 @@ class MyInfo extends React.Component {
           />
           <View style={styles.preference}>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
             >
               <Text style={styles.section}>Preference</Text>
-              <TouchableOpacity
-                style={{ marginRight: '2%' }}
+              <SimpleLineIcons
+                name='pencil'
+                size={20}
+                style={{ top: 2, right: 20 }}
                 onPress={() => {
                   this.setState({
                     isModify: true,
@@ -284,9 +317,7 @@ class MyInfo extends React.Component {
                         : this.getUserKindOfCenters(currentKindOfCenters),
                   });
                 }}
-              >
-                <Text style={styles.modifyButton}>수정</Text>
-              </TouchableOpacity>
+              />
             </View>
             <Text style={styles.preSection}>관심분야</Text>
             <View style={styles.attention}>
@@ -335,10 +366,10 @@ class MyInfo extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: '4%',
+    padding: '4%',
+    backgroundColor: '#FFFFFF',
   },
   section: {
-    color: '#62CCAD',
     fontSize: 20,
     paddingRight: 20,
     fontWeight: 'bold',
@@ -355,7 +386,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   preference: {
-    marginTop: '4%',
+    marginTop: '2%',
   },
   preSection: {
     marginTop: '2%',
@@ -382,14 +413,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   modifyButton: {
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
+    borderRadius: 20,
+    paddingHorizontal: 17,
+    borderWidth: 1,
+    borderColor: 'grey',
+    marginTop: 15,
+    marginBottom: 20,
+    width: 70,
+    height: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   selected: {
     marginTop: 9,
@@ -419,6 +461,33 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 50,
     marginBottom: 30,
+  },
+
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 17,
+    textAlign: 'center',
   },
 });
 
