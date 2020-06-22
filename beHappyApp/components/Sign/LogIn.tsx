@@ -106,7 +106,7 @@ class Login extends React.Component {
           <TextInput
             style={styles.inputBox}
             placeholder={'username'}
-            placeholderTextColor={'#000000'}
+            placeholderTextColor={'gray'}
             underlineColorAndroid='transparent'
             value={username}
             onChangeText={(username) => this.setState({ username })}
@@ -123,7 +123,7 @@ class Login extends React.Component {
             style={styles.inputBox}
             placeholder={'password'}
             secureTextEntry={showPass}
-            placeholderTextColor={'#000000'}
+            placeholderTextColor={'gray'}
             underlineColorAndroid='transparent'
             value={password}
             onChangeText={(password) => this.setState({ password })}
@@ -179,10 +179,11 @@ const styles = StyleSheet.create({
   inputBox: {
     width: WIDTH - 100,
     height: 40,
-    borderRadius: 25,
     fontSize: 20,
     paddingLeft: 45,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    marginBottom: 10,
+    borderBottomColor: '#199187',
+    borderBottomWidth: 1,
   },
   btnEye: {
     position: 'absolute',
@@ -200,6 +201,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     textAlign: 'center',
+    color: 'white',
   },
   signEntry: {
     justifyContent: 'center',
