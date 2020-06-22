@@ -71,7 +71,7 @@ export default class DetailsReviews extends React.Component {
             <View style={{ marginLeft: 10, marginRight: 10, borderLeftWidth: 2, borderColor: '#B2BEC3' }} />
             <View style={{ paddingLeft: 20, width: 150, marginRight: -24 }}>
               {stars.map(rate => 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View key={rate} style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={{ paddingRight: 10, color: '#636E72', fontWeight: 'bold' }}>{rate}점</Text>
                   <View style={{maxWidth: 60, width: `${Math.round((reviewsData.filter((data) => data.rate === rate).length / reviewsData.length) * 100)}%`, height: 8, backgroundColor: '#D61A3C' }} />
                 </View>
@@ -79,16 +79,16 @@ export default class DetailsReviews extends React.Component {
             </View>
             <View>
               {stars.map(rate =>
-                <Text>{reviewsData.filter((data) => data.rate === rate).length}</Text>
+                <Text key={rate}>{reviewsData.filter((data) => data.rate === rate).length}</Text>
               )}
             </View>
           </View>
 
           <View style={{ marginLeft: '4%', marginRight: '4%', marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }} />
 
-          <View style={{ marginTop: 20, paddingLeft: '4%', paddingRight: '4%', backgroundColor: 'white' }}>
+          <View style={{ marginTop: 10, paddingLeft: '4%', paddingRight: '4%'}}>
             <RNPickerSelect
-              placeholder={{ label: '전체 리뷰', value: 0 }}
+              placeholder={{ label: '전체 리뷰', value: 0}}
               onValueChange={(value) => this.handleRateFilter(value)}
               items={stars.map((ele) => {
                 return { label: `${ele}점`, value: `${ele}` };
@@ -111,8 +111,9 @@ export default class DetailsReviews extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '6%',
+    paddingTop: '6%',
     marginBottom: '2%',
+    backgroundColor: 'white',
   },
   rateAvg: {
     flexDirection: 'row',

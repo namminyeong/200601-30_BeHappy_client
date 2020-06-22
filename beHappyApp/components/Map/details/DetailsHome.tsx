@@ -48,13 +48,7 @@ class DetailsHome extends React.Component {
       <Fragment>
         <View style={styles.container}>
           <Text style={styles.centerName}>{theCenterInfo.centerName}</Text>
-          <View style={styles.specialtyContainer}>
-            {theCenterInfo.specialties.map((specialty) => (
-              <Text style={styles.specialty} key={specialty.name}>
-                #{specialty.name}
-              </Text>
-            ))}
-          </View>
+
           {theCenterInfo.rateAvg === 0 ? (
             <View style={styles.noReviewContainer}>
               <Text style={styles.noReview}>아직 리뷰가 없습니다</Text>
@@ -62,21 +56,18 @@ class DetailsHome extends React.Component {
           ) : (
             <>
               <View style={styles.reviewContainer}>
-                <Text style={styles.rate}>{theCenterInfo.rateAvg}/5 </Text>
+                <Text style={styles.rate}>
+                  {theCenterInfo.rateAvg.toFixed(1)}
+                </Text>
+                <Text style={styles.text}>/5 </Text>
                 <View style={styles.star}>
                   <DetailsMiniStarRateAvg rateAvg={theCenterInfo.rateAvg} />
                 </View>
               </View>
             </>
           )}
-        </View>
 
-        <View style={styles.iconBox}>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}
-          >
+          <View style={styles.iconBox}>
             <View style={styles.iconSet}>
               <MaterialCommunityIcons
                 name='phone'
@@ -113,7 +104,7 @@ class DetailsHome extends React.Component {
 
         <Tab.Navigator
           tabBarOptions={{
-            labelStyle: { fontSize: 15, color: 'white' },
+            labelStyle: { fontSize: 17, color: 'white' },
             tabStyle: { width: 70 },
             style: { backgroundColor: '#62CCAD' },
             activeTintColor: 'white',
@@ -144,48 +135,34 @@ class DetailsHome extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    height: '30%',
+    paddingTop: '20%',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
   centerName: {
-    top: 40,
     fontSize: 25,
     fontWeight: 'bold',
-    height: 60,
-  },
-  specialtyContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    top: 20,
-  },
-  specialty: {
-    fontSize: 15,
-    color: 'white',
-    paddingHorizontal: 6,
-    borderRadius: 10,
-    marginHorizontal: 4,
-    backgroundColor: '#62CCAD',
   },
   noReviewContainer: {
-    top: 5,
-    marginTop: 23,
-    marginBottom: 15,
+    marginTop: '4%',
     fontSize: 17,
   },
   reviewContainer: {
-    top: 10,
-    width: 235,
-    marginTop: 20,
-    marginBottom: 12,
+    width: 220,
+    marginTop: '2%',
     fontSize: 17,
     flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
   },
   rate: {
+    fontWeight: 'bold',
     fontSize: 20,
-    width: 50,
-    textAlign: 'center',
+    width: 30,
+    textAlign: 'right',
+  },
+  text: {
+    fontSize: 20,
   },
   star: {
     left: 3,
@@ -196,12 +173,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   iconBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 10,
+    marginTop: '2%',
+    flexDirection: 'row',
   },
   iconSet: {
-    flexDirection: 'column',
     width: '50%',
     justifyContent: 'center',
     alignItems: 'center',
