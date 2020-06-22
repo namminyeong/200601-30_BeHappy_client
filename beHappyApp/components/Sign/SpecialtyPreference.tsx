@@ -8,7 +8,7 @@ class SpecialtyPreference extends React.Component {
     this.state = {
       centerId: this.props.route.params.centerId,
       specialties: [],
-      specialtyDatas: [
+      specialtyData: [
         '스트레스',
         '가족',
         '식이',
@@ -23,8 +23,7 @@ class SpecialtyPreference extends React.Component {
     };
 
     this.submitPreference = this.submitPreference.bind(this);
-    this.inputSpecialty = this.inputSpecialty.bind(this);
-    this.deleteSpecialty = this.deleteSpecialty.bind(this);
+    this.handleSpecialty = this.handleSpecialty.bind(this);
   }
 
   submitPreference() {
@@ -49,93 +48,69 @@ class SpecialtyPreference extends React.Component {
       });
   }
 
-  inputSpecialty(value) {
-    this.setState({
-      specialties: [...this.state.specialties, value],
-    });
-  }
-
-  deleteSpecialty(value) {
+  handleSpecialty(value) {
     const { specialties } = this.state;
-
-    this.setState({
-      specialties: specialties.filter((specialty) => specialty !== value),
-    });
+    if (specialties.indexOf(value) === -1) {
+      this.setState({
+        specialties: [...specialties, value],
+      });
+    } else {
+      this.setState({
+        specialties: specialties.filter((specialty) => specialty !== value),
+      });
+    }
   }
 
   render() {
-    const { specialties, specialtyDatas } = this.state;
+    const { specialties, specialtyData } = this.state;
 
     return (
       <View style={styles.container}>
-        <ScrollView showsHorizontalScrollIndicator={false}>
+        <Text style={{ marginVertical: '5%' }}>
+          * 아래 내용을 참고하여 지도에 마커가 중요도에 따라{'\n'}
+          {'   '}다른 색으로 표시됩니다(빨간색 > 주황색 > 노란색)
+        </Text>
+        <View style={styles.preference}>
+          <Text style={styles.section}>Preference</Text>
+          <Text style={styles.preSection}>전문 분야</Text>
+          <View style={styles.attention}>
+            {specialtyData.map((data, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => this.handleSpecialty(data)}
+              >
+                <Text
+                  style={
+                    specialties.indexOf(data) === -1
+                      ? styles.notSelected
+                      : styles.selected
+                  }
+                >
+                  #{data}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
           <View
             style={{
-              width: '100%',
-              borderBottomWidth: 2,
-              borderColor: '#62CCAD',
+              paddingBottom: 20,
+              flexDirection: 'row',
+              justifyContent: 'center',
             }}
-          />
-          <View style={styles.preference}>
-            <Text style={styles.section}>Preference</Text>
-            <Text style={styles.preSection}>전문 분야</Text>
-            <View style={styles.attention}>
-              {specialtyDatas.map((data, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.hashtagButton}
-                  onPress={() => this.inputSpecialty(data)}
-                >
-                  <Text style={{ color: 'white' }}>#{data}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <Text style={styles.preSection}>내가 선택한 전문 분야</Text>
-            <View style={styles.attention}>
-              {specialties.map((data, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.selectedHashtagButton}
-                  onPress={() => this.deleteSpecialty(data)}
-                >
-                  <Text style={{ color: 'white' }}>#{data}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'center',
+          >
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('LoginContainer');
               }}
             >
-              <TouchableOpacity
-                style={styles.submitBtn}
-                onPress={() => {
-                  this.props.navigation.navigate('LoginContainer');
-                }}
-              >
-                <Text
-                  style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}
-                >
-                  스킵
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.submitBtn}
-                onPress={this.submitPreference}
-              >
-                <Text
-                  style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}
-                >
-                  완료
-                </Text>
-              </TouchableOpacity>
-            </View>
+              <Text style={styles.submitBtn}>스킵</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.submitPreference}>
+              <Text style={styles.submitBtn}>완료</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -143,24 +118,23 @@ class SpecialtyPreference extends React.Component {
 
 const styles = {
   container: {
+    backgroundColor: 'white',
     flex: 1,
-    margin: '4%',
+    paddingHorizontal: '6%',
+    paddingVertical: '12%',
   },
   section: {
-    color: '#62CCAD',
-    fontSize: 20,
-    paddingRight: 20,
+    fontSize: 22,
+    marginBottom: 10,
     fontWeight: 'bold',
   },
   preference: {
     marginTop: '4%',
   },
   preSection: {
-    marginTop: '2%',
+    marginVertical: '3%',
     paddingLeft: 6,
-    color: '#62CCAD',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
   },
   attention: {
     marginLeft: '2%',
@@ -176,25 +150,45 @@ const styles = {
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: '#62CCAD',
-    borderRadius: 10,
+    borderRadius: 20,
   },
-  selectedHashtagButton: {
+  selected: {
+    fontSize: 17,
+    color: 'white',
     marginTop: 9,
     marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#fcd36f',
-    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    backgroundColor: '#62CCADc',
+    borderRadius: 20,
+  },
+  notSelected: {
+    fontSize: 17,
+    color: 'white',
+    marginTop: 9,
+    marginRight: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    backgroundColor: '#D1D1D1',
+    borderRadius: 20,
   },
   submitBtn: {
-    marginTop: '20%',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    fontSize: 18,
+    marginTop: '40%',
     marginRight: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: '#62CCAD',
-    borderRadius: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
 };
 

@@ -159,7 +159,8 @@ class MyInfo extends React.Component {
             alignContent: 'center',
           }}
         >
-          * 아래 내용을 참고하여 지도에 마커가 표시됩니다
+          * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
+          순서대로 빨간색-주황색-노란색으로 표시합니다.
         </Text>
         <View
           style={{ marginTop: '4%', height: 1, backgroundColor: '#B2BEC3' }}
