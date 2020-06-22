@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MypageContainer from '../../containers/MypageContainer';
 import MyInfo from './MyInfo';
 import MyReviewsContainer from '../../containers/MyReviewsContainer';
-import ModifyReview from './ModifyReview';
+import ModifyReview from './myReviews/ModifyReview';
 import BookMarkContainer from '../../containers/BookmarkContainer';
 import MyBookingContainer from '../../containers/MyBookingContainer';
 import BookingReview from './booking/BookingReview';

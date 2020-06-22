@@ -2,11 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
 import { Button } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
-import { Specialties } from '../../Data/Preference';
+import { Specialties } from '../../../Data/Preference';
 import Entypo from 'react-native-vector-icons/Entypo';
-import getEnvVars from '../../environment';
+import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 import { YellowBox } from 'react-native';
+import ModifyReviewModal from './ModifyReviewModal';
 
 YellowBox.ignoreWarnings([
   'Non-serializable values were found in the navigation state',
@@ -17,12 +18,14 @@ class ModifyReview extends React.Component {
     super(props);
     this.state = {
       modifyingReview: this.props.route.params.review,
+      modifyReviewModal: false,
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.completedModify = this.completedModify.bind(this);
     this.ratingCompleted = this.ratingCompleted.bind(this);
     this.checkSpecialties = this.checkSpecialties.bind(this);
     this.handleSpecialties = this.handleSpecialties.bind(this);
+    this.handleModifyReviewModal = this.handleModifyReviewModal.bind(this);
   }
 
   onChangeText(text) {
@@ -78,14 +81,19 @@ class ModifyReview extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          alert('수정이 완료되었습니다.');
+          this.handleModifyReviewModal(true);
           modifyReview(index, review);
-          this.props.navigation.navigate('MyReviewsContainer');
         }
       })
       .catch((error) => {
         console.log('error', error);
       });
+  }
+
+  handleModifyReviewModal(status) {
+    this.setState({
+      modifyReviewModal: status,
+    });
   }
 
   render() {
@@ -153,6 +161,11 @@ class ModifyReview extends React.Component {
             </Button>
           </View>
         </View>
+        <ModifyReviewModal
+          navigation={this.props.navigation}
+          modifyReviewModal={this.state.modifyReviewModal}
+          handleModifyReviewModal={this.handleModifyReviewModal}
+        />
       </ScrollView>
     );
   }

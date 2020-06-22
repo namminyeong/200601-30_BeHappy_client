@@ -5,12 +5,14 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { Button } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import getEnvVars from '../../environment';
+import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
+import DeleteReviewModal from './DeleteReviewModal';
 
 class MyReviews extends React.Component {
   constructor(props) {
@@ -18,6 +20,7 @@ class MyReviews extends React.Component {
     this.state = {
       myReviews: [],
       isLoading: false,
+      modalDeleteReviewShown: false,
     };
     this.handleMyReviewInState = this.handleMyReviewInState.bind(this);
     this.drawStars = this.drawStars.bind(this);
@@ -25,6 +28,9 @@ class MyReviews extends React.Component {
     this.goToMarker = this.goToMarker.bind(this);
     this.deleteReview = this.deleteReview.bind(this);
     this.modifyReview = this.modifyReview.bind(this);
+    this.handleModalDeleteReviewShown = this.handleModalDeleteReviewShown.bind(
+      this
+    );
   }
 
   handleLoading(status) {
@@ -32,6 +38,7 @@ class MyReviews extends React.Component {
       isLoading: status,
     });
   }
+
   componentDidMount() {
     this.handleLoading(true);
     fetch('http://13.209.16.103:4000/review', {
@@ -126,11 +133,6 @@ class MyReviews extends React.Component {
   deleteReview(index) {
     let reviewId = this.state.myReviews[index].reviewId;
     let newState = Object.assign([], this.state.myReviews);
-    newState.splice(index, 1);
-    this.setState({
-      myReviews: newState,
-    });
-
     fetch(ec2 + '/review', {
       method: 'DELETE',
       credentials: 'include',
@@ -142,7 +144,11 @@ class MyReviews extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          alert('리뷰를 삭제했습니다.');
+          this.handleModalDeleteReviewShown(true);
+          newState.splice(index, 1);
+          this.setState({
+            myReviews: newState,
+          });
         }
       })
       .catch((error) => {
@@ -158,6 +164,12 @@ class MyReviews extends React.Component {
     });
   }
 
+  handleModalDeleteReviewShown(status) {
+    this.setState({
+      modalDeleteReviewShown: status,
+    });
+  }
+
   render() {
     const { myReviews, isLoading } = this.state;
     return (
@@ -167,55 +179,63 @@ class MyReviews extends React.Component {
             <ActivityIndicator size='large' color='#0000ff' />
           </View>
         ) : (
-          <ScrollView style={styles.container}>
-            {myReviews.map((review, index) => (
-              <View style={styles.review} key={index}>
-                <View style={styles.buttons}>
-                  <Button
-                    small
-                    transparent
-                    style={styles.modifyDeleteButton}
-                    onPress={() => {
-                      this.props.navigation.navigate('ModifyReview', {
-                        review,
-                        token: this.props.token,
-                        index,
-                        modifyReview: this.modifyReview,
-                      });
-                    }}
+          <>
+            <ScrollView style={styles.container}>
+              {myReviews.map((review, index) => (
+                <View style={styles.review} key={index}>
+                  <View style={styles.buttons}>
+                    <Button
+                      small
+                      transparent
+                      style={styles.modifyDeleteButton}
+                      onPress={() => {
+                        this.props.navigation.navigate('ModifyReview', {
+                          review,
+                          token: this.props.token,
+                          index,
+                          modifyReview: this.modifyReview,
+                        });
+                      }}
+                    >
+                      <SimpleLineIcons name='pencil' size={23} />
+                    </Button>
+                    <Button
+                      small
+                      transparent
+                      style={styles.modifyDeleteButton}
+                      onPress={() => this.deleteReview(index)}
+                    >
+                      <FontAwesome name='trash-o' size={23} />
+                    </Button>
+                  </View>
+                  <Text>진료일자 : {review.date}</Text>
+                  <Text
+                    style={styles.centername}
+                    onPress={() => this.goToMarker(review.centerId)}
                   >
-                    <SimpleLineIcons name='pencil' size={23} />
-                  </Button>
-                  <Button
-                    small
-                    transparent
-                    style={styles.modifyDeleteButton}
-                    onPress={() => this.deleteReview(index)}
-                  >
-                    <FontAwesome name='trash-o' size={23} />
-                  </Button>
+                    {review.centerName}
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.rate}>
+                      {this.drawStars(review.rate)}
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    {review.specialties.map((specialty) => (
+                      <Text style={styles.specialty}>#{specialty}</Text>
+                    ))}
+                  </View>
+                  <Text numberOfLines={3} style={styles.content}>
+                    {review.content}
+                  </Text>
                 </View>
-                <Text>진료일자 : {review.date}</Text>
-                <Text
-                  style={styles.centername}
-                  onPress={() => this.goToMarker(review.centerId)}
-                >
-                  {review.centerName}
-                </Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <View style={styles.rate}>{this.drawStars(review.rate)}</View>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                  {review.specialties.map((specialty) => (
-                    <Text style={styles.specialty}>#{specialty}</Text>
-                  ))}
-                </View>
-                <Text numberOfLines={3} style={styles.content}>
-                  {review.content}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
+              ))}
+            </ScrollView>
+            <DeleteReviewModal
+              handleModalDeleteReviewShown={this.handleModalDeleteReviewShown}
+              modalDeleteReviewShown={this.state.modalDeleteReviewShown}
+            />
+          </>
         )}
       </>
     );
