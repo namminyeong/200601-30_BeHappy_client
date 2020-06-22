@@ -25,7 +25,6 @@ const AddressModal = ({
   const [height, setHeight] = useState(Dimensions.get('window').height);
 
   useEffect(() => {
-    console.log('centerInfo: ', centerInfo);
     getCoordinate();
   }, []);
 
