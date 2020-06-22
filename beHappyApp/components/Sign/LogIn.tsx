@@ -7,12 +7,16 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Modal,
+  TouchableHighlight,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import logo from '../../assets/behappy.png';
 
 import deviceStorage from '../../service/DeviceStorage';
+import CompleteModal from '../../Modal/CompleteModal';
+import AlarmModal from '../../Modal/CheckModal';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -25,10 +29,14 @@ class Login extends React.Component {
       password: '',
       showPass: true,
       press: false,
+      showAlarmModal: false,
+      showCompleteModal: false,
+      showModalText: '',
     };
 
     this.loginUser = this.loginUser.bind(this);
     this.showPass = this.showPass.bind(this);
+    this.handleShowAlarmModal = this.handleShowAlarmModal.bind(this);
   }
 
   loginUser() {
@@ -51,7 +59,13 @@ class Login extends React.Component {
       .then((payload) => {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
-            alert('로그인이 완료됐습니다.');
+            this.setState({
+              showCompleteModal: true,
+              showModalText: '로그인이 완료됐습니다.',
+            });
+            setTimeout(() => {
+              this.setState({ showCompleteModal: false });
+            }, 1500);
             if (payload.adminState === 0 || payload.adminState === -1) {
               this.props.controlLogin(0, payload.token);
             } else if (payload.adminState === 1) {
@@ -63,9 +77,15 @@ class Login extends React.Component {
             );
             deviceStorage.saveKey('id_token', payload.token);
           } else if (payload.errorCode === 1) {
-            alert('아이디를 확인해주세요.');
+            this.setState({
+              showAlarmModal: true,
+              showModalText: '아이디를 확인해주세요.',
+            });
           } else if (payload.errorCode === 2) {
-            alert('비밀번호를 확인해주세요.');
+            this.setState({
+              showAlarmModal: true,
+              showModalText: '비밀번호를 확인해주세요.',
+            });
           }
         }
       })
@@ -88,8 +108,22 @@ class Login extends React.Component {
     }
   }
 
+  handleShowAlarmModal() {
+    this.setState({
+      showAlarmModal: false,
+    });
+  }
+
   render() {
-    const { username, password, showPass, press } = this.state;
+    const {
+      username,
+      password,
+      showPass,
+      press,
+      showAlarmModal,
+      showCompleteModal,
+      showModalText,
+    } = this.state;
 
     return (
       <View style={styles.container}>
@@ -149,6 +183,21 @@ class Login extends React.Component {
         >
           <Text style={styles.signUpBtn}>회원가입</Text>
         </TouchableOpacity>
+
+        <Modal
+          animationType='none'
+          transparent={true}
+          visible={showCompleteModal}
+        >
+          <CompleteModal showModalText={showModalText} />
+        </Modal>
+
+        <Modal animationType='none' transparent={true} visible={showAlarmModal}>
+          <AlarmModal
+            showModalText={showModalText}
+            handleShowAlarmModal={this.handleShowAlarmModal}
+          />
+        </Modal>
       </View>
     );
   }
@@ -214,6 +263,45 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    backgroundColor: '#62CCAD',
+    borderRadius: 2,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
+    elevation: 2,
+  },
+  modalText: {
+    fontSize: 17,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
