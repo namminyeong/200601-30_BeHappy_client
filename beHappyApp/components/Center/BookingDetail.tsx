@@ -57,24 +57,24 @@ export default class BookingDetail extends React.Component {
       <View style={styles.container}>
         <View style={styles.bucket}>
           <Text style={styles.section}>날짜</Text>
-          <Text style={styles.info}>{date}</Text>
+          <Text>{date}</Text>
         </View>
         <View style={styles.bucket}>
           <Text style={styles.section}>시간</Text>
-          <Text style={styles.info}>{time.slice(0, 5)}</Text>
+          <Text>{time.slice(0, 5)}</Text>
         </View>
         <View style={styles.bucket}>
           <Text style={styles.section}>이름</Text>
-          <Text style={styles.info}>{name}</Text>
+          <Text>{name}</Text>
         </View>
         <View style={styles.bucket}>
           <Text style={styles.section}>연락처</Text>
-          <Text style={styles.info}>{phone}</Text>
+          <Text>{phone}</Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.section}>상담 이유</Text>
           <ScrollView showsHorizontalScrollIndicator={false}>
-            <Text style={{ fontSize: 18, padding: 10 }}>{content}</Text>
+            <Text style={{ padding: 10 }}>{content}</Text>
           </ScrollView>
         </View>
         <View
@@ -143,12 +143,8 @@ const styles = StyleSheet.create({
   },
   section: {
     color: '#62CCAD',
-    fontSize: 20,
     paddingRight: 20,
     fontWeight: 'bold',
-  },
-  info: {
-    fontSize: 18,
   },
   bucket: {
     paddingTop: 10,
