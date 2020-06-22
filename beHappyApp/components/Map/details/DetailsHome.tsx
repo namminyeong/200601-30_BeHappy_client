@@ -136,7 +136,7 @@ class DetailsHome extends React.Component {
 const styles = StyleSheet.create({
   container: {
     height: '30%',
-    paddingTop: '20%',
+    paddingTop: '15%',
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
