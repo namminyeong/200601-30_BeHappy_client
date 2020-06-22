@@ -15,6 +15,7 @@ const FilterContainer = ({
   controlCenterTags,
   controlSpecialties,
   controlShowDetail,
+  navigation,
 }) => {
   return (
     <Filter
@@ -23,6 +24,7 @@ const FilterContainer = ({
       specialties={specialties}
       centerTags={centerTags}
       controlShowDetail={controlShowDetail}
+      navigation={navigation}
     />
   );
 };
