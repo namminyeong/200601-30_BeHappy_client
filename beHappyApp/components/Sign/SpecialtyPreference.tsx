@@ -66,9 +66,9 @@ class SpecialtyPreference extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text style={{ marginVertical: '5%' }}>
-          * 아래 내용을 참고하여 지도에 마커가 중요도에 따라{'\n'}
-          {'   '}다른 색으로 표시됩니다(빨간색 > 주황색 > 노란색)
+        <Text style={{ marginTop: '5%' }}>
+          * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
+          순서대로 빨간색-주황색-노란색으로 표시합니다.
         </Text>
         <View style={styles.preference}>
           <Text style={styles.section}>Preference</Text>
