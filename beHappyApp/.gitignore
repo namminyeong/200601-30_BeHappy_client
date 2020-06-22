@@ -10,7 +10,7 @@ npm-debug.*
 web-build/
 web-report/
 .env
-environment.tsx
+environment.js
 
 # macOS
 .DS_Store

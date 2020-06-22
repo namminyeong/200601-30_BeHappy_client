@@ -11,11 +11,6 @@ import {
 import BookingDeleteModal from './BookingDeleteModal';
 
 const MyBookingList = ({ token, navigation, booking, controlSpecialties }) => {
-  console.log('MyBookingList 진입');
-  console.log('token: ', token);
-  console.log('navigation: ', navigation);
-  console.log('booking: ', booking);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const changeModalVisible = (bool) => {

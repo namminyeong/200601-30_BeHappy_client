@@ -6,7 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import DeviceStorage from '../../service/DeviceStorage';
 import LogoutContainer from '../../containers/LogoutContainer';
-import { runInThisContext } from 'vm';
 
 class Mypage extends React.Component {
   constructor(props) {
