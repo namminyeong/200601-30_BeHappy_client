@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Grid, LineChart, YAxis, XAxis } from 'react-native-svg-charts';
+import { Grid, LineChart, XAxis } from 'react-native-svg-charts';
 import { Text, Circle } from 'react-native-svg';
 
 class ReviewGraph extends React.PureComponent {

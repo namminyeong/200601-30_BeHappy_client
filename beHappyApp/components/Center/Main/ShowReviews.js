@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
 
 export default class ShowReviews extends React.Component {
   constructor(props) {

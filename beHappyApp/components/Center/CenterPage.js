@@ -3,11 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
