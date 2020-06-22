@@ -27,9 +27,6 @@ function IndexMypage() {
         component={MyInfo}
         options={{
           headerTitle: '나의 정보',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
           headerStyle: {
             backgroundColor: '#62CCAD',
           },
@@ -41,6 +38,10 @@ function IndexMypage() {
         component={BookMarkContainer}
         options={{
           title: '즐겨찾기',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
         }}
       />
       <Stack.Screen
@@ -48,6 +49,10 @@ function IndexMypage() {
         component={MyReviewsContainer}
         options={{
           title: '리뷰관리',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
         }}
       />
       <Stack.Screen
@@ -55,22 +60,44 @@ function IndexMypage() {
         component={ModifyReview}
         options={{
           title: '리뷰 수정',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
         }}
       />
       <Stack.Screen
         name='MyBookingContainer'
         component={MyBookingContainer}
-        options={{ title: '예약 관리' }}
+        options={{
+          title: '예약 관리',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
       />
       <Stack.Screen
         name='BookingReview'
         component={BookingReview}
-        options={{ title: '리뷰 작성' }}
+        options={{
+          title: '리뷰 작성',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
       />
       <Stack.Screen
         name='BookingModify'
         component={BookingModify}
-        options={{ title: '예약 수정' }}
+        options={{
+          title: '예약 수정',
+          headerStyle: {
+            backgroundColor: '#62CCAD',
+          },
+          headerTintColor: '#FFFFFF',
+        }}
       />
     </Stack.Navigator>
   );

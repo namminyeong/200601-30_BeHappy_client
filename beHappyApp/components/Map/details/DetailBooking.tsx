@@ -241,7 +241,7 @@ export default class Booking extends React.Component {
                     minDate={Moment(
                       new Date().setDate(new Date().getDate() + 1)
                     ).format('YYYY-MM-DD')}
-                    monthFormat={'yyyy MM'}
+                    monthFormat={'yyyy-MM'}
                     onDayPress={(selectDate) => {
                       this.setState({
                         date: selectDate.dateString,
@@ -264,8 +264,8 @@ export default class Booking extends React.Component {
                       style={{ color: '#941818' }}
                     />
                     <Text style={{ margin: 6, color: '#941818' }}>
-                      금일 ({Moment(new Date()).format('M월 D일')}) 예약은
-                      불가능합니다.
+                      당일 ({Moment(new Date()).format('M월 D일')}) 예약은
+                      불가능합니다
                     </Text>
                   </View>
                 </View>
