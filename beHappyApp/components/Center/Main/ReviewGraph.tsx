@@ -43,18 +43,6 @@ class ReviewGraph extends React.PureComponent {
 
     return (
       <View style={{ height: 110, padding: 10 }}>
-        {/* <YAxis
-          style={{
-            height: 77,
-            position: 'absolute',
-            top: 10,
-          }}
-          data={yAxisData}
-          formatLabel={(value) => ' '}
-          contentInset={{ left: 10, right: 10, top: 10, bottom: 10 }}
-          svg={{ fontSize: 8, fill: 'black' }}
-          numberOfTicks={5}
-        /> */}
         <LineChart
           style={{ flex: 1, height: 80 }}
           data={data}

@@ -170,6 +170,9 @@ export default class CenterMain extends React.Component {
 
   render() {
     const stars = [5, 4, 3, 2, 1];
+    let MaxRateCount = Object.values(this.state.reviewCountOfEachRate).sort(
+      (a, b) => b - a
+    )[0];
 
     return (
       <View style={styles.container}>
@@ -178,7 +181,6 @@ export default class CenterMain extends React.Component {
             this.props.navigation.navigate('CenterInfo', {
               token: this.props.token,
               controlLogin: this.props.controlLogin,
-              centerName: this.props.CenterInfo.centerName,
             })
           }
         >
@@ -245,18 +247,20 @@ export default class CenterMain extends React.Component {
                     <Text style={styles.rateColumn}>{rate}점</Text>
                     <View
                       style={{
-                        maxWidth: 60,
+                        maxWidth: 55,
                         width: `${Math.round(
                           (this.state.reviewCountOfEachRate[rate] /
-                            this.state.totalCount) *
-                            100
+                            MaxRateCount) *
+                            55
                         )}%`,
                         height: 8,
                         backgroundColor: '#D61A3C',
                       }}
                     />
                   </View>
-                  <Text>{this.state.reviewCountOfEachRate[rate]}</Text>
+                  <Text style={{ top: -2 }}>
+                    {this.state.reviewCountOfEachRate[rate]}
+                  </Text>
                 </View>
               );
             })}
