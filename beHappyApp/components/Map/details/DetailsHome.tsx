@@ -134,7 +134,7 @@ class DetailsHome extends React.Component {
           <Tab.Screen
             name='예약'
             component={DetailBooking}
-            initialParams={this.props.navigation.state.params.theCenterInfo}
+            initialParams={this.props.route.params.theCenterInfo}
           />
         </Tab.Navigator>
       </Fragment>
