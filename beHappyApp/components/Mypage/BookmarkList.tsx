@@ -40,16 +40,14 @@ const BookmarkList = ({
 
       {specialties.length > 0 ? (
         <View style={styles.specialtiesInfo}>
-          {specialties.map((data, index) => (
-            <Text key={index} style={styles.specialty}>
+          {specialties.map((data) => (
+            <Text key={data.name} style={styles.specialty}>
               #{data.name}
             </Text>
           ))}
         </View>
       ) : (
-        <Text style={styles.specialtyText}>
-          아직 등록된 전문분야가 없습니다
-        </Text>
+        <View />
       )}
       <Button
         small
@@ -59,14 +57,22 @@ const BookmarkList = ({
       >
         <FontAwesome name='trash-o' size={23} />
       </Button>
-      <ShowStarRateAvg rateAvg={rateAvg} />
+      {rateAvg > 0 ? (
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.rateText}>{rateAvg.toFixed(1)}</Text>
+          <ShowStarRateAvg rateAvg={rateAvg} />
+        </View>
+      ) : (
+        <Text style={styles.noReview}>아직 리뷰가 없습니다</Text>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    left: '1%',
+    height: 140,
+    left: '2%',
     width: '96%',
     backgroundColor: 'white',
     flex: 1,
@@ -104,14 +110,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     marginTop: 5,
-    marginRight: 8,
+    marginRight: 7,
     paddingVertical: 1,
     paddingHorizontal: 8,
     backgroundColor: '#62CCAD',
     borderRadius: 10,
   },
-  specialtyText: {
-    marginTop: 10,
+  rateText: {
+    fontSize: 17,
+    alignSelf: 'center',
+    marginRight: 5,
+    fontWeight: 'bold',
+  },
+  noReview: {
+    marginTop: 8,
     marginBottom: 5,
   },
   showMapBtn: {

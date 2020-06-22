@@ -26,7 +26,7 @@ function IndexMypage() {
         name='MyInfo'
         component={MyInfo}
         options={{
-          headerTitle: '내 정보',
+          headerTitle: '나의 정보',
           headerTitleStyle: {
             fontWeight: 'bold',
           },

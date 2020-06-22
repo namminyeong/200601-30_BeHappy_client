@@ -66,7 +66,7 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
           }}
         >
           {centerInfo.rateAvg === 0 ? (
-            <Text style={styles.noReview}>아직 리뷰가 없습니다.</Text>
+            <Text style={styles.noReview}>아직 리뷰가 없습니다</Text>
           ) : (
             <>
               <Text style={styles.review}>
