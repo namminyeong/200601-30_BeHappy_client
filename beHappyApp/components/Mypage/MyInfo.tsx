@@ -173,37 +173,6 @@ class MyInfo extends React.Component {
             }}
           >
             <Text style={styles.section}>Preference</Text>
-            {/* <TouchableOpacity
-              style={styles.modifyButton}
-              onPress={() => {
-                currentCity !== '' &&
-                !States[currentCity].includes(currentStates)
-                  ? this.showAlertModal()
-                  : this.setState({
-                      isModify: false,
-                      currentSpecialties: userSpecialties
-                        .map((data) => (data[1] ? data[0] : null))
-                        .filter((el) => el !== null),
-                      currentKindOfCenters: userKindOfCenters
-                        .map((data) => (data[1] ? data[0] : null))
-                        .filter((el) => el !== null),
-                    });
-                DeviceStorage.loadJWT().then((value) => {
-                  this.modifyPreference(
-                    currentSpecialties,
-                    currentKindOfCenters,
-                    currentCity,
-                    currentStates
-                  );
-                });
-              }}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Entypo name='check' size={14} />
-                <Text style={{ paddingLeft: 4 }}>완료</Text>
-              </View>
-            </TouchableOpacity> */}
-
             <Entypo
               name='check'
               size={24}
@@ -331,28 +300,6 @@ class MyInfo extends React.Component {
               }}
             >
               <Text style={styles.section}>Preference</Text>
-              {/* <TouchableOpacity
-                style={styles.modifyButton}
-                onPress={() => {
-                  this.setState({
-                    isModify: true,
-                    userSpecialties:
-                      Specialties.length === 0
-                        ? []
-                        : this.getUserSpecialties(currentSpecialties),
-                    userKindOfCenters:
-                      KindOfCenters.length === 0
-                        ? []
-                        : this.getUserKindOfCenters(currentKindOfCenters),
-                  });
-                }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <SimpleLineIcons name='pencil' size={14} />
-                  <Text style={{ paddingLeft: 4 }}>수정</Text>
-                </View>
-              </TouchableOpacity> */}
-
               <SimpleLineIcons
                 name='pencil'
                 size={20}
