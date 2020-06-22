@@ -337,6 +337,8 @@ export default class SignUp extends React.Component {
       centerSelected: false,
       centerInfo: [],
       isModalVisible: false,
+      showAlertModal: false,
+      showAlertModalText: '',
     };
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
@@ -372,15 +374,30 @@ export default class SignUp extends React.Component {
   userSignup() {
     const { username, password, nickname, phone } = this.state;
     if (username === '') {
-      alert('username을 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: 'username을 입력해주세요.',
+      });
     } else if (password === '') {
-      alert('비밀번호를 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '비밀번호를 입력해주세요.',
+      });
     } else if (password.length < 8) {
-      alert('비밀번호는 8자리 이상이어야 합니다.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '비밀번호는 8자리 이상이어야 합니다.',
+      });
     } else if (nickname === '') {
-      alert('닉네임을 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '닉네임을 입력해주세요.',
+      });
     } else if (phone === '') {
-      alert('핸드폰 번호를 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '핸드폰 번호를 입력해주세요.',
+      });
     } else {
       fetch('http://13.209.16.103:4000/user/signup', {
         method: 'POST',
@@ -399,17 +416,27 @@ export default class SignUp extends React.Component {
         .then((payload) => {
           if (typeof payload === 'object') {
             if (!payload.errorCode) {
-              alert('회원가입에 성공했습니다.');
+              this.setState({
+                showAlertModal: true,
+                showAlertModalText: '회원가입에 성공했습니다.',
+              });
               this.props.navigation.navigate('UserPreference', {
                 userId: payload.userId,
               });
             } else if (payload.errorCode === 3) {
-              alert('이미 존재하는 username입니다.');
+              this.setState({
+                showAlertModal: true,
+                showAlertModalText: '이미 존재하는 username입니다.',
+              });
             }
           }
         })
         .catch((err) => {
-          alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+          this.setState({
+            showAlertModal: true,
+            showAlertModalText:
+              '회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.',
+          });
         });
     }
   }
@@ -428,15 +455,30 @@ export default class SignUp extends React.Component {
     } = this.state;
 
     if (username === '') {
-      alert('username을 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: 'username을 입력해주세요.',
+      });
     } else if (password === '') {
-      alert('비밀번호를 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '비밀번호를 입력해주세요.',
+      });
     } else if (password.length < 8) {
-      alert('비밀번호는 8자리 이상이어야 합니다.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '비밀번호는 8자리 이상이어야 합니다.',
+      });
     } else if (businessNumber === '') {
-      alert('사업자 번호를 입력해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '사업자 번호를 입력해주세요.',
+      });
     } else if (centerName === '') {
-      alert('주소를 검색해주세요.');
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '주소를 검색해주세요.',
+      });
     } else {
       fetch('http://13.209.16.103:4000/user/signup/center', {
         method: 'POST',
@@ -465,21 +507,37 @@ export default class SignUp extends React.Component {
         .then((payload) => {
           if (typeof payload === 'object') {
             if (!payload.errorCode) {
-              alert('회원가입에 성공했습니다.');
+              this.setState({
+                showAlertModal: true,
+                showAlertModalText: '회원가입에 성공했습니다.',
+              });
               this.props.navigation.navigate('SpecialtyPreference', {
                 centerId: payload.centerId,
               });
             } else if (payload.errorCode === 3) {
-              alert('이미 존재하는 username입니다.');
+              this.setState({
+                showAlertModal: true,
+                showAlertModalText: '이미 존재하는 username입니다.',
+              });
             } else if (payload.errorCode === 4) {
-              alert('이미 존재하는 center입니다.');
+              this.setState({
+                showAlertModal: true,
+                showAlertModalText: '이미 존재하는 center입니다.',
+              });
             } else if (payload.errorCode === 5) {
-              alert('이미 존재하는 사업자 번호입니다.');
+              this.setState({
+                showAlertModal: true,
+                showAlertModalText: '이미 존재하는 사업자 번호입니다.',
+              });
             }
           }
         })
         .catch((err) => {
-          alert('회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+          this.setState({
+            showAlertModal: true,
+            showAlertModalText:
+              '회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.',
+          });
         });
     }
   }
@@ -633,6 +691,8 @@ export default class SignUp extends React.Component {
       roadAddressName,
       centerInfo,
       isModalVisible,
+      showAlertModal,
+      showAlertModalText,
     } = this.state;
 
     return (
@@ -837,6 +897,25 @@ export default class SignUp extends React.Component {
             </Fragment>
           )}
         </View>
+        <Modal animationType='none' transparent={true} visible={showAlertModal}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{showAlertModalText}</Text>
+
+              <TouchableHighlight
+                style={styles.closeButton}
+                onPress={() =>
+                  this.setState({
+                    showAlertModal: false,
+                    showAlertModalText: '',
+                  })
+                }
+              >
+                <Text style={styles.textStyle}>닫기</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -910,5 +989,44 @@ const styles = StyleSheet.create({
     backgroundColor: '#62CCAD',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    backgroundColor: '#62CCAD',
+    borderRadius: 2,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
+    elevation: 2,
+  },
+  modalText: {
+    fontSize: 17,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
