@@ -111,20 +111,24 @@ export default class CenterMain extends React.Component {
       willUnshift = willUnshift < 0 ? 12 + willUnshift : willUnshift;
       xAxisData.unshift(willUnshift);
     }
-    let count = 0;
+
     let reviewCountOfEachMonth = [];
     let rateAvgOfEachMonth = xAxisData.map((month, index) => {
       let keys = Object.keys(data.rateAvgOfEachMonth);
-      if (4 - index > keys.length) {
-        count += 1;
+      let keysToMonth = keys.map((key) => Number(key.slice(5)));
+      if (keysToMonth.indexOf(month) !== -1) {
+        reviewCountOfEachMonth.push(
+          data.reviewCountOfEachMonth[keys[keysToMonth.indexOf(month)]]
+        );
+        return +data.rateAvgOfEachMonth[
+          keys[keysToMonth.indexOf(month)]
+        ].toFixed(1);
+      } else {
         reviewCountOfEachMonth.push(0);
         return 0;
       }
-      reviewCountOfEachMonth.push(
-        +data.reviewCountOfEachMonth[keys[index - count]].toFixed(1)
-      );
-      return +data.rateAvgOfEachMonth[keys[index - count]].toFixed(1);
     });
+
     this.setState({
       rateAvgOfEachMonth,
       reviewCountOfEachMonth,
