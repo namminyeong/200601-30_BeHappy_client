@@ -20,6 +20,7 @@ function handleLogin(state = initialState, action) {
         authState: action.status,
         token: action.token,
       });
+
     default:
       return state;
   }

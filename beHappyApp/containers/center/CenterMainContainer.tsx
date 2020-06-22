@@ -1,37 +1,34 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import CenterMain from '../../components/Center/Main/CenterMain';
+import { controlLogin } from '../../modules(reducers)/auth';
 
-import Home from '../components/Home';
-import { controlLogin } from '../modules(reducers)/auth';
-import { controlCenterInfo } from '../modules(reducers)/centerInfo';
-
-const HomeContainer = ({
-  authState,
+const CenterMainContainer = ({
   controlLogin,
-  controlCenterInfo,
   token,
+  CenterInfo,
+  navigation,
 }) => {
   return (
-    <Home
-      authState={authState}
+    <CenterMain
       controlLogin={controlLogin}
-      controlCenterInfo={controlCenterInfo}
       token={token}
+      CenterInfo={CenterInfo}
+      navigation={navigation}
     />
   );
 };
 
 const mapStateToProps = (state) => ({
-  authState: state.handleLogin.authState,
   token: state.handleLogin.token,
+  CenterInfo: state.handleCenterInfo.CenterInfo,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       controlLogin,
-      controlCenterInfo,
     },
     dispatch
   );
@@ -40,4 +37,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HomeContainer);
+)(CenterMainContainer);
