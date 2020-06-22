@@ -6,6 +6,7 @@ import SearchGeo from '../components/Map/SearchGeo';
 import {
   controlCenterData,
   controlShowDetail,
+  controlGeoModalShown,
 } from '../modules(reducers)/currentOnMap';
 
 const SearchGeoContainer = ({
@@ -14,6 +15,8 @@ const SearchGeoContainer = ({
   token,
   goBack,
   controlShowDetail,
+  GeoModalShown,
+  controlGeoModalShown,
 }) => {
   return (
     <SearchGeo
@@ -22,12 +25,15 @@ const SearchGeoContainer = ({
       goSpecificLocationAfterSearch={goSpecificLocationAfterSearch}
       goBack={goBack}
       controlShowDetail={controlShowDetail}
+      controlGeoModalShown={controlGeoModalShown}
+      GeoModalShown={GeoModalShown}
     />
   );
 };
 
 const mapStateToProps = (state) => ({
   token: state.handleLogin.token,
+  GeoModalShown: state.handleCurrentOnMap.GeoModalShown,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -35,6 +41,7 @@ const mapDispatchToProps = (dispatch) => {
     {
       controlCenterData,
       controlShowDetail,
+      controlGeoModalShown,
     },
     dispatch
   );
