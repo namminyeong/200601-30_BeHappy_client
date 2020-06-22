@@ -52,20 +52,14 @@ class SearchGeo extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          if (data.length === 0) {
-            alert(
-              '검색 결과가 없습니다, 다른 곳으로 이동하시거나 조금 더 확대하여 검색해보세요'
-            );
-            this.props.controlShowDetail(false, null);
-          }
           let lon = parseFloat(data.documents[0].address.x).toFixed(6);
           let lat = parseFloat(data.documents[0].address.y).toFixed(6);
           this.getCenterWithCoordinate(lon, lat);
           this.props.goSpecificLocationAfterSearch({
             latitude: Number(lat),
             longitude: Number(lon),
-            latitudeDelta: 0.06,
-            longitudeDelta: 0.06,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
           });
         }
       });
@@ -96,6 +90,10 @@ class SearchGeo extends React.Component {
         if (typeof data === 'object') {
           let counseling = data.counseling;
           let psychiatric = data.psychiatric;
+          if (counseling.length === 0 && psychiatric.length === 0) {
+            alert('검색 결과가 없습니다, 다른 지역을 검색해보세요');
+            this.props.controlShowDetail(false, null);
+          }
           this.props.controlCenterData(counseling, psychiatric);
         }
       });
@@ -129,7 +127,7 @@ class SearchGeo extends React.Component {
   }
 
   inputState(value) {
-    if (this.state.city === '경기도' && !this.state.range) {
+    if (value === 'ㄱ~ㅅ' || value === 'ㅇ~ㅎ') {
       this.inputRange(value);
     } else {
       this.setState({
