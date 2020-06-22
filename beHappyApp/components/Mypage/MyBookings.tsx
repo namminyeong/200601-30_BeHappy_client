@@ -21,6 +21,8 @@ class MyBookings extends React.Component {
       isLoading: false,
     };
 
+    this.deleteBookingState = this.deleteBookingState.bind(this);
+    this.modifyBookingState = this.modifyBookingState.bind(this);
     this.getBookingList = this.getBookingList.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
   }
@@ -28,6 +30,26 @@ class MyBookings extends React.Component {
   componentDidMount() {
     this.handleLoading(true);
     this.getBookingList();
+  }
+
+  deleteBookingState(index) {
+    let newState = this.state.bookings;
+    newState.splice(index, 1);
+    this.setState({
+      bookings: newState,
+    });
+  }
+
+  modifyBookingState(index, booking) {
+    let newState = Object.assign([], this.state.bookings);
+    newState[index].date = booking.date;
+    newState[index].time = booking.time;
+    newState[index].name = booking.name;
+    newState[index].phone = booking.phone;
+    newState[index].content = booking.content;
+    this.setState({
+      bookings: newState,
+    });
   }
 
   getBookingList() {
@@ -52,7 +74,6 @@ class MyBookings extends React.Component {
               bookings: payload,
             });
             this.handleLoading(false);
-            console.log('bookings: ', this.state.bookings);
           } else if (payload.errorCode === 8) {
             console.log('there is no booking by userId');
           }
@@ -86,6 +107,9 @@ class MyBookings extends React.Component {
                     token={this.props.token}
                     navigation={this.props.navigation}
                     booking={booking}
+                    deleteBookingState={this.deleteBookingState}
+                    modifyBookingState={this.modifyBookingState}
+                    index={index}
                   />
                 </View>
               ))

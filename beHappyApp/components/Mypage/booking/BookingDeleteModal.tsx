@@ -11,7 +11,14 @@ import {
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 
-const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
+const BookingDeleteModal = ({
+  changeModalVisible,
+  booking,
+  token,
+  deleteBookingState,
+  index,
+  navigation,
+}) => {
   const [width, setWidth] = useState(Dimensions.get('window').width);
   const bookingId = booking.id;
 
@@ -21,7 +28,7 @@ const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
 
   const deleteBooking = () => {
     console.log('deleteBooking 진입');
-
+    console.log('index: ', index);
     fetch(ec2 + '/booking', {
       method: 'DELETE',
       credentials: 'include',
@@ -34,6 +41,7 @@ const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
       .then((res) => {
         if (res.status === 200) {
           alert('예약을 취소했습니다.');
+          deleteBookingState(index);
           closeModal();
           navigation.navigate('MyBookingContainer');
         }
@@ -58,7 +66,7 @@ const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
         <View style={styles.btnView}>
           <TouchableHighlight
             style={styles.touchableHighlight}
-            onPress={() => deleteBooking()}
+            onPress={() => deleteBooking(bookingId)}
           >
             <Text style={styles.text}>예</Text>
           </TouchableHighlight>
