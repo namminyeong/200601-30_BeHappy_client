@@ -23,9 +23,8 @@ class ReviewGraph extends React.PureComponent {
 
     const Labels = ({ x, y, data }) =>
       data.map((value, index) => (
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row' }} key={index}>
           <Text
-            key={x}
             x={x(index)}
             y={y(value) < 25 ? y(value) + 15 : y(value) - 15}
             fill='black'

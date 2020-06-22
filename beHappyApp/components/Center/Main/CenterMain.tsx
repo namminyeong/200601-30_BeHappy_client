@@ -6,6 +6,7 @@ const { ec2 } = getEnvVars();
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ReviewGraph from './ReviewGraph';
 import CenterReviews from './CenterReviews';
+import Moment from 'moment';
 
 export default class CenterMain extends React.Component {
   constructor(props) {
@@ -56,29 +57,22 @@ export default class CenterMain extends React.Component {
   }
 
   getDataForGraph(id) {
-    let pastYear =
-      new Date().getMonth() < 3
-        ? new Date().getFullYear() - 1
-        : new Date().getFullYear();
-    let pastMonth =
-      new Date().getMonth() < 3
-        ? 10 + new Date().getMonth()
-        : '0' + (new Date().getMonth() - 2);
-
-    let fourmonthBefore = `${pastYear}-${pastMonth}-01`;
-    let thisMonth = `${new Date().getFullYear()}-${
-      new Date().getMonth() + 2 < 10
-        ? '0' + (new Date().getMonth() + 2)
-        : new Date().getMonth() + 2
-    }-01`;
+    let today = Moment(new Date().setMonth(new Date().getMonth() + 1)).format(
+      'YYYY-MM'
+    );
+    let past = Moment(new Date().setMonth(new Date().getMonth() - 3)).format(
+      'YYYY-MM'
+    );
+    let start = `${past}-01`;
+    let end = `${today}-01`;
     let url =
       ec2 +
       '/review/analysis?centerId=' +
       id +
       '&startDate=' +
-      fourmonthBefore +
+      start +
       '&endDate=' +
-      thisMonth;
+      end;
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -95,7 +89,6 @@ export default class CenterMain extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log('data', data);
           this.saveDataForGraph(data);
         }
       })
@@ -240,6 +233,7 @@ export default class CenterMain extends React.Component {
                     flexDirection: 'row',
                     height: 16,
                   }}
+                  key={'point' + rate}
                 >
                   <View
                     style={{

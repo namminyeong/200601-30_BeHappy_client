@@ -48,7 +48,7 @@ export default class Home extends React.Component {
       },
     })
       .then((res) => {
-        if (res.status === (200 || 401 || 403)) {
+        if (res.status === 200 || res.status === 401 || res.status === 403) {
           return res.json();
         }
         return '';
@@ -57,7 +57,6 @@ export default class Home extends React.Component {
         if (typeof payload === 'object') {
           if (payload.isAdmin !== undefined) {
             if (payload.isAdmin) {
-              this.props.controlLogin(1, token);
               this.getCenterInfo();
             } else {
               this.props.controlLogin(0, token);
@@ -91,6 +90,7 @@ export default class Home extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
+          this.props.controlLogin(1, this.props.token);
           this.props.controlCenterInfo(data);
           this.changeLoading(false);
         }
