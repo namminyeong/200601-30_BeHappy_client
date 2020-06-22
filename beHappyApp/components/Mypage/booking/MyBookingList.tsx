@@ -25,7 +25,8 @@ const MyBookingList = ({
   };
 
   const date = Moment(new Date()).format('yyyy-MM-DD');
-  const time = Moment(new Date()).format('hh:MM');
+  const time = Moment(new Date()).format('HH:mm');
+  const bookingTime = booking.time.slice(0, 5);
 
   return (
     <View style={styles.container}>
@@ -65,7 +66,7 @@ const MyBookingList = ({
           </Fragment>
         ) : booking.bookingState === 'booked' &&
           booking.date === date &&
-          booking.time.slice(0, 5) > time ? (
+          bookingTime < time ? (
           <Fragment>
             <Text style={styles.blockText}>리뷰 쓰기</Text>
 
