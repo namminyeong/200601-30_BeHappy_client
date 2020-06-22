@@ -159,10 +159,10 @@ class MyInfo extends React.Component {
             alignContent: 'center',
           }}
         >
-          * 아래 내용을 참고하여 지도에 마커가 표시됩니다.
+          * 아래 내용을 참고하여 지도에 마커가 표시됩니다
         </Text>
         <View
-          style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }}
+          style={{ marginTop: '4%', height: 1, backgroundColor: '#B2BEC3' }}
         />
         <View style={styles.preference}>
           <View
@@ -273,11 +273,13 @@ class MyInfo extends React.Component {
         <ScrollView showsHorizontalScrollIndicator={false}>
           <View>
             <View style={styles.nameStyle}>
-              <Text style={styles.section}>이름</Text>
+              <Text style={styles.section}>
+                이<Text style={{ fontSize: 13 }}>{'     '}</Text>름 :
+              </Text>
               <Text style={styles.info}>{username}</Text>
             </View>
             <View style={styles.phoneStyle}>
-              <Text style={styles.section}>연락처</Text>
+              <Text style={styles.section}>연락처 :</Text>
               <Text style={styles.info}>
                 {phone.slice(0, 3) +
                   '-' +
@@ -289,7 +291,11 @@ class MyInfo extends React.Component {
           </View>
 
           <View
-            style={{ marginTop: '4%', height: 2, backgroundColor: '#B2BEC3' }}
+            style={{
+              marginTop: '4%',
+              height: 1,
+              backgroundColor: '#B2BEC3',
+            }}
           />
           <View style={styles.preference}>
             <View
@@ -322,7 +328,7 @@ class MyInfo extends React.Component {
             <Text style={styles.preSection}>관심분야</Text>
             <View style={styles.attention}>
               {currentSpecialties.length === 0 ? (
-                <Text style={{ margin: 6 }}>선택한 관심분야가 없습니다.</Text>
+                <Text style={{ margin: 6 }}>선택한 관심분야가 없습니다</Text>
               ) : (
                 currentSpecialties.map((data, index) => (
                   <Text key={'Specialties_' + index} style={styles.selected}>
@@ -347,7 +353,7 @@ class MyInfo extends React.Component {
             <Text style={styles.preSection}>선호센터</Text>
             <View style={styles.favor}>
               {currentKindOfCenters.length === 0 ? (
-                <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다.</Text>
+                <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다</Text>
               ) : (
                 currentKindOfCenters.map((data, index) => (
                   <Text key={'KindOfCenters_' + index} style={styles.selected}>
@@ -366,7 +372,7 @@ class MyInfo extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: '4%',
+    padding: '6%',
     backgroundColor: '#FFFFFF',
   },
   section: {
@@ -386,12 +392,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   preference: {
-    marginTop: '2%',
+    marginTop: '6%',
   },
   preSection: {
-    marginTop: '2%',
+    marginTop: '4%',
     paddingLeft: 6,
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
   },
   attention: {
@@ -434,23 +440,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   selected: {
+    fontSize: 17,
     marginTop: 9,
     marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
     backgroundColor: '#62CCAD',
-    borderRadius: 10,
+    borderRadius: 20,
     color: '#FFFFFF',
   },
   notSelected: {
+    fontSize: 17,
     marginTop: 9,
     marginRight: 10,
-    padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
     backgroundColor: '#D1D1D1',
-    borderRadius: 10,
+    borderRadius: 20,
     color: '#FFFFFF',
   },
 

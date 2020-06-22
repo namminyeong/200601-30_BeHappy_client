@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MypageContainer from '../../containers/MypageContainer';
 import MyInfo from './MyInfo';
 import MyReviewsContainer from '../../containers/MyReviewsContainer';
-import ModifyReview from './ModifyReview';
+import ModifyReview from './myReviews/ModifyReview';
 import BookMarkContainer from '../../containers/BookmarkContainer';
 import MyBookingContainer from '../../containers/MyBookingContainer';
 import BookingReview from './booking/BookingReview';
@@ -26,7 +26,7 @@ function IndexMypage() {
         name='MyInfo'
         component={MyInfo}
         options={{
-          headerTitle: '내 정보',
+          headerTitle: '나의 정보',
           headerTitleStyle: {
             fontWeight: 'bold',
           },
@@ -36,7 +36,13 @@ function IndexMypage() {
           headerTintColor: '#FFFFFF',
         }}
       />
-      <Stack.Screen name='BookMarkContainer' component={BookMarkContainer} />
+      <Stack.Screen
+        name='BookMarkContainer'
+        component={BookMarkContainer}
+        options={{
+          title: '즐겨찾기',
+        }}
+      />
       <Stack.Screen
         name='MyReviewsContainer'
         component={MyReviewsContainer}
@@ -48,7 +54,7 @@ function IndexMypage() {
         name='ModifyReview'
         component={ModifyReview}
         options={{
-          title: '리뷰 수정하기',
+          title: '리뷰 수정',
         }}
       />
       <Stack.Screen

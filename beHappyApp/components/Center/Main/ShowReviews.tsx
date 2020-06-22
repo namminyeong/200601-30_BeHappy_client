@@ -27,32 +27,28 @@ export default class ShowReviews extends React.Component {
           });
 
     return (
-      <View style={{ marginLeft: '3%', marginRight: '3%' }}>
-        <FlatList
-          keyExtractor={(item) => item.id}
-          data={renderableData.slice(0, this.state.count)}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.review}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Text>{item.anonymousName}</Text>
-                  <Text style={{ color: '#636E72' }}>
-                    {item.date.slice(0, 4)}.{item.date.slice(5, 7)} 방문
-                  </Text>
-                </View>
-                <View style={styles.rateStar}>
-                  {this.props.drawStars(item.rate, 15)}
-                </View>
-                <Text style={styles.content}>{item.content}</Text>
+      <View style={{ marginHorizontal: '3%', marginTop: '1%' }}>
+        {this.props.reviewsData
+          .slice(0, this.state.count)
+          .map((review, index) => (
+            <View style={styles.review} key={index}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text>{review.anonymousName}</Text>
+                <Text style={{ color: '#636E72' }}>
+                  {review.date.slice(0, 4)}.{review.date.slice(5, 7)} 방문
+                </Text>
               </View>
-            );
-          }}
-        />
+              <View style={styles.rateStar}>
+                {this.props.drawStars(review.rate, 15)}
+              </View>
+              <Text style={styles.content}>{review.content}</Text>
+            </View>
+          ))}
         {renderableData.length <= this.state.count ? (
           <></>
         ) : (

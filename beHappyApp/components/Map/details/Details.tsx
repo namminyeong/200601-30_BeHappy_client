@@ -24,7 +24,7 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
       postBookmark('POST', id);
     }
   };
-  console.log('centerInfo.rateAvg', typeof centerInfo.rateAvg);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={1} onPress={showDetailHome}>
@@ -66,13 +66,13 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
           }}
         >
           {centerInfo.rateAvg === 0 ? (
-            <Text style={styles.noReview}>아직 리뷰가 없습니다.</Text>
+            <Text style={styles.noReview}>아직 리뷰가 없습니다</Text>
           ) : (
             <>
               <Text style={styles.review}>
-                {centerInfo.rateAvg.isInteger
+                {Number.isInteger(centerInfo.rateAvg)
                   ? `${centerInfo.rateAvg}.0`
-                  : `${centerInfo.rateAvg}`}
+                  : `${centerInfo.rateAvg.toFixed(1)}`}
               </Text>
               <View style={styles.star}>
                 <DetailsMiniStarRateAvg rateAvg={centerInfo.rateAvg} />

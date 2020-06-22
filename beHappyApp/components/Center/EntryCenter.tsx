@@ -15,10 +15,6 @@ export default function EntryCenter() {
       <Tab.Navigator
         initialRouteName='CenterMainStack'
         tabBarOptions={{
-          // inactiveTintColor: 'white',
-          // activeTintColor: 'black',
-          // activeBackgroundColor: '#62CCAD',
-          // inactiveBackgroundColor: '#62CCAD',
           inactiveTintColor: 'grey',
           activeTintColor: '#62CCAD',
           activeBackgroundColor: 'white',

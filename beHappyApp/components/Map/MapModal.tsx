@@ -7,23 +7,24 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-export default function GeoModal(props) {
+export default function MapModal(props) {
   return (
     <Modal
       animationType='none'
       transparent={true}
-      visible={props.GeoModalShown}
+      visible={props.modalMapShown}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
-            검색 결과가 없습니다, 다른 지역을 검색해보세요
+            검색 결과가 없습니다, 다른 곳으로 이동하시거나 조금 더 확대하여
+            검색해보세요
           </Text>
 
           <TouchableHighlight
             style={styles.closeButton}
             onPress={() => {
-              props.controlGeoModalShown(false);
+              props.handleMapModalShows(false);
             }}
           >
             <Text style={styles.textStyle}>닫기</Text>

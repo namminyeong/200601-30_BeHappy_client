@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import MyReviews from '../components/Mypage/MyReviews';
+import MyReviews from '../components/Mypage/myReviews/MyReviews';
 import {
   controlCenterData,
   controlBookmarkClicked,
