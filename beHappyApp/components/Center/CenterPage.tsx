@@ -13,20 +13,31 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import DeviceStorage from '../../service/DeviceStorage';
 
-const centerId = 202; // ! merge 후 수정
-
 export default class CenterPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      centerId: this.props.CenterInfo.id,
       currentDate: Moment(new Date()).format('YYYY-MM-DD'),
       bookingDatas: [],
     };
     this.getCenterBooking = this.getCenterBooking.bind(this);
   }
 
+  componentDidMount() {
+    DeviceStorage.loadJWT().then((value) => {
+      this.getCenterBooking(value);
+    });
+  }
+
+  componentDidUpdate() {
+    DeviceStorage.loadJWT().then((value) => {
+      this.getCenterBooking(value);
+    });
+  }
+
   getCenterBooking(token) {
-    const { currentDate } = this.state;
+    const { currentDate, centerId } = this.state;
 
     fetch(
       `http://13.209.16.103:4000/booking/center?centerId=${centerId}&date=${currentDate}`,
@@ -61,6 +72,7 @@ export default class CenterPage extends React.Component {
         selectedColor: 'skyblue',
       },
     };
+
     return (
       <View style={styles.container}>
         <ScrollView showsHorizontalScrollIndicator={false}>
@@ -111,11 +123,36 @@ export default class CenterPage extends React.Component {
                     });
                   }}
                 >
-                  <View style={styles.bookingData}>
-                    <Text style={{ paddingRight: 20, alignItems: 'center' }}>
-                      {data.time.slice(0, 5)}
+                  <View
+                    style={
+                      data.bookingState === 'booked'
+                        ? styles.bookingData
+                        : styles.bookedData
+                    }
+                  >
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={{ paddingRight: 20 }}>
+                        {data.time.slice(0, 5)}
+                      </Text>
+                      <Text>{data.name}</Text>
+                    </View>
+                    <Text
+                      style={
+                        data.bookingState === 'booked'
+                          ? styles.booking
+                          : styles.booked
+                      }
+                    >
+                      {data.bookingState === 'booked'
+                        ? '예약중'
+                        : data.bookingState === 'used'
+                        ? '완료'
+                        : data.bookingState === 'notUsed'
+                        ? '미완료'
+                        : data.bookingState === 'reviewed'
+                        ? '리뷰'
+                        : null}
                     </Text>
-                    <Text>{data.name}</Text>
                   </View>
                 </TouchableOpacity>
               ))
@@ -129,10 +166,11 @@ export default class CenterPage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '6%',
-    marginBottom: 0,
-    marginLeft: '2%',
-    marginRight: '2%',
+    paddingTop: '6%',
+    paddingBottom: 0,
+    paddingLeft: '2%',
+    paddingRight: '2%',
+    backgroundColor: '#FFFFFF',
   },
   bookingListHeader: {
     paddingTop: 20,
@@ -143,9 +181,34 @@ const styles = StyleSheet.create({
   },
   bookingData: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: '4%',
     marginBottom: 6,
     borderColor: '#62CCAD',
     borderWidth: 2,
+  },
+  bookedData: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: '4%',
+    marginBottom: 6,
+    borderColor: '#D1D1D1',
+    borderWidth: 2,
+  },
+  booking: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 20,
+    backgroundColor: '#62CCAD',
+    borderRadius: 8,
+    color: '#FFFFFF',
+  },
+  booked: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 20,
+    backgroundColor: '#D1D1D1',
+    borderRadius: 8,
+    color: '#FFFFFF',
   },
 });
