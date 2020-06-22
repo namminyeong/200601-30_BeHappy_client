@@ -1,78 +1,126 @@
-import React from 'react'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ScrollView } from 'react-native'
+import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import Moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import BookingDetail from './BookingDetail'
-import CenterBooking from './CenterBooking'
+import DeviceStorage from '../../service/DeviceStorage';
+
+const centerId = 202; // ! merge 후 수정
 
 export default class CenterPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentDate: this.defaltDate(),
-      bookingdatas: [
-        { date: '2020-06-11', time: '10:00-11:00', clientName: '테스트' },
-        { date: '2020-06-11', time: '14:00-14:30', clientName: '아무개' },
-        { date: '2020-06-06', time: '14:00-14:30', clientName: '홍길동' },
-        { date: '2020-06-10', time: '15:00-15:30', clientName: '존 도' },
-        { date: '2020-06-12', time: '14:00-14:30', clientName: '제인 도' },
-        { date: '2020-06-13', time: '11:00-12:00', clientName: '강아지' },
-        { date: '2020-06-12', time: '13:00-13:30', clientName: '고양이' },
-        { date: '2020-06-11', time: '17:30-18:00', clientName: '뚱땅' },
-        { date: '2020-06-11', time: '13:00-14:00', clientName: '백구' },
-        { date: '2020-07-02', time: '10:00-11:30', clientName: '네로' },
-        { date: '2020-06-11', time: '09:30-10:00', clientName: '호야' },
-        { date: '2020-06-11', time: '15:30-16:00', clientName: '레오' },
-        { date: '2020-06-11', time: '16:00-17:00', clientName: '바로' },
-      ]
-    }
+      currentDate: Moment(new Date()).format('YYYY-MM-DD'),
+      bookingDatas: [],
+    };
+    this.getCenterBooking = this.getCenterBooking.bind(this);
   }
-  defaltDate() {
-    let year = new Date().getFullYear()
-    let month = new Date().getMonth() + 1
-    let date = new Date().getDate()
 
-    if (month.toString().length === 1) {
-      return year + '-0' + month + '-' + date
-    } else {
-      return year + '-' + month + '-' + date
-    }
+  getCenterBooking(token) {
+    const { currentDate } = this.state;
+
+    fetch(
+      `http://13.209.16.103:4000/booking/center?centerId=${centerId}&date=${currentDate}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        this.setState({
+          bookingDatas: payload,
+        });
+      })
+      .catch((error) => console.log('error', error));
   }
 
   render() {
+    const { currentDate, bookingDatas } = this.state;
+    const markedSelectDate = {
+      [currentDate]: {
+        selected: true,
+        selectedColor: 'skyblue',
+      },
+    };
+    //console.log(this.props);
     return (
       <View style={styles.container}>
         <ScrollView showsHorizontalScrollIndicator={false}>
           <Calendar
             current={new Date()}
             monthFormat={'yyyy MM'}
+            markedDates={markedSelectDate}
             onDayPress={(selectDate) => {
               this.setState({
-                currentDate: selectDate.dateString
-              })
+                currentDate: selectDate.dateString,
+              });
+              DeviceStorage.loadJWT().then((value) => {
+                this.getCenterBooking(value);
+              });
             }}
           />
 
           <View style={styles.bookingListHeader}>
-            <MaterialIcons name="access-time" size={24} style={{ color: '#62CCAD', paddingRight: 4, }} />
-            <Text style={{ color: '#62CCAD', fontSize: 20, fontWeight: 'bold' }} >예약 리스트</Text>
-            <Text style={{ color: '#62CCAD', fontSize: 14, paddingLeft: 10 }} >{this.state.currentDate}</Text>
+            <MaterialIcons
+              name='access-time'
+              size={24}
+              style={{ paddingRight: 4 }}
+            />
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              예약 리스트
+            </Text>
+            <Text style={{ color: '#62CCAD', fontSize: 14, paddingLeft: 10 }}>
+              {currentDate}
+            </Text>
           </View>
-          {this.state.bookingdatas
-            .filter((data) => data.date === this.state.currentDate)
-            .sort((a, b) => {
-              if (a.time > b.time) { return 1 }
-              else { return -1 }
-            })
-            .map((data) =>
-              <TouchableOpacity onPress={() => { this.props.navigation.navigate('BookingDetail') }} >
-                <View style={styles.bookingData}>
-                  <Text style={{ paddingRight: 20, alignItems: 'center' }}>{data.time}</Text>
-                  <Text>{data.clientName}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+          {bookingDatas.length === 0 ? (
+            <Text
+              style={{ textAlign: 'center', paddingTop: 80, color: '#D1D1D1' }}
+            >
+              현재 날짜는 예약이 없습니다.
+            </Text>
+          ) : (
+            bookingDatas
+              .sort((a, b) => {
+                return a.time > b.time ? 1 : -1;
+              })
+              .map((data, index) => (
+                <TouchableOpacity
+                  key={'bookingData' + index}
+                  onPress={() => {
+                    this.props.navigation.navigate('BookingDetail', {
+                      bookingData: data,
+                    });
+                  }}
+                >
+                  <View style={styles.bookingData}>
+                    <Text style={{ paddingRight: 20, alignItems: 'center' }}>
+                      {data.time.slice(0, 5)}
+                    </Text>
+                    <Text>{data.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+          )}
         </ScrollView>
       </View>
     );
@@ -100,5 +148,5 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderColor: '#62CCAD',
     borderWidth: 2,
-  }
-})
+  },
+});
