@@ -19,9 +19,10 @@ const MyBookingList = ({
   modifyBookingState,
   index,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const changeModalVisible = (bool) => {
-    setIsModalVisible(bool);
+  const [modalDeleteBookingShown, setModalDeleteBookingShown] = useState(false);
+
+  const handleModalDeleteBookingShown = (status) => {
+    setModalDeleteBookingShown(status);
   };
 
   const date = Moment(new Date()).format('yyyy-MM-DD');
@@ -65,8 +66,8 @@ const MyBookingList = ({
             <Text style={styles.blockText}>예약 취소</Text>
           </Fragment>
         ) : booking.bookingState === 'booked' &&
-          booking.date === date &&
-          bookingTime < time ? (
+          booking.date <= date &&
+          bookingTime <= time ? (
           <Fragment>
             <Text style={styles.blockText}>리뷰 쓰기</Text>
 
@@ -95,7 +96,7 @@ const MyBookingList = ({
 
             <TouchableHighlight
               style={styles.btn}
-              onPress={() => changeModalVisible(true)}
+              onPress={() => handleModalDeleteBookingShown(true)}
             >
               <Text style={styles.btnText}>예약 취소</Text>
             </TouchableHighlight>
@@ -103,21 +104,15 @@ const MyBookingList = ({
         ) : (
           <Fragment />
         )}
-        <Modal
-          transparent={true}
-          visible={isModalVisible}
-          onRequestClose={() => changeModalVisible(false)}
-          animationType='fade'
-        >
-          <BookingDeleteModal
-            changeModalVisible={changeModalVisible}
-            booking={booking}
-            token={token}
-            navigation={navigation}
-            deleteBookingState={deleteBookingState}
-            index={index}
-          />
-        </Modal>
+        <BookingDeleteModal
+          booking={booking}
+          token={token}
+          navigation={navigation}
+          deleteBookingState={deleteBookingState}
+          index={index}
+          handleModalDeleteBookingShown={handleModalDeleteBookingShown}
+          modalDeleteBookingShown={modalDeleteBookingShown}
+        />
       </View>
     </View>
   );
