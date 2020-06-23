@@ -6,8 +6,6 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  CheckBox,
-  TouchableHighlight,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
@@ -20,10 +18,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import DeviceStorage from '../../../service/DeviceStorage';
 import ModifyBookingModal from './ModifyBookingModal';
+import CompleteModal from '../../../Modal/CompleteModal';
 
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
-const checkNumber = /^[0-9]+$/;
+const checkNumber = /^[0-9]{10,11}$/;
 
 export default class BookingModify extends React.Component {
   constructor(props) {
@@ -37,14 +36,15 @@ export default class BookingModify extends React.Component {
       date: this.props.route.params.booking.date,
       time: this.props.route.params.booking.time.slice(0, 5),
       name: this.props.route.params.booking.name,
-      phone: this.props.route.params.booking.phone,
+      phone: this.props.route.params.booking.phone
+        .split('-')
+        .reduce((a, b) => a + b, ''),
       content: this.props.route.params.booking.content,
       isSelectDate: true,
       isSelectTime: true,
-      isUserInfo: false,
-      alertModal: false,
-      isAgree: false,
-      completeModal: false,
+      isUserInfo: true,
+      showCompleteModal: false,
+      showModalText: '',
       bookingTime: [
         ['09:00', false],
         ['10:00', false],
@@ -225,290 +225,222 @@ export default class BookingModify extends React.Component {
       name,
       phone,
       content,
-      alertModal,
-      isAgree,
       bookingTime,
       isUserInfo,
+      showCompleteModal,
+      showModalText,
     } = this.state;
 
     return (
       <View style={styles.container}>
         <ScrollView showsHorizontalScrollIndicator={false}>
-          {!isAgree ? (
-            <View>
-              {!isSelectDate ? (
-                <View>
-                  <Calendar
-                    current={new Date()}
-                    minDate={Moment(
-                      new Date().setDate(new Date().getDate() + 1)
-                    ).format('YYYY-MM-DD')}
-                    monthFormat={'yyyy-MM'}
-                    onDayPress={(selectDate) => {
-                      this.setState({
-                        date: selectDate.dateString,
-                      });
-
-                      DeviceStorage.loadJWT().then(() => {
-                        this.getCenterBooking();
-                      });
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name='alert-circle-outline'
-                      size={14}
-                      style={{ color: '#941818' }}
-                    />
-                    <Text style={{ margin: 6, color: '#941818' }}>
-                      금일 ({Moment(new Date()).format('M월 D일')}) 예약은
-                      불가능합니다.
-                    </Text>
-                  </View>
+          {isSelectDate ? (
+            <View style={{ alignItems: 'center' }}>
+              <TouchableOpacity
+                style={styles.selectBox}
+                onPress={() => {
+                  this.againSelectDate(time);
+                }}
+              >
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontWeight: 'bold' }}>
+                    날{'    '}짜{'    '}
+                  </Text>
+                  <Text>{date}</Text>
                 </View>
-              ) : (
-                <View style={{ alignItems: 'center' }}>
-                  <View style={styles.selectBox}>
-                    <Text>
-                      날{'    '}짜{'    '}
-                      {date}
-                    </Text>
-                    <AntDesign
-                      name='calendar'
-                      size={20}
-                      style={{ paddingRight: 4 }}
-                      onPress={() => {
-                        this.againSelectDate(time);
-                      }}
-                    />
-                  </View>
-                </View>
-              )}
-
-              {isSelectDate && !isSelectTime ? (
-                <View style={styles.time}>
-                  {bookingTime.map((data, index) => (
-                    <TouchableOpacity
-                      key={'bookingTime_' + index}
-                      disabled={data[1] ? true : false}
-                      onPress={() => {
-                        this.changeTime(index);
-                        this.setState({ isSelectTime: true, time: data });
-                      }}
-                    >
-                      <Text
-                        style={data[1] ? styles.notblocked : styles.blocked}
-                      >
-                        {data}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ) : null}
-
-              {isSelectTime ? (
-                <View>
-                  <View style={styles.selectBox}>
-                    <Text>
-                      시{'    '}간{'    '}
-                      {time}
-                    </Text>
-                    <MaterialIcons
-                      name='access-time'
-                      size={20}
-                      style={{ paddingRight: 4 }}
-                      onPress={() => {
-                        this.againSelectTime(time);
-                      }}
-                    />
-                  </View>
-                  <View style={styles.userinfo}>
-                    <View style={styles.textArea}>
-                      <Text>이{'    '}름</Text>
-                      <TextInput
-                        style={styles.textBox}
-                        value={name}
-                        onChangeText={(name) => {
-                          this.setState({ name: name });
-                          this.checkUserInfo();
-                        }}
-                      />
-                    </View>
-                    <View style={styles.textArea}>
-                      <Text>연락처</Text>
-                      <TextInput
-                        style={styles.textBox}
-                        value={phone}
-                        placeholder={` ' - '를 제외한 숫자를 입력해주세요.`}
-                        onChangeText={(phone) => {
-                          this.setState({ phone: phone });
-                          this.checkUserInfo();
-                        }}
-                      />
-                      {phone === '' || checkNumber.test(phone) ? null : (
-                        <MaterialIcons
-                          name='alert-circle-outline'
-                          size={18}
-                          style={{ color: '#941818', right: 20 }}
-                        />
-                      )}
-                    </View>
-                    {phone === '' || checkNumber.test(phone) ? null : (
-                      <Text
-                        style={{ color: '#941818', left: 60, fontSize: 10 }}
-                      >
-                        숫자만 입력해주세요.
-                      </Text>
-                    )}
-
-                    <View
-                      style={{ marginTop: 6, marginBottom: 6, marginLeft: 4 }}
-                    >
-                      <Text style={{ marginBottom: 8 }}>상담 이유</Text>
-                      <TextInput
-                        style={styles.textBoxContent}
-                        value={content}
-                        multiline={true}
-                        onChangeText={(content) => {
-                          this.setState({ content: content });
-                          this.checkUserInfo();
-                        }}
-                      />
-                    </View>
-                  </View>
-                  <View style={{ alignItems: 'center' }}>
-                    <TouchableOpacity
-                      disabled={!isUserInfo}
-                      onPress={() => {
-                        this.setState({
-                          alertModal: true,
-                          phone:
-                            phone.slice(0, 3) +
-                            '-' +
-                            phone.slice(3, 7) +
-                            '-' +
-                            phone.slice(7),
-                        });
-                      }}
-                    >
-                      <View
-                        style={
-                          !isUserInfo
-                            ? styles.notCompleteButton
-                            : styles.completeButton
-                        }
-                      >
-                        <Entypo
-                          name='check'
-                          size={24}
-                          style={{
-                            color: !isUserInfo ? '#FFFFFF' : '#000000',
-                          }}
-                        />
-                        <Text
-                          style={{
-                            color: !isUserInfo ? '#FFFFFF' : '#000000',
-                            fontSize: 16,
-                          }}
-                        >
-                          다음 단계
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ) : null}
-              <Modal isVisible={alertModal}>
-                <View style={styles.modal}>
-                  <MaterialCommunityIcons
-                    name='alert-circle-outline'
-                    size={24}
-                  />
-                  <View>
-                    <Text style={{ marginTop: '4%' }}>
-                      개인정보 수집과 제공에 동의합니다.
-                    </Text>
-                    <Text>
-                      잦은 예약 변경과 취소시 이후 예약이 제한 될 수 있습니다.
-                    </Text>
-                    <Text style={{ color: '#941818', marginTop: 4 }}>
-                      예약 당일에는 수정과 취소가 불가능 합니다.
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: 20,
-                    }}
-                  >
-                    <CheckBox
-                      onValueChange={() =>
-                        this.setState({ isAgree: true, alertModal: false })
-                      }
-                    />
-                    <Text>확인</Text>
-                  </View>
-                </View>
-              </Modal>
+                <AntDesign
+                  name='calendar'
+                  size={25}
+                  style={{ paddingRight: 4 }}
+                />
+              </TouchableOpacity>
             </View>
           ) : (
             <View>
-              <View style={styles.selectBox}>
-                <Text>
-                  날{'    '}짜{'    '}
-                  {date}
-                </Text>
-              </View>
-              <View style={styles.selectBox}>
-                <Text>
-                  시{'    '}간{'    '}
-                  {time}
-                </Text>
-              </View>
-              <View style={styles.selectBox}>
-                <Text>
-                  이{'    '}름{'    '}
-                  {name}
-                </Text>
-              </View>
-              <View style={styles.selectBox}>
-                <Text>
-                  연락처{'    '}
-                  {phone}
-                </Text>
-              </View>
-              <View style={styles.userinfo}>
-                <Text style={{ marginBottom: 6 }}>상담 이유</Text>
-                <Text>{content}</Text>
-              </View>
-              <TouchableOpacity
-                disabled={!isAgree}
-                style={{ alignItems: 'center' }}
-                onPress={() => {
+              <Calendar
+                current={new Date()}
+                minDate={Moment(
+                  new Date().setDate(new Date().getDate() + 1)
+                ).format('YYYY-MM-DD')}
+                monthFormat={'yyyy-MM'}
+                onDayPress={(selectDate) => {
+                  this.setState({
+                    date: selectDate.dateString,
+                  });
+
                   DeviceStorage.loadJWT().then(() => {
-                    this.updateBookingInfo();
+                    this.getCenterBooking();
                   });
                 }}
+              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <View style={styles.completeButton}>
-                  <Entypo name='check' size={24} />
-                  <Text style={{ fontSize: 16 }}>예약 하기</Text>
-                </View>
-              </TouchableOpacity>
+                <MaterialCommunityIcons
+                  name='alert-circle-outline'
+                  size={14}
+                  style={{ color: '#941818' }}
+                />
+                <Text style={{ margin: 6, color: '#941818' }}>
+                  당일 ({Moment(new Date()).format('M월 D일')}) 예약은
+                  불가능합니다.
+                </Text>
+              </View>
             </View>
           )}
-          <ModifyBookingModal
+
+          {isSelectDate && !isSelectTime ? (
+            <View style={styles.time}>
+              {bookingTime.map((data, index) => (
+                <TouchableOpacity
+                  key={'bookingTime_' + index}
+                  disabled={data[1] ? true : false}
+                  onPress={() => {
+                    this.changeTime(index);
+                    this.setState({ isSelectTime: true, time: data });
+                  }}
+                >
+                  <Text style={data[1] ? styles.notblocked : styles.blocked}>
+                    {data}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : null}
+
+          {isSelectTime ? (
+            <View>
+              <TouchableOpacity
+                style={styles.selectBox}
+                onPress={() => {
+                  this.againSelectTime(time);
+                }}
+              >
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontWeight: 'bold' }}>
+                    시{'    '}간{'    '}
+                  </Text>
+                  <Text>{time}</Text>
+                </View>
+                <MaterialIcons
+                  name='access-time'
+                  size={25}
+                  style={{ paddingRight: 4 }}
+                />
+              </TouchableOpacity>
+              <View style={styles.userinfo}>
+                <View style={styles.textArea}>
+                  <Text style={{ fontWeight: 'bold' }}>이{'    '}름</Text>
+                  <TextInput
+                    style={styles.textBox}
+                    value={name}
+                    onChangeText={(name) => {
+                      this.setState({ name: name });
+                      this.checkUserInfo();
+                    }}
+                  />
+                </View>
+                <View style={styles.textArea}>
+                  <Text style={{ fontWeight: 'bold' }}>연락처</Text>
+                  <TextInput
+                    style={styles.textBox}
+                    value={phone}
+                    placeholder={` ' - '를 제외한 숫자를 입력해주세요.`}
+                    onChangeText={(phone) => {
+                      this.setState({ phone: phone });
+                      this.checkUserInfo();
+                    }}
+                  />
+                  {phone === '' || checkNumber.test(phone) ? null : (
+                    <MaterialIcons
+                      name='alert-circle-outline'
+                      size={18}
+                      style={{ color: '#941818', right: 20 }}
+                    />
+                  )}
+                </View>
+                {phone === '' || checkNumber.test(phone) ? null : (
+                  <Text style={{ color: '#941818', left: 60, fontSize: 10 }}>
+                    숫자만 입력해주세요.
+                  </Text>
+                )}
+
+                <View style={{ marginTop: 6, marginBottom: 6, marginLeft: 4 }}>
+                  <Text style={{ marginBottom: 8, fontWeight: 'bold' }}>
+                    상담 이유
+                  </Text>
+                  <TextInput
+                    style={styles.textBoxContent}
+                    value={content}
+                    multiline={true}
+                    onChangeText={(content) => {
+                      this.setState({ content: content });
+                      this.checkUserInfo();
+                    }}
+                  />
+                </View>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity
+                  disabled={!isUserInfo}
+                  onPress={() => {
+                    this.props.navigation.navigate('MyBookingContainer');
+                    this.setState({
+                      showCompleteModal: true,
+                      showModalText: '수정이 완료되었습니다',
+                      phone:
+                        phone.slice(0, 3) +
+                        '-' +
+                        phone.slice(3, 7) +
+                        '-' +
+                        phone.slice(7),
+                    });
+                  }}
+                >
+                  <View
+                    style={
+                      !isUserInfo
+                        ? styles.notCompleteButton
+                        : styles.completeButton
+                    }
+                  >
+                    <Entypo
+                      name='check'
+                      size={24}
+                      style={{
+                        color: !isUserInfo ? '#FFFFFF' : '#000000',
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: !isUserInfo ? '#FFFFFF' : '#000000',
+                        fontSize: 16,
+                      }}
+                    >
+                      예약 수정
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : null}
+
+          <Modal
+            animationType='none'
+            transparent={true}
+            visible={showCompleteModal}
+          >
+            <CompleteModal showModalText={showModalText} />
+          </Modal>
+          {/* <ModifyBookingModal
             navigation={this.props.navigation}
             modifyBookingModal={this.state.modifyBookingModal}
             handleModifyBookingModal={this.handleModifyBookingModal}
-          />
+          /> */}
         </ScrollView>
       </View>
     );
@@ -599,6 +531,7 @@ const styles = StyleSheet.create({
   textBoxContent: {
     width: '98%',
     height: 200,
+    padding: 4,
     borderWidth: 1,
     textAlignVertical: 'top',
   },
