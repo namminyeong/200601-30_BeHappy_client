@@ -67,18 +67,19 @@ class MyBookings extends React.Component {
         }
         return '';
       })
-      .then((payload) => {
-        if (typeof payload === 'object') {
-          if (!payload.errorCode) {
+      .then((data) => {
+        if (typeof data === 'object') {
+          if (!data.errorCode) {
+            let sortData = data.sort((a, b) => a.date < b.date);
             this.setState({
-              bookings: payload,
+              bookings: sortData,
             });
           }
           this.handleLoading(false);
         }
       })
       .catch((error) => {
-        console.log(error);
+        `console`.log(error);
       });
   }
 
@@ -104,11 +105,14 @@ class MyBookings extends React.Component {
                   <View style={styles.booking} key={index}>
                     <MyBookingList
                       token={this.props.token}
-                    navigation={this.props.navigation}
-                    booking={booking}
-                    deleteBookingState={this.deleteBookingState}
-                    modifyBookingState={this.modifyBookingState}
-                    index={index}
+                      navigation={this.props.navigation}
+                      booking={booking}
+                      deleteBookingState={this.deleteBookingState}
+                      modifyBookingState={this.modifyBookingState}
+                      index={index}
+                      controlCenterData={this.props.controlCenterData}
+                      controlBookmarkClicked={this.props.controlBookmarkClicked}
+                      controlCoordinate={this.props.controlCoordinate}
                     />
                   </View>
                 ))}

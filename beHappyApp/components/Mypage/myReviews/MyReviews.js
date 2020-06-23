@@ -5,6 +5,8 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
+  Modal,
+  TouchableHighlight,
 } from 'react-native';
 import { Button } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -20,6 +22,8 @@ class MyReviews extends React.Component {
       myReviews: [],
       isLoading: false,
       modalDeleteReviewShown: false,
+      willDeleteModal: false,
+      deleteIndex: null,
     };
     this.handleMyReviewInState = this.handleMyReviewInState.bind(this);
     this.drawStars = this.drawStars.bind(this);
@@ -30,6 +34,7 @@ class MyReviews extends React.Component {
     this.handleModalDeleteReviewShown = this.handleModalDeleteReviewShown.bind(
       this
     );
+    this.handelWillDeleteModal = this.handelWillDeleteModal.bind(this);
   }
 
   handleLoading(status) {
@@ -56,7 +61,7 @@ class MyReviews extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          this.handleMyReviewInState(data);
+          this.handleMyReviewInState(data.reverse());
           this.handleLoading(false);
         }
       })
@@ -143,7 +148,6 @@ class MyReviews extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          this.handleModalDeleteReviewShown(true);
           newState.splice(index, 1);
           this.setState({
             myReviews: newState,
@@ -166,6 +170,12 @@ class MyReviews extends React.Component {
   handleModalDeleteReviewShown(status) {
     this.setState({
       modalDeleteReviewShown: status,
+    });
+  }
+
+  handelWillDeleteModal(status) {
+    this.setState({
+      willDeleteModal: status,
     });
   }
 
@@ -204,26 +214,35 @@ class MyReviews extends React.Component {
                           small
                           transparent
                           style={styles.modifyDeleteButton}
-                          onPress={() => this.deleteReview(index)}
+                          onPress={() => {
+                            this.setState({ deleteIndex: index });
+                            this.handelWillDeleteModal(true);
+                          }}
                         >
                           <FontAwesome name='trash-o' size={23} />
                         </Button>
                       </View>
-                      <Text>진료일자 : {review.date}</Text>
                       <Text
-                        style={styles.centername}
+                        style={
+                          review.centerName.length > 16
+                            ? styles.centernameLong
+                            : styles.centername
+                        }
                         onPress={() => this.goToMarker(review.centerId)}
                       >
                         {review.centerName}
                       </Text>
+                      <Text>진료일자 : {review.date}</Text>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={styles.rate}>
                           {this.drawStars(review.rate)}
                         </View>
                       </View>
-                      <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                      <View style={styles.specialtyContainer}>
                         {review.specialties.map((specialty) => (
-                          <Text style={styles.specialty}>#{specialty}</Text>
+                          <Text key={specialty} style={styles.specialty}>
+                            #{specialty}
+                          </Text>
                         ))}
                       </View>
                       <Text numberOfLines={3} style={styles.content}>
@@ -238,6 +257,43 @@ class MyReviews extends React.Component {
                   }
                   modalDeleteReviewShown={this.state.modalDeleteReviewShown}
                 />
+                <Modal
+                  animationType='none'
+                  transparent={true}
+                  visible={this.state.willDeleteModal}
+                >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.modalText}>
+                        리뷰를 삭제하면 다시 해당 예약건에 대해 다시 리뷰를 쓰실
+                        수 없습니다.
+                      </Text>
+                      <Text style={styles.confirmText}>
+                        리뷰를 정말 삭제하시겠습니까?
+                      </Text>
+                      <View style={{ flexDirection: 'row' }}>
+                        <TouchableHighlight
+                          style={styles.closeButton}
+                          onPress={() => {
+                            this.handleModalDeleteReviewShown(true);
+                            this.deleteReview(this.state.deleteIndex);
+                            this.handelWillDeleteModal(false);
+                          }}
+                        >
+                          <Text style={styles.textStyle}>삭제</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight
+                          style={styles.closeButton}
+                          onPress={() => {
+                            this.handelWillDeleteModal(false);
+                          }}
+                        >
+                          <Text style={styles.textStyle}>취소</Text>
+                        </TouchableHighlight>
+                      </View>
+                    </View>
+                  </View>
+                </Modal>
               </>
             ) : (
               <Text style={styles.noReview}>작성한 리뷰가 없습니다</Text>
@@ -284,7 +340,7 @@ const styles = StyleSheet.create({
   },
   modifyDeleteButton: {
     flexDirection: 'column',
-    marginLeft: 10,
+    marginLeft: 5,
     alignItems: 'center',
     marginHorizontal: 5,
     width: 40,
@@ -298,12 +354,26 @@ const styles = StyleSheet.create({
   centername: {
     alignSelf: 'flex-start',
     textDecorationLine: 'underline',
-    marginVertical: 6,
+    marginBottom: 2,
     fontSize: 18,
     fontWeight: 'bold',
   },
+  centernameLong: {
+    alignSelf: 'flex-start',
+    textDecorationLine: 'underline',
+    marginBottom: 2,
+    fontSize: 17,
+    letterSpacing: -2,
+    fontWeight: 'bold',
+  },
   rate: {
+    marginTop: 5,
     flexDirection: 'row',
+  },
+  specialtyContainer: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    marginTop: 5,
   },
   specialty: {
     fontSize: 14,
@@ -324,6 +394,53 @@ const styles = StyleSheet.create({
     top: '45%',
     alignSelf: 'center',
     fontSize: 20,
+  },
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    marginHorizontal: '10%',
+    backgroundColor: '#62CCAD',
+    borderRadius: 2,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
+    elevation: 2,
+  },
+  modalText: {
+    marginHorizontal: '8%',
+    fontSize: 17,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  confirmText: {
+    marginHorizontal: '8%',
+    fontSize: 17,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

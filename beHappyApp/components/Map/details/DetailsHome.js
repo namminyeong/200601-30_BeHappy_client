@@ -47,7 +47,15 @@ class DetailsHome extends React.Component {
     return (
       <Fragment>
         <View style={styles.container}>
-          <Text style={styles.centerName}>{theCenterInfo.centerName}</Text>
+          <Text
+            style={
+              theCenterInfo.centerName.length > 15
+                ? styles.centerNameLong
+                : styles.centerName
+            }
+          >
+            {theCenterInfo.centerName}
+          </Text>
 
           {theCenterInfo.rateAvg === 0 ? (
             <View style={styles.noReviewContainer}>
@@ -145,12 +153,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
+  centerNameLong: {
+    letterSpacing: -1,
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
   noReviewContainer: {
     marginTop: '4%',
     fontSize: 17,
   },
   reviewContainer: {
-    width: 220,
+    width: 240,
     marginTop: '2%',
     fontSize: 17,
     flexDirection: 'row',
@@ -158,7 +171,7 @@ const styles = StyleSheet.create({
   rate: {
     fontWeight: 'bold',
     fontSize: 20,
-    width: 30,
+    width: 40,
     textAlign: 'right',
   },
   text: {

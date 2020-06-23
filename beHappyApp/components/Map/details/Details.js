@@ -28,7 +28,15 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={1} onPress={showDetailHome}>
-        <Text style={styles.center}>{centerInfo.centerName}</Text>
+        <Text
+          style={
+            centerInfo.centerName.length > 15
+              ? styles.centerLong
+              : styles.center
+          }
+        >
+          {centerInfo.centerName}
+        </Text>
         <Text style={styles.address}>
           {centerInfo.roadAddressName}
           {centerInfo.distance ? (
@@ -102,6 +110,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.9,
     shadowRadius: 11.14,
     elevation: 17,
+  },
+  centerLong: {
+    letterSpacing: -1,
+    left: 10,
+    top: 15,
+    fontSize: 20,
+    fontWeight: 'bold',
+    height: 40,
   },
   center: {
     left: 10,

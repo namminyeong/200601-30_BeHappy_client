@@ -92,10 +92,11 @@ class BookingReview extends React.Component {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.review}>
-            <Text>진료일자 : {bookingInfo.date}</Text>
             <Text style={styles.centername}>
               {bookingInfo.center.centerName}
             </Text>
+            <Text>진료일자 : {bookingInfo.date}</Text>
+
             <AirbnbRating
               showRating={false}
               size={40}
