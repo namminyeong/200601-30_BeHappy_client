@@ -23,7 +23,7 @@ const { ec2 } = getEnvVars();
 import DeviceStorage from '../../../service/DeviceStorage';
 import CompleteModal from '../../../Modal/CompleteModal';
 
-const checkNumber = /^[0-9]+$/;
+const checkNumber = /^[0-9]{10,11}$/;
 
 export default class Booking extends React.Component {
   constructor(props) {
