@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   CheckBox,
+  TouchableHighlight,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
@@ -18,6 +19,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import DeviceStorage from '../../../service/DeviceStorage';
+import ModifyBookingModal from './ModifyBookingModal';
 
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
@@ -27,10 +29,9 @@ export default class BookingModify extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log('BookingModify 진입');
-    console.log('props: ', this.props);
     this.state = {
       token: this.props.route.params.token,
+      centerName: this.props.route.params.booking.center.centerName,
       centerId: this.props.route.params.booking.center.id,
       bookingId: this.props.route.params.booking.id,
       date: this.props.route.params.booking.date,
@@ -55,6 +56,7 @@ export default class BookingModify extends React.Component {
         ['17:00', false],
       ],
       centerBookingData: [],
+      modifyBookingModal: false,
     };
 
     this.getCenterBooking = this.getCenterBooking.bind(this);
@@ -65,6 +67,7 @@ export default class BookingModify extends React.Component {
     this.blockTime = this.blockTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
+    this.handleModifyBookingModal = this.handleModifyBookingModal.bind(this);
   }
 
   getCenterBooking() {
@@ -102,11 +105,19 @@ export default class BookingModify extends React.Component {
   }
 
   updateBookingInfo() {
-    const { token, bookingId, date, name, phone, content } = this.state;
+    const {
+      centerName,
+      token,
+      bookingId,
+      date,
+      name,
+      phone,
+      content,
+    } = this.state;
+    const { index, modifyBookingState } = this.props.route.params;
 
     let time = this.state.time[0];
 
-    console.log('updateBookingInfo 진입');
     this.resetTime();
 
     fetch(ec2 + '/booking', {
@@ -120,8 +131,16 @@ export default class BookingModify extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          alert('예약이 수정됐습니다.');
-          this.props.navigation.navigate('MyBookingContainer');
+          this.handleModifyBookingModal(true);
+          modifyBookingState(index, {
+            centerName,
+            bookingId,
+            date,
+            time,
+            name,
+            phone,
+            content,
+          });
         }
       })
       .catch((error) => console.log('error', error));
@@ -191,6 +210,12 @@ export default class BookingModify extends React.Component {
         });
   }
 
+  handleModifyBookingModal(status) {
+    this.setState({
+      modifyBookingModal: status,
+    });
+  }
+
   render() {
     const {
       isSelectDate,
@@ -203,8 +228,6 @@ export default class BookingModify extends React.Component {
       alertModal,
       isAgree,
       bookingTime,
-      centerBookingData,
-      completeModal,
       isUserInfo,
     } = this.state;
 
@@ -481,12 +504,12 @@ export default class BookingModify extends React.Component {
               </TouchableOpacity>
             </View>
           )}
+          <ModifyBookingModal
+            navigation={this.props.navigation}
+            modifyBookingModal={this.state.modifyBookingModal}
+            handleModifyBookingModal={this.handleModifyBookingModal}
+          />
         </ScrollView>
-        <Modal isVisible={completeModal}>
-          <View style={styles.modal}>
-            <Text style={{ fontSize: 18 }}>예약이 완료되었습니다.</Text>
-          </View>
-        </Modal>
       </View>
     );
   }
