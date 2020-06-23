@@ -3,25 +3,30 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   TouchableHighlight,
-  Dimensions,
+  Modal,
 } from 'react-native';
 
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 
-const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
-  const [width, setWidth] = useState(Dimensions.get('window').width);
+const BookingDeleteModal = ({
+  booking,
+  token,
+  deleteBookingState,
+  index,
+  navigation,
+  handleModalDeleteBookingShown,
+  modalDeleteBookingShown,
+}) => {
+
   const bookingId = booking.id;
 
   const closeModal = () => {
-    changeModalVisible(false);
+    handleModalDeleteBookingShown(false);
   };
 
   const deleteBooking = () => {
-    console.log('deleteBooking 진입');
-
     fetch(ec2 + '/booking', {
       method: 'DELETE',
       credentials: 'include',
@@ -33,7 +38,8 @@ const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
     })
       .then((res) => {
         if (res.status === 200) {
-          alert('예약을 취소했습니다.');
+          handleModalDeleteBookingShown(true);
+          deleteBookingState(index);
           closeModal();
           navigation.navigate('MyBookingContainer');
         }
@@ -44,68 +50,82 @@ const BookingDeleteModal = ({ changeModalVisible, booking, token }) => {
   };
 
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      disabled={true}
-      style={styles.container}
+    <Modal
+      animationType='none'
+      transparent={true}
+      visible={modalDeleteBookingShown}
     >
-      <View style={[styles.modal, { width: width - 80 }]}>
-        <View style={styles.textView}>
-          <Text style={[styles.text, { fontSize: 20 }]}>
-            예약을 취소하시겠습니까?
-          </Text>
-        </View>
-        <View style={styles.btnView}>
-          <TouchableHighlight
-            style={styles.touchableHighlight}
-            onPress={() => deleteBooking()}
-          >
-            <Text style={styles.text}>예</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            style={styles.touchableHighlight}
-            onPress={() => closeModal()}
-          >
-            <Text style={styles.text}>아니오</Text>
-          </TouchableHighlight>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>예약을 취소하시겠습니까?</Text>
+          <View style={styles.btnBox}>
+            <TouchableHighlight
+              style={styles.closeButton}
+              onPress={() => deleteBooking(bookingId)}
+            >
+              <Text style={styles.textStyle}>예</Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+              style={styles.closeButton}
+              onPress={() => {
+                handleModalDeleteBookingShown(false);
+              }}
+            >
+              <Text style={styles.textStyle}>아니오</Text>
+            </TouchableHighlight>
+          </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  centeredView: {
     flex: 1,
-    justifyContent: 'center',
-  },
-  modal: {
-    height: 100,
-    paddingTop: 10,
-    alignSelf: 'center',
+    top: '33%',
     alignItems: 'center',
-    textAlign: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
     backgroundColor: 'white',
-    borderWidth: 1,
-    borderRadius: 10,
-  },
-  textView: {
-    flex: 1,
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  text: {
-    margin: 5,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  btnView: {
-    width: '60%',
+  btnBox: {
     flexDirection: 'row',
   },
-  touchableHighlight: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
+  closeButton: {
+    backgroundColor: '#62CCAD',
+    borderRadius: 2,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
+    elevation: 2,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  modalText: {
+    marginHorizontal: '13%',
+    fontSize: 17,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

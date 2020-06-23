@@ -4,7 +4,9 @@ import { Button } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
 import { Specialties } from '../../../Data/Preference';
 import Entypo from 'react-native-vector-icons/Entypo';
+
 import getEnvVars from '../../../environment';
+import WriteReviewModal from './WriteReviewModal';
 const { ec2 } = getEnvVars();
 
 class BookingReview extends React.Component {
@@ -19,11 +21,13 @@ class BookingReview extends React.Component {
       content: '',
       specialties: [],
       bookingInfo: this.props.route.params.booking,
+      writeReviewModal: false,
     };
 
     this.submitReview = this.submitReview.bind(this);
     this.checkSpecialties = this.checkSpecialties.bind(this);
     this.handleSpecialties = this.handleSpecialties.bind(this);
+    this.handleWriteReviewModal = this.handleWriteReviewModal.bind(this);
   }
 
   submitReview() {
@@ -40,11 +44,8 @@ class BookingReview extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          return res.json();
+          this.handleWriteReviewModal(true);
         }
-      })
-      .then((payload) => {
-        this.props.navigation.navigate('MyBookingContainer');
       })
       .catch((error) => {
         console.log('error', error);
@@ -75,6 +76,12 @@ class BookingReview extends React.Component {
 
     this.setState({
       specialties: newState,
+    });
+  }
+
+  handleWriteReviewModal(status) {
+    this.setState({
+      writeReviewModal: status,
     });
   }
 
@@ -142,6 +149,11 @@ class BookingReview extends React.Component {
               </Button>
             </View>
           </View>
+          <WriteReviewModal
+            navigation={this.props.navigation}
+            writeReviewModal={this.state.writeReviewModal}
+            handleWriteReviewModal={this.handleWriteReviewModal}
+          />
         </ScrollView>
       </View>
     );
