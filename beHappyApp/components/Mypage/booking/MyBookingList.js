@@ -22,6 +22,7 @@ const MyBookingList = ({
   controlCoordinate,
   controlCenterData,
   controlBookmarkClicked,
+  changeBookingState,
 }) => {
   const [modalDeleteBookingShown, setModalDeleteBookingShown] = useState(false);
 
@@ -83,6 +84,8 @@ const MyBookingList = ({
                 navigation.navigate('BookingReview', {
                   token,
                   booking,
+                  index,
+                  changeBookingState,
                 })
               }
             >

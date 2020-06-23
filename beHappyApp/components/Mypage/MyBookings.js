@@ -17,7 +17,6 @@ class MyBookings extends React.Component {
     super(props);
 
     this.state = {
-      bookings: [],
       isLoading: false,
     };
 
@@ -25,6 +24,7 @@ class MyBookings extends React.Component {
     this.modifyBookingState = this.modifyBookingState.bind(this);
     this.getBookingList = this.getBookingList.bind(this);
     this.handleLoading = this.handleLoading.bind(this);
+    this.changeBookingState = this.changeBookingState.bind(this);
   }
 
   componentDidMount() {
@@ -35,21 +35,17 @@ class MyBookings extends React.Component {
   deleteBookingState(index) {
     let newState = this.state.bookings;
     newState.splice(index, 1);
-    this.setState({
-      bookings: newState,
-    });
+    this.props.controlmyBookings(newState);
   }
 
   modifyBookingState(index, booking) {
-    let newState = Object.assign([], this.state.bookings);
+    let newState = Object.assign([], this.props.myBookings);
     newState[index].date = booking.date;
     newState[index].time = booking.time;
     newState[index].name = booking.name;
     newState[index].phone = booking.phone;
     newState[index].content = booking.content;
-    this.setState({
-      bookings: newState,
-    });
+    this.props.controlmyBookings(newState);
   }
 
   getBookingList() {
@@ -71,9 +67,7 @@ class MyBookings extends React.Component {
         if (typeof data === 'object') {
           if (!data.errorCode) {
             let sortData = data.sort((a, b) => a.date < b.date);
-            this.setState({
-              bookings: sortData,
-            });
+            this.props.controlmyBookings(sortData);
           }
           this.handleLoading(false);
         }
@@ -89,8 +83,16 @@ class MyBookings extends React.Component {
     });
   }
 
+  changeBookingState(index) {
+    let newState = Object.assign([], this.props.myBookings);
+    newState[index].bookingState = 'reviewed';
+    this.props.controlmyBookings(newState);
+  }
+
   render() {
-    const { bookings, isLoading } = this.state;
+    const { isLoading } = this.state;
+    const { myBookings } = this.props;
+
     return (
       <Fragment>
         {isLoading ? (
@@ -99,9 +101,9 @@ class MyBookings extends React.Component {
           </View>
         ) : (
           <View style={styles.container}>
-            {bookings.length > 0 ? (
+            {myBookings.length > 0 ? (
               <ScrollView>
-                {bookings.map((booking, index) => (
+                {myBookings.map((booking, index) => (
                   <View style={styles.booking} key={index}>
                     <MyBookingList
                       token={this.props.token}
@@ -113,6 +115,7 @@ class MyBookings extends React.Component {
                       controlCenterData={this.props.controlCenterData}
                       controlBookmarkClicked={this.props.controlBookmarkClicked}
                       controlCoordinate={this.props.controlCoordinate}
+                      changeBookingState={this.changeBookingState}
                     />
                   </View>
                 ))}

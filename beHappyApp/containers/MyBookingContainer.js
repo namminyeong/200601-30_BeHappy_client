@@ -8,6 +8,7 @@ import {
   controlBookmarkClicked,
   controlCoordinate,
 } from '../modules(reducers)/currentOnMap';
+import { controlmyBookings } from '../modules(reducers)/userInfo';
 
 const MyBookingContainer = ({
   token,
@@ -15,6 +16,8 @@ const MyBookingContainer = ({
   controlCenterData,
   controlBookmarkClicked,
   controlCoordinate,
+  controlmyBookings,
+  myBookings,
 }) => {
   return (
     <MyBooking
@@ -23,12 +26,15 @@ const MyBookingContainer = ({
       controlCenterData={controlCenterData}
       controlBookmarkClicked={controlBookmarkClicked}
       controlCoordinate={controlCoordinate}
+      controlmyBookings={controlmyBookings}
+      myBookings={myBookings}
     />
   );
 };
 
 const mapStateToProps = (state) => ({
   token: state.handleLogin.token,
+  myBookings: state.handleUserInfo.myBookings,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -37,6 +43,7 @@ const mapDispatchToProps = (dispatch) => {
       controlCenterData,
       controlBookmarkClicked,
       controlCoordinate,
+      controlmyBookings,
     },
     dispatch
   );

@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   reviewContainer: {
-    width: 240,
+    width: 260,
     marginTop: '2%',
     fontSize: 17,
     flexDirection: 'row',
