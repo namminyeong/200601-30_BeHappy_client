@@ -73,10 +73,8 @@ class MyBookings extends React.Component {
             this.setState({
               bookings: payload,
             });
-            this.handleLoading(false);
-          } else if (payload.errorCode === 8) {
-            console.log('there is no booking by userId');
           }
+          this.handleLoading(false);
         }
       })
       .catch((error) => {
@@ -99,24 +97,26 @@ class MyBookings extends React.Component {
             <ActivityIndicator size='large' color='#0000ff' />
           </View>
         ) : (
-          <ScrollView style={styles.container}>
+          <View style={styles.container}>
             {bookings.length > 0 ? (
-              bookings.map((booking, index) => (
-                <View style={styles.booking} key={index}>
-                  <MyBookingList
-                    token={this.props.token}
+              <ScrollView>
+                {bookings.map((booking, index) => (
+                  <View style={styles.booking} key={index}>
+                    <MyBookingList
+                      token={this.props.token}
                     navigation={this.props.navigation}
                     booking={booking}
                     deleteBookingState={this.deleteBookingState}
                     modifyBookingState={this.modifyBookingState}
                     index={index}
-                  />
-                </View>
-              ))
+                    />
+                  </View>
+                ))}
+              </ScrollView>
             ) : (
-              <Text>예약 목록이 없습니다.</Text>
+              <Text style={styles.noList}>예약 목록이 없습니다</Text>
             )}
-          </ScrollView>
+          </View>
         )}
       </Fragment>
     );
@@ -125,6 +125,7 @@ class MyBookings extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   text: {
@@ -151,6 +152,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  noList: {
+    top: '45%',
+    alignSelf: 'center',
+    fontSize: 20,
   },
 });
 

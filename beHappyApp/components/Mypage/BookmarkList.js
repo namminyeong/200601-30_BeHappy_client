@@ -71,6 +71,7 @@ const BookmarkList = ({
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 3,
     height: 140,
     left: '2%',
     width: '96%',

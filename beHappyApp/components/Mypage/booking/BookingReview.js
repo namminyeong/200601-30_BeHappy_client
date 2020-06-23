@@ -7,7 +7,6 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 import getEnvVars from '../../../environment';
 import WriteReviewModal from './WriteReviewModal';
-
 const { ec2 } = getEnvVars();
 
 class BookingReview extends React.Component {

@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
-  TouchableHighlight,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -59,13 +58,13 @@ class Login extends React.Component {
       .then((payload) => {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
-            this.setState({
-              showCompleteModal: true,
-              showModalText: '로그인이 완료됐습니다.',
-            });
-            setTimeout(() => {
-              this.setState({ showCompleteModal: false });
-            }, 1500);
+            // this.setState({
+            //   showCompleteModal: true,
+            //   showModalText: '로그인이 완료됐습니다.',
+            // });
+            // setTimeout(() => {
+            //   this.setState({ showCompleteModal: false });
+            // }, 2000);
             if (payload.adminState === 0 || payload.adminState === -1) {
               this.props.controlLogin(0, payload.token);
             } else if (payload.adminState === 1) {

@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableHighlight,
-  Dimensions,
   Modal,
 } from 'react-native';
 
@@ -20,7 +19,7 @@ const BookingDeleteModal = ({
   handleModalDeleteBookingShown,
   modalDeleteBookingShown,
 }) => {
-  const [width, setWidth] = useState(Dimensions.get('window').width);
+
   const bookingId = booking.id;
 
   const closeModal = () => {
@@ -58,7 +57,7 @@ const BookingDeleteModal = ({
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>리뷰를 삭제하시겠습니까?</Text>
+          <Text style={styles.modalText}>예약을 취소하시겠습니까?</Text>
           <View style={styles.btnBox}>
             <TouchableHighlight
               style={styles.closeButton}

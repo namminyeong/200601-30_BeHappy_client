@@ -243,7 +243,7 @@ export default class BookingModify extends React.Component {
                     minDate={Moment(
                       new Date().setDate(new Date().getDate() + 1)
                     ).format('YYYY-MM-DD')}
-                    monthFormat={'yyyy MM'}
+                    monthFormat={'yyyy-MM'}
                     onDayPress={(selectDate) => {
                       this.setState({
                         date: selectDate.dateString,

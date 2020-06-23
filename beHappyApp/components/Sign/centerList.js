@@ -20,12 +20,6 @@ const CenterList = ({
 }) => (
   <Fragment>
     <View style={styles.centerInfo}>
-      <Text style={styles.text}>센터 이름: {centerName}</Text>
-      <Text style={styles.text}>지번 주소: {addressName}</Text>
-      <Text style={styles.text}>도로명 주소: {roadAddressName}</Text>
-      <Text style={styles.text}>전화 번호: {phone}</Text>
-    </View>
-    <View style={styles.submitBtn}>
       <TouchableOpacity
         onPress={() => {
           setCenterName(centerName);
@@ -38,7 +32,13 @@ const CenterList = ({
           closeModal();
         }}
       >
-        <Entypo name='check' size={27} />
+        <Text style={styles.text}>센터 이름: {centerName}</Text>
+        <Text style={styles.text}>지번 주소: {addressName}</Text>
+        <Text style={styles.text}>도로명 주소: {roadAddressName}</Text>
+        <Text style={styles.text}>전화 번호: {phone}</Text>
+        <View style={styles.submitBtn}>
+          <Entypo name='check' size={27} />
+        </View>
       </TouchableOpacity>
     </View>
   </Fragment>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   centerInfo: {
-    width: '90%',
+    width: '100%',
     marginRight: 5,
   },
   text: {
@@ -57,8 +57,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   submitBtn: {
-    width: '10%',
-    alignSelf: 'center',
+    position: 'absolute',
+    top: '30%',
+    alignSelf: 'flex-end',
   },
 });
 

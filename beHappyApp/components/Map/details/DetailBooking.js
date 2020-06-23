@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -253,6 +253,7 @@ export default class Booking extends React.Component {
                   />
                   <View
                     style={{
+                      marginTop: 5,
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -278,7 +279,7 @@ export default class Booking extends React.Component {
                     </Text>
                     <AntDesign
                       name='calendar'
-                      size={20}
+                      size={25}
                       style={{ paddingRight: 4 }}
                       onPress={() => {
                         this.againSelectDate(time);
@@ -318,7 +319,7 @@ export default class Booking extends React.Component {
                     </Text>
                     <MaterialIcons
                       name='access-time'
-                      size={20}
+                      size={25}
                       style={{ paddingRight: 4 }}
                       onPress={() => {
                         this.againSelectTime(time);
@@ -404,12 +405,12 @@ export default class Booking extends React.Component {
                           name='check'
                           size={24}
                           style={{
-                            color: !isUserInfo ? '#FFFFFF' : '#000000',
+                            color: !isUserInfo ? 'lightgrey' : '#000000',
                           }}
                         />
                         <Text
                           style={{
-                            color: !isUserInfo ? '#FFFFFF' : '#000000',
+                            color: !isUserInfo ? 'lightgrey' : '#000000',
                             fontSize: 16,
                           }}
                         >
@@ -553,26 +554,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   blocked: {
-    marginTop: 9,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 9,
+    marginHorizontal: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 13,
     backgroundColor: '#62CCAD',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 18,
+    borderRadius: 10,
   },
   notblocked: {
-    marginTop: 9,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 9,
+    marginHorizontal: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 13,
     backgroundColor: '#D1D1D1',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 18,
+    borderRadius: 10,
   },
   userinfo: {
     backgroundColor: 'white',
@@ -647,7 +646,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#D1D1D1',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

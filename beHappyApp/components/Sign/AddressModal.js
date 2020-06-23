@@ -25,7 +25,6 @@ const AddressModal = ({
   const [height, setHeight] = useState(Dimensions.get('window').height);
 
   useEffect(() => {
-    console.log('centerInfo: ', centerInfo);
     getCoordinate();
   }, []);
 
@@ -92,7 +91,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'white',
     padding: 10,
-    marginBottom: 15,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+    marginBottom: 0.5,
     shadowColor: '#000',
     shadowOffset: {
       width: 2,

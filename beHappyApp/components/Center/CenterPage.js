@@ -3,11 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -78,7 +77,7 @@ export default class CenterPage extends React.Component {
         <ScrollView showsHorizontalScrollIndicator={false}>
           <Calendar
             current={new Date()}
-            monthFormat={'yyyy MM'}
+            monthFormat={'yyyy-MM'}
             markedDates={markedSelectDate}
             onDayPress={(selectDate) => {
               this.setState({

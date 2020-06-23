@@ -1,19 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default function ShowStarRateAvg({ rateAvg }) {
+export default function DetailsMiniStarRateAvg({ rateAvg }) {
   let stars = [];
   {
     if (rateAvg.toString().slice(2) === '5') {
-      for (let i = rateAvg - 1; i > -4; i--) {
+      for (let i = rateAvg - 1; i > -5; i--) {
         if (i > 0) {
           stars.push(
             <FontAwesome
               name='star'
               key={'full' + i.toString()}
-              size={24}
-              style={{ color: '#D61A3C', paddingRight: 3 }}
+              size={33}
+              style={{ color: '#D61A3C', marginHorizontal: 3 }}
             />
           );
         }
@@ -22,18 +22,21 @@ export default function ShowStarRateAvg({ rateAvg }) {
         <FontAwesome
           name='star-half-empty'
           key={'half'}
-          size={24}
-          style={{ color: '#D61A3C', paddingRight: 3 }}
+          size={33}
+          style={{ color: '#D61A3C', marginHorizontal: 3 }}
         />
       );
-      for (let i = rateAvg - 1; i > -4; i--) {
+      for (let i = rateAvg - 1; i > -5; i--) {
         if (i < 0) {
           stars.push(
             <FontAwesome
               name='star-o'
               key={'o' + i.toString()}
-              size={24}
-              style={{ color: '#B2BEC3', paddingRight: 3 }}
+              size={33}
+              style={{
+                color: '#B2BEC3',
+                marginHorizontal: 3,
+              }}
             />
           );
         }
@@ -46,8 +49,11 @@ export default function ShowStarRateAvg({ rateAvg }) {
             <FontAwesome
               name='star'
               key={'full' + i.toString()}
-              size={24}
-              style={{ color: '#D61A3C', paddingRight: 3 }}
+              size={30}
+              style={{
+                color: '#D61A3C',
+                marginHorizontal: 3,
+              }}
             />
           );
         } else {
@@ -55,8 +61,11 @@ export default function ShowStarRateAvg({ rateAvg }) {
             <FontAwesome
               name='star-o'
               key={'o' + i.toString()}
-              size={24}
-              style={{ color: '#B2BEC3', paddingRight: 3 }}
+              size={30}
+              style={{
+                color: '#B2BEC3',
+                marginHorizontal: 3,
+              }}
             />
           );
         }
@@ -64,13 +73,12 @@ export default function ShowStarRateAvg({ rateAvg }) {
     }
   }
 
-  return (
-    <View style={{ paddingTop: 6 }}>
-      <View style={styles.rateStarAvg}>{stars.slice(0, 5)}</View>
-    </View>
-  );
+  return <View style={styles.rateStarAvg}>{stars.slice(0, 5)}</View>;
 }
 
 const styles = StyleSheet.create({
-  rateStarAvg: { flexDirection: 'row', alignItems: 'center', paddingBottom: 5 },
+  rateStarAvg: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });

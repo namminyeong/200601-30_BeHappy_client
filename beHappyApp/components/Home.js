@@ -8,10 +8,10 @@ const { ec2 } = getEnvVars();
 
 import Main from './Main';
 import LoginContainer from '../containers/LoginContainer';
-import Signup from '../components/Sign/SignUp';
-import EntryCenter from '../components/Center/EntryCenter';
-import UserPreference from '../components/Sign/UserPreference';
-import SpecialtyPreference from '../components/Sign/SpecialtyPreference';
+import Signup from './Sign/SignUp';
+import EntryCenter from './Center/EntryCenter';
+import UserPreference from './Sign/UserPreference';
+import SpecialtyPreference from './Sign/SpecialtyPreference';
 
 const Stack = createStackNavigator();
 export default class Home extends React.Component {

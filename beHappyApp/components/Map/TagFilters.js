@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet } from 'react-native';
 import { Button } from 'native-base';
 
 class TagFilters extends React.Component {
