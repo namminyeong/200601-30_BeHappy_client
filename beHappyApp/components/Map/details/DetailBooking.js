@@ -17,6 +17,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import getEnvVars from '../../../environment';
+const { ec2 } = getEnvVars();
+
 import DeviceStorage from '../../../service/DeviceStorage';
 
 const checkNumber = /^[0-9]+$/;
@@ -58,23 +61,22 @@ export default class Booking extends React.Component {
     this.resetTime = this.resetTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
+    this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
   }
 
   getCenterBooking(token) {
     const { centerId, date } = this.state;
+    let url = ec2 + '/booking/center?centerId=' + centerId + '&date=' + date;
 
     this.resetTime();
-    fetch(
-      `http://13.209.16.103:4000/booking/center?centerId=${centerId}&date=${date}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -96,8 +98,9 @@ export default class Booking extends React.Component {
 
   postBooking(token) {
     const { centerId, date, time, username, phone, content } = this.state;
+    let url = ec2 + '/booking';
 
-    fetch('http://13.209.16.103:4000/booking', {
+    fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -121,6 +124,32 @@ export default class Booking extends React.Component {
         }
       })
       .catch((error) => console.log('error', error));
+  }
+
+  getUserBasicInfo(token) {
+    let url = ec2 + '/user';
+
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        this.setState({
+          username: payload.nickname,
+          phone: payload.phone,
+        });
+        return;
+      });
   }
 
   againSelectDate(time) {
@@ -297,6 +326,9 @@ export default class Booking extends React.Component {
                       disabled={data[1] ? true : false}
                       onPress={() => {
                         this.changeTime(index);
+                        DeviceStorage.loadJWT().then((value) => {
+                          this.getUserBasicInfo(value);
+                        });
                         this.setState({ isSelectTime: true, time: data });
                       }}
                     >
@@ -333,7 +365,7 @@ export default class Booking extends React.Component {
                         style={styles.textBox}
                         value={username}
                         onChangeText={(username) => {
-                          this.setState({ username: username });
+                          this.setState({ username });
                           this.checkUserInfo();
                         }}
                       />
@@ -345,7 +377,7 @@ export default class Booking extends React.Component {
                         value={phone}
                         placeholder={` ' - '를 제외한 숫자를 입력해주세요`}
                         onChangeText={(phone) => {
-                          this.setState({ phone: phone });
+                          this.setState({ phone });
                           this.checkUserInfo();
                         }}
                       />
@@ -373,7 +405,7 @@ export default class Booking extends React.Component {
                         value={content}
                         multiline={true}
                         onChangeText={(content) => {
-                          this.setState({ content: content });
+                          this.setState({ content });
                           this.checkUserInfo();
                         }}
                       />
