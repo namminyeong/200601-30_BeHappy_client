@@ -20,6 +20,7 @@ const AddressModal = ({
   setRoadAddressName,
   selectCenter,
   setCenterName,
+  showView,
 }) => {
   const [width, setWidth] = useState(Dimensions.get('window').width);
   const [height, setHeight] = useState(Dimensions.get('window').height);
@@ -49,7 +50,7 @@ const AddressModal = ({
       >
         <ScrollView>
           {centerInfo.map((center, index) => (
-            <View style={styles.centerInfo}>
+            <View style={styles.centerInfo} key={index}>
               <CenterList
                 key={index}
                 centerName={center.centerName}
@@ -66,6 +67,7 @@ const AddressModal = ({
                 selectCenter={selectCenter}
                 setCenterName={setCenterName}
                 closeModal={closeModal}
+                showView={showView}
               />
             </View>
           ))}

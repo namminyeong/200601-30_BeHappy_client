@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import getEnvVars from '../../environment';
 import AddressModal from './AddressModal';
 const { ec2, kakaoApi } = getEnvVars();
@@ -39,9 +41,14 @@ export default class SignUp extends React.Component {
       isModalVisible: false,
       showAlertModal: false,
       showAlertModalText: '',
+      showPass: true,
+      press: false,
+      showView: false,
     };
 
     this.changeModalVisible = this.changeModalVisible.bind(this);
+    this.showPass = this.showPass.bind(this);
+    this.showView = this.showView.bind(this);
     this.userSignup = this.userSignup.bind(this);
     this.centerSignup = this.centerSignup.bind(this);
     this.selectCity = this.selectCity.bind(this);
@@ -49,7 +56,6 @@ export default class SignUp extends React.Component {
     this.selectState = this.selectState.bind(this);
     this.inputState = this.inputState.bind(this);
     this.resetState = this.resetState.bind(this);
-    this.goBack = this.goBack.bind(this);
     this.getCoordinate = this.getCoordinate.bind(this);
     this.getCenterInfo = this.getCenterInfo.bind(this);
     this.setPhone = this.setPhone.bind(this);
@@ -67,8 +73,24 @@ export default class SignUp extends React.Component {
     });
   }
 
-  goBack() {
-    this.props.navigation.navigate('LoginContainer');
+  showPass() {
+    if (this.state.press === false) {
+      this.setState({
+        showPass: false,
+        press: true,
+      });
+    } else {
+      this.setState({
+        showPass: true,
+        press: false,
+      });
+    }
+  }
+
+  showView(status) {
+    this.setState({
+      showView: status,
+    });
   }
 
   userSignup() {
@@ -99,7 +121,7 @@ export default class SignUp extends React.Component {
         showAlertModalText: '핸드폰 번호를 입력해주세요.',
       });
     } else {
-      fetch('http://13.209.16.103:4000/user/signup', {
+      fetch(ec2 + '/user/signup', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -180,7 +202,7 @@ export default class SignUp extends React.Component {
         showAlertModalText: '주소를 검색해주세요.',
       });
     } else {
-      fetch('http://13.209.16.103:4000/user/signup/center', {
+      fetch(ec2 + '/user/signup/center', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -387,23 +409,25 @@ export default class SignUp extends React.Component {
       isModalVisible,
       showAlertModal,
       showAlertModalText,
+      showPass,
+      press,
+      showView,
     } = this.state;
 
     const radio_props = [
-      { label: '일반 사용자', value: 0 },
-      { label: 'center 사용자', value: 1 },
+      { label: '일반 사용자    ', value: 0 },
+      { label: '심리상담소/정신과', value: 1 },
     ];
 
     return (
       <View style={styles.container}>
         <View style={styles.regform}>
-          <Text style={styles.header}>Registration</Text>
+          <Text style={styles.header}>회원가입</Text>
           <View style={styles.radioForm}>
             <RadioForm
               radio_props={radio_props}
               initial={0}
-              formHorizontal={false}
-              labelHorizontal={true}
+              formHorizontal={true}
               buttonSize={12}
               onPress={(value) => {
                 this.setState({ value: value });
@@ -412,68 +436,138 @@ export default class SignUp extends React.Component {
           </View>
           {value === 0 ? (
             <Fragment>
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='username'
-                placeholderTextColor={'gray'}
-                onChangeText={(username) => this.setState({ username })}
-              />
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='password'
-                secureTextEntry={true}
-                placeholderTextColor={'gray'}
-                onChangeText={(password) => this.setState({ password })}
-              />
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='nickname'
-                placeholderTextColor={'gray'}
-                onChangeText={(nickname) => this.setState({ nickname })}
-              />
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='phone'
-                placeholderTextColor={'gray'}
-                onChangeText={(phone) => this.setState({ phone })}
-              />
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-person'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='username'
+                  placeholderTextColor={'gray'}
+                  onChangeText={(username) => this.setState({ username })}
+                />
+              </View>
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-lock'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='password'
+                  secureTextEntry={showPass}
+                  placeholderTextColor={'gray'}
+                  onChangeText={(password) => this.setState({ password })}
+                />
+                <TouchableOpacity style={styles.btnEye} onPress={this.showPass}>
+                  <Icon
+                    name={press === true ? 'ios-eye' : 'ios-eye-off'}
+                    size={26}
+                    color={'rgba(0,0,0,0.7)'}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-pricetag'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='이름을 써주세요. ex) 김아름'
+                  placeholderTextColor={'gray'}
+                  onChangeText={(nickname) => this.setState({ nickname })}
+                />
+              </View>
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-phone-portrait'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='phone'
+                  placeholderTextColor={'gray'}
+                  onChangeText={(phone) => this.setState({ phone })}
+                />
+              </View>
               <TouchableOpacity
                 style={styles.submitBtn}
                 onPress={this.userSignup}
               >
-                <Text style={styles.btnText}>회원 가입</Text>
+                <Text style={styles.btnText}>회원 가입 완료</Text>
               </TouchableOpacity>
             </Fragment>
           ) : (
             <Fragment>
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='username'
-                placeholderTextColor={'gray'}
-                onChangeText={(username) => this.setState({ username })}
-              />
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='password'
-                secureTextEntry={true}
-                placeholderTextColor={'gray'}
-                onChangeText={(password) => this.setState({ password })}
-              />
-              <TextInput
-                style={styles.inputBox}
-                underlineColorAndroid={'transparent'}
-                placeholder='사업자 번호'
-                placeholderTextColor={'gray'}
-                onChangeText={(businessNumber) =>
-                  this.setState({ businessNumber })
-                }
-              />
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-person'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='username'
+                  placeholderTextColor={'gray'}
+                  onChangeText={(username) => this.setState({ username })}
+                />
+              </View>
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-lock'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='password'
+                  secureTextEntry={showPass}
+                  placeholderTextColor={'gray'}
+                  onChangeText={(password) => this.setState({ password })}
+                />
+                <TouchableOpacity style={styles.btnEye} onPress={this.showPass}>
+                  <Icon
+                    name={press === true ? 'ios-eye' : 'ios-eye-off'}
+                    size={26}
+                    color={'rgba(0,0,0,0.7)'}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Icon
+                  style={styles.inputIcon}
+                  name={'ios-document'}
+                  size={28}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  underlineColorAndroid={'transparent'}
+                  placeholder='사업자 번호'
+                  placeholderTextColor={'gray'}
+                  onChangeText={(businessNumber) =>
+                    this.setState({ businessNumber })
+                  }
+                />
+              </View>
               <View style={styles.searchContainer}>
                 <View style={styles.pickerContainer}>
                   <RNPickerSelect
@@ -548,10 +642,9 @@ export default class SignUp extends React.Component {
                 </View>
                 <View style={styles.searchBtnContainer}>
                   <TouchableHighlight
-                    style={styles.searchAddress}
                     onPress={() => this.changeModalVisible(true)}
                   >
-                    <Text style={{ color: 'white' }}>주소 찾기</Text>
+                    <Text style={styles.add}>주소 찾기</Text>
                   </TouchableHighlight>
                   <Modal
                     transparent={true}
@@ -570,28 +663,39 @@ export default class SignUp extends React.Component {
                       setRoadAddressName={this.setRoadAddressName}
                       selectCenter={this.selectCenter}
                       setCenterName={this.setCenterName}
+                      showView={this.showView}
                     />
                   </Modal>
                 </View>
               </View>
 
-              <View style={styles.selectedCity}>
-                <Text style={styles.selectedCityText}>
-                  센터 이름: {centerName}
-                </Text>
-                <Text style={styles.selectedCityText}>
-                  지번 주소: {addressName}
-                </Text>
-                <Text style={styles.selectedCityText}>
-                  도로명 주소: {roadAddressName}
-                </Text>
-                <Text style={styles.selectedCityText}>전화번호: {phone}</Text>
-              </View>
+              {showView === false ? (
+                <View />
+              ) : (
+                <View style={styles.selectedCity}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      marginBottom: 5,
+                    }}
+                  >
+                    {centerName}
+                  </Text>
+                  <Text style={styles.selectedCityText}>
+                    지번 주소: {addressName}
+                  </Text>
+                  <Text style={styles.selectedCityText}>
+                    도로명 주소: {roadAddressName}
+                  </Text>
+                  <Text style={styles.selectedCityText}>전화번호: {phone}</Text>
+                </View>
+              )}
               <TouchableOpacity
                 style={styles.submitBtn}
                 onPress={this.centerSignup}
               >
-                <Text style={styles.btnText}>회원 가입</Text>
+                <Text style={styles.btnText}>회원 가입 완료</Text>
               </TouchableOpacity>
             </Fragment>
           )}
@@ -629,7 +733,8 @@ const styles = StyleSheet.create({
     paddingRight: 60,
   },
   regform: {
-    height: 600,
+    height: '85%',
+    marginTop: 20,
     alignSelf: 'stretch',
   },
   header: {
@@ -643,12 +748,20 @@ const styles = StyleSheet.create({
   radioForm: {
     marginBottom: 30,
   },
+  inputIcon: {
+    position: 'absolute',
+  },
   inputBox: {
     alignSelf: 'stretch',
     height: 30,
-    marginBottom: 30,
+    marginBottom: 25,
     borderBottomColor: '#199187',
     borderBottomWidth: 1,
+    paddingLeft: 35,
+  },
+  btnEye: {
+    position: 'absolute',
+    right: 5,
   },
   selectedCity: {
     flex: 1,
@@ -658,11 +771,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   submitBtn: {
+    backgroundColor: '#62CCAD',
     alignSelf: 'stretch',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#62CCAD',
     marginTop: 30,
+    borderRadius: 50,
   },
   btnText: {
     fontSize: 16,
@@ -682,12 +796,22 @@ const styles = StyleSheet.create({
   searchBtnContainer: {
     justifyContent: 'center',
   },
-  searchAddress: {
-    width: 80,
-    height: 30,
-    backgroundColor: '#62CCAD',
-    justifyContent: 'center',
-    alignItems: 'center',
+  add: {
+    backgroundColor: 'white',
+    fontSize: 17,
+    marginVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   centeredView: {
     flex: 1,
