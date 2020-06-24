@@ -3,51 +3,13 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Linking from 'expo-linking';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import DeviceStorage from '../../service/DeviceStorage';
 import LogoutContainer from '../../containers/LogoutContainer';
 
 class Mypage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      username: '',
-      phone: '',
-    };
-    this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
-  }
-
-  componentDidMount() {
-    DeviceStorage.loadJWT().then((value) => {
-      this.getUserBasicInfo(value);
-    });
-  }
-
-  getUserBasicInfo(token) {
-    const { username, phone } = this.state;
-
-    fetch('http://13.209.16.103:4000/user', {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        return '';
-      })
-      .then((payload) => {
-        this.setState({
-          username: payload.nickname,
-          phone: payload.phone,
-        });
-        return;
-      });
+    this.pressAds = this.pressAds.bind(this);
   }
 
   pressAds() {
@@ -55,7 +17,7 @@ class Mypage extends React.Component {
   }
 
   render() {
-    const { username, phone } = this.state;
+    const { username, phone, token } = this.props;
 
     return (
       <View style={styles.container}>
@@ -73,8 +35,9 @@ class Mypage extends React.Component {
           style={styles.userInfo}
           onPress={() => {
             this.props.navigation.navigate('MyInfo', {
-              username: username,
-              phone: phone,
+              username,
+              phone,
+              token,
             });
           }}
         >

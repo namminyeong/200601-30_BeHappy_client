@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import DetailHomeBody from './DetailHomeBody';
-import DetailReviews from './DetailReviews';
+import DetailReviewsContainer from '../../../containers/DetailReviewsContainer';
 import DetailBooking from './DetailBooking';
 import * as Linking from 'expo-linking';
 import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
@@ -126,7 +126,7 @@ class DetailsHome extends React.Component {
           />
           <Tab.Screen
             name='리뷰'
-            component={DetailReviews}
+            component={DetailReviewsContainer}
             initialParams={this.props.route.params.theCenterInfo}
             options={{}}
           />
