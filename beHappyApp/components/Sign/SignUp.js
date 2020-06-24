@@ -17,6 +17,12 @@ import AddressModal from './AddressModal';
 const { ec2, kakaoApi } = getEnvVars();
 import { Cities, States } from '../../Data/Preference';
 
+const checkUsername = /^[a-z|A-Z|0-9]+$/;
+const checkPassword = /^[a-z|A-Z|0-9]{8,20}$/;
+const checkNickname = /^[ㄱ-ㅎ|가-힣]+$/;
+const checkPhone = /^[0-9]{1,11}$/;
+const checkBusinessNumbere = /^[0-9]{1,10}$/;
+
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -398,11 +404,15 @@ export default class SignUp extends React.Component {
 
   render() {
     const {
+      username,
+      password,
+      nickname,
       phone,
       centerName,
       value,
       city,
       state,
+      businessNumber,
       addressName,
       roadAddressName,
       centerInfo,
@@ -436,7 +446,7 @@ export default class SignUp extends React.Component {
           </View>
           {value === 0 ? (
             <Fragment>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-person'}
@@ -450,8 +460,13 @@ export default class SignUp extends React.Component {
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
+                {username === '' || checkUsername.test(username) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    영문하고 숫자만 입력해주세요.
+                  </Text>
+                )}
               </View>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-lock'}
@@ -473,8 +488,13 @@ export default class SignUp extends React.Component {
                     color={'rgba(0,0,0,0.7)'}
                   />
                 </TouchableOpacity>
+                {password === '' || checkPassword.test(password) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    비밀번호는 8자리 이상이어야합니다.
+                  </Text>
+                )}
               </View>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-pricetag'}
@@ -488,8 +508,13 @@ export default class SignUp extends React.Component {
                   placeholderTextColor={'gray'}
                   onChangeText={(nickname) => this.setState({ nickname })}
                 />
+                {nickname === '' || checkNickname.test(nickname) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    한글만 입력해주세요.
+                  </Text>
+                )}
               </View>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-phone-portrait'}
@@ -503,6 +528,11 @@ export default class SignUp extends React.Component {
                   placeholderTextColor={'gray'}
                   onChangeText={(phone) => this.setState({ phone })}
                 />
+                {phone === '' || checkPhone.test(phone) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    11자리 이하 숫자만 입력해주세요.
+                  </Text>
+                )}
               </View>
               <TouchableOpacity
                 style={styles.submitBtn}
@@ -513,7 +543,7 @@ export default class SignUp extends React.Component {
             </Fragment>
           ) : (
             <Fragment>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-person'}
@@ -527,8 +557,13 @@ export default class SignUp extends React.Component {
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
+                {username === '' || checkUsername.test(username) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    영문하고 숫자만 입력해주세요.
+                  </Text>
+                )}
               </View>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-lock'}
@@ -550,8 +585,13 @@ export default class SignUp extends React.Component {
                     color={'rgba(0,0,0,0.7)'}
                   />
                 </TouchableOpacity>
+                {password === '' || checkPassword.test(password) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    비밀번호는 8자리 이상이어야합니다.
+                  </Text>
+                )}
               </View>
-              <View>
+              <View style={styles.inputcontainer}>
                 <Icon
                   style={styles.inputIcon}
                   name={'ios-document'}
@@ -567,6 +607,12 @@ export default class SignUp extends React.Component {
                     this.setState({ businessNumber })
                   }
                 />
+                {businessNumber === '' ||
+                checkBusinessNumbere.test(businessNumber) ? null : (
+                  <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
+                    10자리 이하 숫자만 입력해주세요.
+                  </Text>
+                )}
               </View>
               <View style={styles.searchContainer}>
                 <View style={styles.pickerContainer}>
@@ -751,10 +797,13 @@ const styles = StyleSheet.create({
   inputIcon: {
     position: 'absolute',
   },
+  inputcontainer: {
+    marginBottom: 25,
+  },
   inputBox: {
     alignSelf: 'stretch',
     height: 30,
-    marginBottom: 25,
+
     borderBottomColor: '#199187',
     borderBottomWidth: 1,
     paddingLeft: 35,

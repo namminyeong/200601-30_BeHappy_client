@@ -1,20 +1,45 @@
 import React from 'react';
 
-const List = ({ reqList, userId centerName }) => {
+import '../css/list.css';
+
+const List = ({ reqList, userId, centerName }) => {
   const acceptReq = () => {
-    return fetch('http://13.209.16.103:4000/user/admin/request', {
+    return fetch('https://behappy-hope.today/user/admin/request', {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId,isAcceptance: true }),
+      body: JSON.stringify({ userId, isAcceptance: true }),
     })
       .then((res) => {
         console.log('acceptReq res: ', res);
         res.json();
-      }).then(res => {
-        console.log('res: ', res)
+      })
+      .then((res) => {
+        console.log('res: ', res);
+        reqList();
+      })
+      .catch((err) => {
+        console.log('reqList Err: ', err);
+      });
+  };
+
+  const refusalReq = () => {
+    return fetch('https://behappy-hope.today/user/admin/request', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, isAcceptance: false }),
+    })
+      .then((res) => {
+        console.log('acceptReq res: ', res);
+        res.json();
+      })
+      .then((res) => {
+        console.log('res: ', res);
         reqList();
       })
       .catch((err) => {
@@ -23,10 +48,16 @@ const List = ({ reqList, userId centerName }) => {
   };
 
   return (
-    <div>
-      <div>{centerName}에서 admin 신청이 왔어요.</div>
-      <button onClick={() => acceptReq()}>수락</button>
-      <button>거절</button>
+    <div className='reqContainer'>
+      <div className='reqText'>{centerName}에서 admin 신청이 왔어요.</div>
+      <div className='btnContainer'>
+        <button className='acceptBtn' onClick={() => acceptReq()}>
+          수락
+        </button>
+        <button className='refusalBtn' onClick={() => refusalReq()}>
+          거절
+        </button>
+      </div>
     </div>
   );
 };

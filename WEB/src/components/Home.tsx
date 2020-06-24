@@ -18,7 +18,7 @@ class Home extends React.Component {
   }
 
   reqList() {
-    fetch('http://13.209.16.103:4000/user/admin/request', {
+    fetch('https://behappy-hope.today/user/admin/request', {
       method: 'GET',
       credentials: 'include',
     })
@@ -40,11 +40,11 @@ class Home extends React.Component {
     const { reqList } = this.state;
 
     return (
-      <div>
-        <nav className='navbar'>
-          <div className='logo'>{/* <img src='/images/behappy.png' /> */}</div>
+      <div className='container'>
+        {/* <nav className='navbar'>
+          <div className='logo'><img src='/images/behappy.png' /></div>
           <div className='title'>admin 신청 관리 화면</div>
-        </nav>
+        </nav> */}
         {reqList.map((req, index) => (
           <List
             key={index}
