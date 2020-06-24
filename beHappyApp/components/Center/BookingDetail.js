@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import Moment from 'moment';
 
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
@@ -14,8 +15,13 @@ export default class BookingDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentBookingState: false,
+      isBookingState: false,
     };
+    this.checkTime = this.checkTime.bind(this);
+  }
+
+  componentDidMount() {
+    this.checkTime();
   }
 
   patchBookingCheck(token, isCheck) {
@@ -36,11 +42,27 @@ export default class BookingDetail extends React.Component {
       .then((res) => {
         if (res.status === 200) {
           this.setState({
-            currentBookingState: true,
+            isBookingState: true,
           });
         }
       })
       .catch((error) => console.log('error', error));
+  }
+
+  checkTime() {
+    const { date, time } = this.props.route.params.bookingData;
+    const currentDate = Moment(new Date()).format('YYYY-MM-DD');
+    const currentTime = Moment(new Date()).format('HH:MM');
+
+    if (date > currentDate) {
+      this.setState({
+        isBookingState: true,
+      });
+    } else if (date === currentDate && time > currentTime) {
+      this.setState({
+        isBookingState: true,
+      });
+    }
   }
 
   render() {
@@ -52,7 +74,7 @@ export default class BookingDetail extends React.Component {
       content,
       bookingState,
     } = this.props.route.params.bookingData;
-    const { currentBookingState } = this.state;
+    const { isBookingState } = this.state;
 
     return (
       <View style={styles.container}>
@@ -86,9 +108,9 @@ export default class BookingDetail extends React.Component {
           }}
         >
           <TouchableOpacity
-            disabled={bookingState !== 'booked' || currentBookingState}
+            disabled={bookingState !== 'booked' || isBookingState}
             style={
-              bookingState !== 'booked' || currentBookingState
+              bookingState !== 'booked' || isBookingState
                 ? styles.deactivateButton
                 : styles.Button
             }
@@ -98,7 +120,7 @@ export default class BookingDetail extends React.Component {
           >
             <Text
               style={
-                bookingState !== 'booked' || currentBookingState
+                bookingState !== 'booked' || isBookingState
                   ? styles.deactivateButtonText
                   : { fontWeight: 'bold' }
               }
@@ -107,9 +129,9 @@ export default class BookingDetail extends React.Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            disabled={bookingState !== 'booked' || currentBookingState}
+            disabled={bookingState !== 'booked' || isBookingState}
             style={
-              bookingState !== 'booked' || currentBookingState
+              bookingState !== 'booked' || isBookingState
                 ? styles.deactivateButton
                 : styles.Button
             }
@@ -119,7 +141,7 @@ export default class BookingDetail extends React.Component {
           >
             <Text
               style={
-                bookingState !== 'booked' || currentBookingState
+                bookingState !== 'booked' || isBookingState
                   ? styles.deactivateButtonText
                   : { fontWeight: 'bold' }
               }
@@ -169,7 +191,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -178,7 +200,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     margin: 10,
     borderWidth: 1,
-    borderColor: 'grey',
+    borderColor: 'lightgrey',
     marginTop: 15,
     marginBottom: 20,
     width: 80,
@@ -191,12 +213,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#D1D1D1',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
   deactivateButtonText: {
-    color: '#FFFFFF',
+    color: 'lightgrey',
     fontWeight: 'bold',
   },
 });

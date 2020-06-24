@@ -92,7 +92,7 @@ export default class CenterPage extends React.Component {
             <Text
               style={{ textAlign: 'center', paddingTop: 80, color: '#D1D1D1' }}
             >
-              현재 날짜는 예약이 없습니다.
+              현재 날짜는 예약이 없습니다
             </Text>
           ) : (
             bookingDatas
@@ -125,8 +125,8 @@ export default class CenterPage extends React.Component {
                     <Text
                       style={
                         data.bookingState === 'booked'
-                          ? styles.booking
-                          : styles.booked
+                          ? styles.onGoing
+                          : styles.finished
                       }
                     >
                       {data.bookingState === 'booked'
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     borderColor: '#D1D1D1',
     borderWidth: 2,
   },
-  booking: {
+  onGoing: {
     paddingLeft: 10,
     paddingRight: 10,
     height: 20,
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: '#FFFFFF',
   },
-  booked: {
+  finished: {
     paddingLeft: 10,
     paddingRight: 10,
     height: 20,
