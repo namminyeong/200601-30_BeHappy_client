@@ -345,10 +345,10 @@ export default class Booking extends React.Component {
                     }}
                   >
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={{ fontWeight: 'bold' }}>
+                      <Text style={styles.section}>
                         날{'    '}짜{'    '}
                       </Text>
-                      <Text>{date}</Text>
+                      <Text style={styles.info}>{date}</Text>
                     </View>
                     <AntDesign
                       name='calendar'
@@ -390,10 +390,10 @@ export default class Booking extends React.Component {
                     }}
                   >
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={{ fontWeight: 'bold' }}>
+                      <Text style={styles.section}>
                         시{'    '}간{'    '}
                       </Text>
-                      <Text>{time}</Text>
+                      <Text style={styles.info}>{time}</Text>
                     </View>
                     <MaterialIcons
                       name='access-time'
@@ -403,7 +403,7 @@ export default class Booking extends React.Component {
                   </TouchableOpacity>
                   <View style={styles.userinfo}>
                     <View style={styles.textArea}>
-                      <Text style={{ fontWeight: 'bold' }}>이{'    '}름</Text>
+                      <Text style={styles.section}>이{'    '}름</Text>
                       <TextInput
                         style={styles.textBox}
                         value={username}
@@ -414,7 +414,7 @@ export default class Booking extends React.Component {
                       />
                     </View>
                     <View style={styles.textArea}>
-                      <Text style={{ fontWeight: 'bold' }}>연락처</Text>
+                      <Text style={styles.section}>연락처</Text>
                       <TextInput
                         style={styles.textBox}
                         value={phone}
@@ -544,32 +544,30 @@ export default class Booking extends React.Component {
           ) : (
             <View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>
+                <Text style={styles.section}>
                   날{'    '}짜{'    '}
                 </Text>
-                <Text>{date}</Text>
+                <Text style={styles.info}>{date}</Text>
               </View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>
+                <Text style={styles.section}>
                   시{'    '}간{'    '}
                 </Text>
-                <Text>{time}</Text>
+                <Text style={styles.info}>{time}</Text>
               </View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>
+                <Text style={styles.section}>
                   이{'    '}름{'    '}
                 </Text>
-                <Text>{username}</Text>
+                <Text style={styles.info}>{username}</Text>
               </View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>연락처{'    '}</Text>
-                <Text>{phone}</Text>
+                <Text style={styles.section}>연락처{'    '}</Text>
+                <Text style={styles.info}>{phone}</Text>
               </View>
               <View style={styles.userinfo}>
-                <Text style={{ marginBottom: 6, fontWeight: 'bold' }}>
-                  상담 이유
-                </Text>
-                <Text>{content}</Text>
+                <Text style={styles.sectionContent}>상담 이유</Text>
+                <Text style={styles.info}>{content}</Text>
               </View>
               <TouchableOpacity
                 disabled={!isAgree}
@@ -668,6 +666,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  section: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  sectionContent: {
+    marginBottom: 6,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  info: {
+    fontSize: 15,
+  },
   textArea: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -678,6 +688,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     width: '80%',
     borderBottomWidth: 1,
+    fontSize: 15,
   },
   textBoxContent: {
     width: '98%',
@@ -685,6 +696,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     textAlignVertical: 'top',
+    fontSize: 15,
   },
   completeButton: {
     borderRadius: 20,

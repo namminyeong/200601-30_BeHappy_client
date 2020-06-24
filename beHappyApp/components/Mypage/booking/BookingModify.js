@@ -240,10 +240,10 @@ export default class BookingModify extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.text}>
+                  <Text style={styles.section}>
                     날{'    '}짜{'    '}
                   </Text>
-                  <Text>{date}</Text>
+                  <Text style={styles.info}>{date}</Text>
                 </View>
                 <AntDesign
                   name='calendar'
@@ -315,10 +315,10 @@ export default class BookingModify extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.text}>
+                  <Text style={styles.section}>
                     시{'    '}간{'    '}
                   </Text>
-                  <Text>{time}</Text>
+                  <Text style={styles.info}>{time}</Text>
                 </View>
                 <MaterialIcons
                   name='access-time'
@@ -328,7 +328,7 @@ export default class BookingModify extends React.Component {
               </TouchableOpacity>
               <View style={styles.userinfo}>
                 <View style={styles.textArea}>
-                  <Text style={styles.text}>이{'    '}름</Text>
+                  <Text style={styles.section}>이{'    '}름</Text>
                   <TextInput
                     style={styles.textBox}
                     value={name}
@@ -339,7 +339,7 @@ export default class BookingModify extends React.Component {
                   />
                 </View>
                 <View style={styles.textArea}>
-                  <Text style={styles.text}>연락처</Text>
+                  <Text style={styles.section}>연락처</Text>
                   <TextInput
                     style={styles.textBox}
                     value={phone}
@@ -495,6 +495,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  section: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  sectionContent: {
+    marginBottom: 6,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  info: {
+    fontSize: 15,
+  },
   textArea: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -505,17 +517,15 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     width: '80%',
     borderBottomWidth: 1,
-  },
-  text: {
-    fontWeight: 'bold',
+    fontSize: 15,
   },
   textBoxContent: {
-    padding: 10,
     width: '98%',
-    height: 200,
+    height: 100,
     padding: 4,
     borderWidth: 1,
     textAlignVertical: 'top',
+    fontSize: 15,
   },
   completeButton: {
     borderRadius: 20,
