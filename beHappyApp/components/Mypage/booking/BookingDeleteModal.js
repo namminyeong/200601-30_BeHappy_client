@@ -19,7 +19,6 @@ const BookingDeleteModal = ({
   handleModalDeleteBookingShown,
   modalDeleteBookingShown,
 }) => {
-
   const bookingId = booking.id;
 
   const closeModal = () => {

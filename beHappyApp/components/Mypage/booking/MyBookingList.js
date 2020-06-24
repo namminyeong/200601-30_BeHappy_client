@@ -154,7 +154,21 @@ const MyBookingList = ({
 
 const styles = StyleSheet.create({
   container: {
-    margin: 5,
+    backgroundColor: 'white',
+    padding: 10,
+    paddingTop: 15,
+    left: '2%',
+    width: '96%',
+    marginTop: 15,
+    marginBottom: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   bookingInfo: {
     marginBottom: 10,

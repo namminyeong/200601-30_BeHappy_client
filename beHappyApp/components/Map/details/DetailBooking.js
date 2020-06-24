@@ -164,20 +164,23 @@ export default class Booking extends React.Component {
     const { date, time, username, phone, content } = this.state;
 
     let newState = Object.assign([], this.props.myBookings);
-    let newBooking = {};
-    let center = {};
-    newBooking.date = date;
-    newBooking.time = time;
-    newBooking.name = username;
-    newBooking.phone = phone;
-    newBooking.content = content;
-    newBooking.bookingState = 'booked';
-    center.centerName = this.props.CenterInfo.centerName;
-    center.id = this.props.CenterInfo.id;
+    let newBooking = {
+      date,
+      time,
+      name: username,
+      phone,
+      content,
+      bookingState: 'booked',
+    };
+    let center = {
+      centerName: this.props.CenterInfo.centerName,
+      id: this.props.CenterInfo.id,
+    };
     newBooking.center = center;
     newState.push(newBooking);
-    console.log(newState);
-    this.props.controlmyBookings(newState);
+    let sortData = newState.sort((a, b) => a.date < b.date);
+
+    this.props.controlmyBookings(sortData);
     this.completeBooking();
   }
 
