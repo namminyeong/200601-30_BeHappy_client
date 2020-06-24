@@ -49,7 +49,9 @@ export default class DetailReviews extends React.Component {
       })
       .then((payload) => {
         this.setState({
-          reviewsData: payload,
+          reviewsData: payload.sort((a, b) => {
+            return a.time > b.time ? 1 : -1;
+          }),
         });
       });
   }
@@ -152,6 +154,9 @@ export default class DetailReviews extends React.Component {
               })}
             />
           </View>
+          <Text style={{ fontSize: 10, color: 'darkgrey', marginLeft: '4%' }}>
+            최근 작성된 리뷰부터 보여집니다.
+          </Text>
           <ShowReviews reviewsData={reviewsData} isRateFilter={isRateFilter} />
         </ScrollView>
         <TouchableOpacity

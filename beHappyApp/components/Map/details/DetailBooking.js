@@ -20,7 +20,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 
-import DeviceStorage from '../../../service/DeviceStorage';
 import CompleteModal from '../../../Modal/CompleteModal';
 
 const checkNumber = /^[0-9]{10,11}$/;
@@ -29,7 +28,6 @@ export default class Booking extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      centerId: this.props.route.params.id,
       isSelectDate: false,
       isSelectTime: false,
       date: '',
@@ -64,11 +62,17 @@ export default class Booking extends React.Component {
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
     this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
+    this.addBookingState = this.addBookingState.bind(this);
   }
 
   getCenterBooking(token) {
-    const { centerId, date } = this.state;
-    let url = ec2 + '/booking/center?centerId=' + centerId + '&date=' + date;
+    const { date } = this.state;
+    let url =
+      ec2 +
+      '/booking/center?centerId=' +
+      this.props.CenterInfo.id +
+      '&date=' +
+      date;
 
     this.resetTime();
     fetch(url, {
@@ -99,7 +103,7 @@ export default class Booking extends React.Component {
   }
 
   postBooking(token) {
-    const { centerId, date, time, username, phone, content } = this.state;
+    const { date, time, username, phone, content } = this.state;
     let url = ec2 + '/booking';
 
     fetch(url, {
@@ -110,12 +114,12 @@ export default class Booking extends React.Component {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        centerId: centerId,
-        date: date,
+        centerId: this.props.CenterInfo.id,
+        date,
         time: time + ':00',
         name: username,
-        phone: phone,
-        content: content,
+        phone: phone.split('-').join(''),
+        content,
       }),
     })
       .then((res) => {
@@ -124,6 +128,7 @@ export default class Booking extends React.Component {
             showCompleteModal: true,
             showModalText: '예약이 완료되었습니다',
           });
+          this.addBookingState();
         }
       })
       .catch((error) => console.log('error', error));
@@ -153,6 +158,27 @@ export default class Booking extends React.Component {
         });
         return;
       });
+  }
+
+  addBookingState() {
+    const { date, time, username, phone, content } = this.state;
+
+    let newState = Object.assign([], this.props.myBookings);
+    let newBooking = {};
+    let center = {};
+    newBooking.date = date;
+    newBooking.time = time;
+    newBooking.name = username;
+    newBooking.phone = phone;
+    newBooking.content = content;
+    newBooking.bookingState = 'booked';
+    center.centerName = this.props.CenterInfo.centerName;
+    center.id = this.props.CenterInfo.id;
+    newBooking.center = center;
+    newState.push(newBooking);
+    console.log(newState);
+    this.props.controlmyBookings(newState);
+    this.completeBooking();
   }
 
   againSelectDate(time) {
@@ -279,9 +305,7 @@ export default class Booking extends React.Component {
                       this.setState({
                         date: selectDate.dateString,
                       });
-                      DeviceStorage.loadJWT().then((value) => {
-                        this.getCenterBooking(value);
-                      });
+                      this.getCenterBooking(this.props.token);
                     }}
                   />
                   <View
@@ -334,9 +358,7 @@ export default class Booking extends React.Component {
                       disabled={data[1] ? true : false}
                       onPress={() => {
                         this.changeTime(index);
-                        DeviceStorage.loadJWT().then((value) => {
-                          this.getUserBasicInfo(value);
-                        });
+                        this.getUserBasicInfo(this.props.token);
                         this.setState({ isSelectTime: true, time: data });
                       }}
                     >
@@ -544,13 +566,7 @@ export default class Booking extends React.Component {
                 disabled={!isAgree}
                 style={{ alignItems: 'center' }}
                 onPress={() => {
-                  DeviceStorage.loadJWT()
-                    .then((value) => {
-                      this.postBooking(value);
-                    })
-                    .then(() => {
-                      this.completeBooking();
-                    });
+                  this.postBooking(this.props.token);
                 }}
               >
                 <View style={styles.completeButton}>
