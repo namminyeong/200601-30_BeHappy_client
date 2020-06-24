@@ -363,7 +363,7 @@ export default class BookingModify extends React.Component {
                 </View>
                 {phone === '' || checkNumber.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 60, fontSize: 10 }}>
-                    숫자만 입력해주세요.
+                    10-11자리 숫자만 입력해주세요
                   </Text>
                 )}
 

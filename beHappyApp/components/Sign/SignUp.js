@@ -530,7 +530,7 @@ export default class SignUp extends React.Component {
                 />
                 {phone === '' || checkPhone.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    11자리 이하 숫자만 입력해주세요.
+                    10-11자리 숫자만 입력해주세요
                   </Text>
                 )}
               </View>
