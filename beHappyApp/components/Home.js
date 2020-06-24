@@ -151,10 +151,8 @@ export default class Home extends React.Component {
                 </>
               ) : this.props.authState === 0 ? (
                 <Stack.Screen name='Main' component={Main} />
-              ) : this.props.authState === 1 ? (
-                <Stack.Screen name='EntryCenter' component={EntryCenter} />
               ) : (
-                <Stack.Screen name='Home' component={Home} />
+                <Stack.Screen name='EntryCenter' component={EntryCenter} />
               )}
             </Stack.Navigator>
           </NavigationContainer>
