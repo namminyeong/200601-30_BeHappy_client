@@ -49,7 +49,6 @@ export default class BookingModify extends React.Component {
         ['16:00', false],
         ['17:00', false],
       ],
-      centerBookingData: [],
       modifyBookingModal: false,
     };
 
@@ -59,13 +58,14 @@ export default class BookingModify extends React.Component {
     this.againSelectTime = this.againSelectTime.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.blockTime = this.blockTime.bind(this);
+    this.resetTime = this.resetTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
     this.handleModifyBookingModal = this.handleModifyBookingModal.bind(this);
   }
 
-  getCenterBooking() {
-    const { centerId, date, centerBookingData } = this.state;
+  getCenterBooking(date) {
+    const { centerId } = this.state;
 
     this.resetTime();
 
@@ -85,16 +85,11 @@ export default class BookingModify extends React.Component {
       })
       .then((payload) => {
         this.setState({
-          centerBookingData: payload,
-        });
-        this.blockTime(centerBookingData);
-      })
-      .then(() =>
-        this.setState({
           isSelectDate: true,
           isSelectTime: false,
-        })
-      )
+        });
+        this.blockTime(payload);
+      })
       .catch((error) => console.log('error', error));
   }
 
@@ -138,12 +133,15 @@ export default class BookingModify extends React.Component {
   }
 
   resetTime() {
-    const { bookingTime } = this.state;
-    bookingTime.map((data) => data[1] === false);
+    const bookingTime = Object.assign([], this.state.bookingTime);
+    bookingTime.map((data) => (data[1] = false));
+    this.setState({
+      bookingTime,
+    });
   }
 
   blockTime(centerBookingData) {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
 
     for (let i = 0; i < centerBookingData.length; i++) {
       bookingTime.map((time) =>
@@ -151,6 +149,9 @@ export default class BookingModify extends React.Component {
           ? (time[1] = true)
           : null
       );
+      this.setState({
+        bookingTime,
+      });
     }
   }
 
@@ -184,10 +185,14 @@ export default class BookingModify extends React.Component {
   }
 
   backTime(time) {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
+
     bookingTime.map((data) =>
       data.includes(time[0]) ? (data[1] = false) : data
     );
+    this.setState({
+      bookingTime,
+    });
   }
 
   checkUserInfo() {
@@ -263,7 +268,7 @@ export default class BookingModify extends React.Component {
                   this.setState({
                     date: selectDate.dateString,
                   });
-                  this.getCenterBooking(this.props.route.params.token);
+                  this.getCenterBooking(selectDate.dateString);
                 }}
               />
               <View
