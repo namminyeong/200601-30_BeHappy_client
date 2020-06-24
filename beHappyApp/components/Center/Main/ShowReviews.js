@@ -27,25 +27,27 @@ export default class ShowReviews extends React.Component {
 
     return (
       <View style={{ marginHorizontal: '3%', marginTop: '1%' }}>
-        {renderableData.slice(0, this.state.count).map((review, index) => (
-          <View style={styles.review} key={index}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Text>{review.anonymousName}</Text>
-              <Text style={{ color: '#636E72' }}>
-                {review.date.slice(0, 4)}.{review.date.slice(5, 7)} 방문
-              </Text>
+        {this.props.reviewsData
+          .slice(0, this.state.count)
+          .map((review, index) => (
+            <View style={styles.review} key={index}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text>{review.anonymousName}</Text>
+                <Text style={{ color: '#636E72' }}>
+                  {review.date.slice(0, 4)}.{review.date.slice(5, 7)} 방문
+                </Text>
+              </View>
+              <View style={styles.rateStar}>
+                {this.props.drawStars(review.rate, 15)}
+              </View>
+              <Text style={styles.content}>{review.content}</Text>
             </View>
-            <View style={styles.rateStar}>
-              {this.props.drawStars(review.rate, 15)}
-            </View>
-            <Text style={styles.content}>{review.content}</Text>
-          </View>
-        ))}
+          ))}
         {renderableData.length <= this.state.count ? (
           <></>
         ) : (
