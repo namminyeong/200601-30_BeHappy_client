@@ -350,7 +350,7 @@ export default class BookingModify extends React.Component {
                     }}
                   />
                   {phone === '' || checkNumber.test(phone) ? null : (
-                    <MaterialIcons
+                    <MaterialCommunityIcons
                       name='alert-circle-outline'
                       size={18}
                       style={{ color: '#941818', right: 20 }}
