@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { Cities, States } from '../../Data/Preference';
+import { Cities, States, SpecialtiesArray } from '../../Data/Preference';
 
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
@@ -20,18 +20,6 @@ class UserPreference extends React.Component {
       favorCenter: [],
       specialties: [],
       favorCenterData: ['정신과', '심리센터'],
-      specialtyData: [
-        '스트레스',
-        '가족',
-        '식이',
-        '부부',
-        '우울증',
-        '불면증',
-        '학교폭력',
-        '아동',
-        '불안',
-        '강박',
-      ],
       showAlertModal: false,
       showAlertModalText: '',
     };
@@ -156,7 +144,6 @@ class UserPreference extends React.Component {
     const {
       city,
       state,
-      specialtyData,
       favorCity,
       favorCenter,
       favorCenterData,
@@ -174,7 +161,7 @@ class UserPreference extends React.Component {
             </Text>
             <Text style={styles.preSection}>관심 분야</Text>
             <View style={styles.attention}>
-              {specialtyData.map((data, index) => (
+              {SpecialtiesArray.map((data, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => this.handleSpecialty(data)}

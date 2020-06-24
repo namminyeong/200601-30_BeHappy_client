@@ -7,9 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   CheckBox,
+  Modal,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import Modal from 'react-native-modal';
 import Moment from 'moment';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -17,9 +17,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import DeviceStorage from '../../../service/DeviceStorage';
+import getEnvVars from '../../../environment';
+const { ec2 } = getEnvVars();
 
-const checkNumber = /^[0-9]+$/;
+import DeviceStorage from '../../../service/DeviceStorage';
+import CompleteModal from '../../../Modal/CompleteModal';
+
+const checkNumber = /^[0-9]{10,11}$/;
 
 export default class Booking extends React.Component {
   constructor(props) {
@@ -34,9 +38,10 @@ export default class Booking extends React.Component {
       phone: '',
       content: '',
       isUserInfo: false,
-      alertModal: false,
+      showAgreeModal: false,
       isAgree: false,
-      completeModal: false,
+      showCompleteModal: false,
+      showModalText: '',
       bookingTime: [
         ['09:00', false],
         ['10:00', false],
@@ -58,23 +63,22 @@ export default class Booking extends React.Component {
     this.resetTime = this.resetTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
+    this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
   }
 
   getCenterBooking(token) {
     const { centerId, date } = this.state;
+    let url = ec2 + '/booking/center?centerId=' + centerId + '&date=' + date;
 
     this.resetTime();
-    fetch(
-      `http://13.209.16.103:4000/booking/center?centerId=${centerId}&date=${date}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -91,13 +95,14 @@ export default class Booking extends React.Component {
           isSelectTime: false,
         })
       )
-      .catch((error) => console.log('error', error));
+      .catch((error) => ('error', error));
   }
 
   postBooking(token) {
     const { centerId, date, time, username, phone, content } = this.state;
+    let url = ec2 + '/booking';
 
-    fetch('http://13.209.16.103:4000/booking', {
+    fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -116,11 +121,38 @@ export default class Booking extends React.Component {
       .then((res) => {
         if (res.status === 200) {
           this.setState({
-            completeModal: true,
+            showCompleteModal: true,
+            showModalText: '예약이 완료되었습니다',
           });
         }
       })
       .catch((error) => console.log('error', error));
+  }
+
+  getUserBasicInfo(token) {
+    let url = ec2 + '/user';
+
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((payload) => {
+        this.setState({
+          username: payload.nickname,
+          phone: payload.phone,
+        });
+        return;
+      });
   }
 
   againSelectDate(time) {
@@ -156,11 +188,11 @@ export default class Booking extends React.Component {
       username: '',
       phone: '',
       content: '',
-      alertModal: false,
+      showAgreeModal: false,
       isAgree: false,
     });
     setTimeout(() => {
-      this.setState({ completeModal: false });
+      this.setState({ showCompleteModal: false });
     }, 1500);
   }
 
@@ -222,10 +254,11 @@ export default class Booking extends React.Component {
       username,
       phone,
       content,
-      alertModal,
+      showAgreeModal,
       isAgree,
       bookingTime,
-      completeModal,
+      showCompleteModal,
+      showModalText,
       isUserInfo,
     } = this.state;
 
@@ -272,20 +305,24 @@ export default class Booking extends React.Component {
                 </View>
               ) : (
                 <View style={{ alignItems: 'center' }}>
-                  <View style={styles.selectBox}>
-                    <Text>
-                      날{'    '}짜{'    '}
-                      {date}
-                    </Text>
+                  <TouchableOpacity
+                    style={styles.selectBox}
+                    onPress={() => {
+                      this.againSelectDate(time);
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={{ fontWeight: 'bold' }}>
+                        날{'    '}짜{'    '}
+                      </Text>
+                      <Text>{date}</Text>
+                    </View>
                     <AntDesign
                       name='calendar'
                       size={25}
                       style={{ paddingRight: 4 }}
-                      onPress={() => {
-                        this.againSelectDate(time);
-                      }}
                     />
-                  </View>
+                  </TouchableOpacity>
                 </View>
               )}
 
@@ -297,6 +334,9 @@ export default class Booking extends React.Component {
                       disabled={data[1] ? true : false}
                       onPress={() => {
                         this.changeTime(index);
+                        DeviceStorage.loadJWT().then((value) => {
+                          this.getUserBasicInfo(value);
+                        });
                         this.setState({ isSelectTime: true, time: data });
                       }}
                     >
@@ -312,40 +352,44 @@ export default class Booking extends React.Component {
 
               {isSelectTime ? (
                 <View>
-                  <View style={styles.selectBox}>
-                    <Text>
-                      시{'    '}간{'    '}
-                      {time}
-                    </Text>
+                  <TouchableOpacity
+                    style={styles.selectBox}
+                    onPress={() => {
+                      this.againSelectTime(time);
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={{ fontWeight: 'bold' }}>
+                        시{'    '}간{'    '}
+                      </Text>
+                      <Text>{time}</Text>
+                    </View>
                     <MaterialIcons
                       name='access-time'
                       size={25}
                       style={{ paddingRight: 4 }}
-                      onPress={() => {
-                        this.againSelectTime(time);
-                      }}
                     />
-                  </View>
+                  </TouchableOpacity>
                   <View style={styles.userinfo}>
                     <View style={styles.textArea}>
-                      <Text>이{'    '}름</Text>
+                      <Text style={{ fontWeight: 'bold' }}>이{'    '}름</Text>
                       <TextInput
                         style={styles.textBox}
                         value={username}
                         onChangeText={(username) => {
-                          this.setState({ username: username });
+                          this.setState({ username });
                           this.checkUserInfo();
                         }}
                       />
                     </View>
                     <View style={styles.textArea}>
-                      <Text>연락처</Text>
+                      <Text style={{ fontWeight: 'bold' }}>연락처</Text>
                       <TextInput
                         style={styles.textBox}
                         value={phone}
                         placeholder={` ' - '를 제외한 숫자를 입력해주세요`}
                         onChangeText={(phone) => {
-                          this.setState({ phone: phone });
+                          this.setState({ phone });
                           this.checkUserInfo();
                         }}
                       />
@@ -367,13 +411,15 @@ export default class Booking extends React.Component {
                     <View
                       style={{ marginTop: 6, marginBottom: 6, marginLeft: 4 }}
                     >
-                      <Text style={{ marginBottom: 8 }}>상담 이유</Text>
+                      <Text style={{ marginBottom: 8, fontWeight: 'bold' }}>
+                        상담 이유
+                      </Text>
                       <TextInput
                         style={styles.textBoxContent}
                         value={content}
                         multiline={true}
                         onChangeText={(content) => {
-                          this.setState({ content: content });
+                          this.setState({ content });
                           this.checkUserInfo();
                         }}
                       />
@@ -384,13 +430,7 @@ export default class Booking extends React.Component {
                       disabled={!isUserInfo}
                       onPress={() => {
                         this.setState({
-                          alertModal: true,
-                          phone:
-                            phone.slice(0, 3) +
-                            '-' +
-                            phone.slice(3, 7) +
-                            '-' +
-                            phone.slice(7),
+                          showAgreeModal: true,
                         });
                       }}
                     >
@@ -421,7 +461,11 @@ export default class Booking extends React.Component {
                   </View>
                 </View>
               ) : null}
-              <Modal isVisible={alertModal}>
+              <Modal
+                animationType='none'
+                transparent={true}
+                visible={showAgreeModal}
+              >
                 <View style={styles.centeredView}>
                   <View style={styles.agreeModal}>
                     <MaterialCommunityIcons
@@ -448,7 +492,16 @@ export default class Booking extends React.Component {
                     >
                       <CheckBox
                         onValueChange={() =>
-                          this.setState({ isAgree: true, alertModal: false })
+                          this.setState({
+                            phone:
+                              phone.slice(0, 3) +
+                              '-' +
+                              phone.slice(3, 7) +
+                              '-' +
+                              phone.slice(7),
+                            isAgree: true,
+                            showAgreeModal: false,
+                          })
                         }
                       />
                       <Text>확인</Text>
@@ -459,32 +512,32 @@ export default class Booking extends React.Component {
             </View>
           ) : (
             <View>
-              <View style={styles.selectBox}>
-                <Text>
+              <View style={styles.lastBox}>
+                <Text style={{ fontWeight: 'bold' }}>
                   날{'    '}짜{'    '}
-                  {date}
                 </Text>
+                <Text>{date}</Text>
               </View>
-              <View style={styles.selectBox}>
-                <Text>
+              <View style={styles.lastBox}>
+                <Text style={{ fontWeight: 'bold' }}>
                   시{'    '}간{'    '}
-                  {time}
                 </Text>
+                <Text>{time}</Text>
               </View>
-              <View style={styles.selectBox}>
-                <Text>
+              <View style={styles.lastBox}>
+                <Text style={{ fontWeight: 'bold' }}>
                   이{'    '}름{'    '}
-                  {username}
                 </Text>
+                <Text>{username}</Text>
               </View>
-              <View style={styles.selectBox}>
-                <Text>
-                  연락처{'    '}
-                  {phone}
-                </Text>
+              <View style={styles.lastBox}>
+                <Text style={{ fontWeight: 'bold' }}>연락처{'    '}</Text>
+                <Text>{phone}</Text>
               </View>
               <View style={styles.userinfo}>
-                <Text style={{ marginBottom: 6 }}>상담 이유</Text>
+                <Text style={{ marginBottom: 6, fontWeight: 'bold' }}>
+                  상담 이유
+                </Text>
                 <Text>{content}</Text>
               </View>
               <TouchableOpacity
@@ -502,18 +555,18 @@ export default class Booking extends React.Component {
               >
                 <View style={styles.completeButton}>
                   <Entypo name='check' size={24} />
-                  <Text style={{ fontSize: 16 }}>예약 하기</Text>
+                  <Text style={{ fontSize: 16 }}>예약 완료</Text>
                 </View>
               </TouchableOpacity>
             </View>
           )}
         </ScrollView>
-        <Modal isVisible={completeModal}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>예약이 완료되었습니다.</Text>
-            </View>
-          </View>
+        <Modal
+          animationType='none'
+          transparent={true}
+          visible={showCompleteModal}
+        >
+          <CompleteModal showModalText={showModalText} />
         </Modal>
       </View>
     );
@@ -603,7 +656,8 @@ const styles = StyleSheet.create({
   },
   textBoxContent: {
     width: '98%',
-    height: 200,
+    height: 100,
+    padding: 4,
     borderWidth: 1,
     textAlignVertical: 'top',
   },
@@ -651,6 +705,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  lastBox: {
+    backgroundColor: 'white',
+    padding: 10,
+    paddingTop: 15,
+    left: '2%',
+    width: '96%',
+    marginTop: 15,
+    marginBottom: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    flexDirection: 'row',
+  },
 
   centeredView: {
     flex: 1,
@@ -662,7 +734,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+    width: '90%',
     maxHeight: 200,
     backgroundColor: '#FFFFFF',
     borderWidth: 4,

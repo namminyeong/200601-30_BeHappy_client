@@ -102,8 +102,10 @@ class ModifyReview extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <View style={styles.review}>
-          <Text>진료일자 : {modifyingReview.date}</Text>
           <Text style={styles.centername}>{modifyingReview.centerName}</Text>
+          <Text style={{ marginBottom: 15 }}>
+            진료일자 : {modifyingReview.date}
+          </Text>
 
           <AirbnbRating
             showRating={false}
@@ -185,7 +187,7 @@ const styles = StyleSheet.create({
   },
   centername: {
     marginTop: 6,
-    marginBottom: 15,
+    marginBottom: 2,
     fontSize: 20,
     fontWeight: 'bold',
   },

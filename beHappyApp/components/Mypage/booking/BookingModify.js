@@ -6,11 +6,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  CheckBox,
-  TouchableHighlight,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import Modal from 'react-native-modal';
 import Moment from 'moment';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -37,12 +34,12 @@ export default class BookingModify extends React.Component {
       date: this.props.route.params.booking.date,
       time: this.props.route.params.booking.time.slice(0, 5),
       name: this.props.route.params.booking.name,
-      phone: this.props.route.params.booking.phone,
+      phone: this.props.route.params.booking.phone.split('-').join(''),
       content: this.props.route.params.booking.content,
       isSelectDate: true,
       isSelectTime: true,
       isUserInfo: false,
-      alertModal: false,
+      isChanged: false,
       isAgree: false,
       completeModal: false,
       bookingTime: [
@@ -189,6 +186,7 @@ export default class BookingModify extends React.Component {
     this.setState({
       bookingTime: newState,
     });
+    this.checkUserInfo();
   }
 
   backTime(time) {
@@ -203,10 +201,10 @@ export default class BookingModify extends React.Component {
 
     name === '' || phone === '' || content === ''
       ? this.setState({
-          isUserInfo: false,
+          isChanged: false,
         })
       : this.setState({
-          isUserInfo: true,
+          isChanged: true,
         });
   }
 
@@ -225,10 +223,9 @@ export default class BookingModify extends React.Component {
       name,
       phone,
       content,
-      alertModal,
       isAgree,
       bookingTime,
-      isUserInfo,
+      isChanged,
     } = this.state;
 
     return (
@@ -267,7 +264,7 @@ export default class BookingModify extends React.Component {
                       style={{ color: '#941818' }}
                     />
                     <Text style={{ margin: 6, color: '#941818' }}>
-                      금일 ({Moment(new Date()).format('M월 D일')}) 예약은
+                      당일 ({Moment(new Date()).format('M월 D일')}) 예약은
                       불가능합니다.
                     </Text>
                   </View>
@@ -275,13 +272,13 @@ export default class BookingModify extends React.Component {
               ) : (
                 <View style={{ alignItems: 'center' }}>
                   <View style={styles.selectBox}>
-                    <Text>
+                    <Text style={styles.text}>
                       날{'    '}짜{'    '}
                       {date}
                     </Text>
                     <AntDesign
                       name='calendar'
-                      size={20}
+                      size={25}
                       style={{ paddingRight: 4 }}
                       onPress={() => {
                         this.againSelectDate(time);
@@ -315,13 +312,13 @@ export default class BookingModify extends React.Component {
               {isSelectTime ? (
                 <View>
                   <View style={styles.selectBox}>
-                    <Text>
+                    <Text style={styles.text}>
                       시{'    '}간{'    '}
                       {time}
                     </Text>
                     <MaterialIcons
                       name='access-time'
-                      size={20}
+                      size={25}
                       style={{ paddingRight: 4 }}
                       onPress={() => {
                         this.againSelectTime(time);
@@ -330,7 +327,7 @@ export default class BookingModify extends React.Component {
                   </View>
                   <View style={styles.userinfo}>
                     <View style={styles.textArea}>
-                      <Text>이{'    '}름</Text>
+                      <Text style={styles.text}>이{'    '}름</Text>
                       <TextInput
                         style={styles.textBox}
                         value={name}
@@ -341,7 +338,9 @@ export default class BookingModify extends React.Component {
                       />
                     </View>
                     <View style={styles.textArea}>
-                      <Text>연락처</Text>
+                      <Text style={styles.text} s>
+                        연락처
+                      </Text>
                       <TextInput
                         style={styles.textBox}
                         value={phone}
@@ -367,9 +366,7 @@ export default class BookingModify extends React.Component {
                       </Text>
                     )}
 
-                    <View
-                      style={{ marginTop: 6, marginBottom: 6, marginLeft: 4 }}
-                    >
+                    <View style={{ marginVertical: 6, marginLeft: 4 }}>
                       <Text style={{ marginBottom: 8 }}>상담 이유</Text>
                       <TextInput
                         style={styles.textBoxContent}
@@ -384,10 +381,10 @@ export default class BookingModify extends React.Component {
                   </View>
                   <View style={{ alignItems: 'center' }}>
                     <TouchableOpacity
-                      disabled={!isUserInfo}
+                      disabled={!isChanged}
                       onPress={() => {
                         this.setState({
-                          alertModal: true,
+                          isAgree: true,
                           phone:
                             phone.slice(0, 3) +
                             '-' +
@@ -399,7 +396,7 @@ export default class BookingModify extends React.Component {
                     >
                       <View
                         style={
-                          !isUserInfo
+                          !isChanged
                             ? styles.notCompleteButton
                             : styles.completeButton
                         }
@@ -408,12 +405,12 @@ export default class BookingModify extends React.Component {
                           name='check'
                           size={24}
                           style={{
-                            color: !isUserInfo ? '#FFFFFF' : '#000000',
+                            color: !isChanged ? 'lightgrey' : 'black',
                           }}
                         />
                         <Text
                           style={{
-                            color: !isUserInfo ? '#FFFFFF' : '#000000',
+                            color: !isChanged ? 'lightgrey' : 'black',
                             fontSize: 16,
                           }}
                         >
@@ -424,39 +421,6 @@ export default class BookingModify extends React.Component {
                   </View>
                 </View>
               ) : null}
-              <Modal isVisible={alertModal}>
-                <View style={styles.modal}>
-                  <MaterialCommunityIcons
-                    name='alert-circle-outline'
-                    size={24}
-                  />
-                  <View>
-                    <Text style={{ marginTop: '4%' }}>
-                      개인정보 수집과 제공에 동의합니다.
-                    </Text>
-                    <Text>
-                      잦은 예약 변경과 취소시 이후 예약이 제한 될 수 있습니다.
-                    </Text>
-                    <Text style={{ color: '#941818', marginTop: 4 }}>
-                      예약 당일에는 수정과 취소가 불가능 합니다.
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: 20,
-                    }}
-                  >
-                    <CheckBox
-                      onValueChange={() =>
-                        this.setState({ isAgree: true, alertModal: false })
-                      }
-                    />
-                    <Text>확인</Text>
-                  </View>
-                </View>
-              </Modal>
             </View>
           ) : (
             <View>
@@ -499,7 +463,7 @@ export default class BookingModify extends React.Component {
               >
                 <View style={styles.completeButton}>
                   <Entypo name='check' size={24} />
-                  <Text style={{ fontSize: 16 }}>예약 하기</Text>
+                  <Text style={{ fontSize: 16 }}>변경 완료</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -517,15 +481,16 @@ export default class BookingModify extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   time: {
     marginTop: '2%',
-    marginLeft: '2%',
-    marginRight: '2%',
+    marginHorizontal: '2%',
     paddingBottom: 10,
     flexWrap: 'wrap',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   selectBox: {
     backgroundColor: 'white',
@@ -547,26 +512,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   blocked: {
-    marginTop: 9,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 9,
+    marginHorizontal: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 13,
     backgroundColor: '#62CCAD',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 18,
+    borderRadius: 10,
   },
   notblocked: {
-    marginTop: 9,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 9,
+    marginHorizontal: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 13,
     backgroundColor: '#D1D1D1',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 18,
+    borderRadius: 10,
   },
   userinfo: {
     backgroundColor: 'white',
@@ -596,7 +559,11 @@ const styles = StyleSheet.create({
     width: '80%',
     borderBottomWidth: 1,
   },
+  text: {
+    fontSize: 15,
+  },
   textBoxContent: {
+    padding: 10,
     width: '98%',
     height: 200,
     borderWidth: 1,
@@ -606,9 +573,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 17,
     borderWidth: 1,
-    borderColor: 'grey',
-    marginTop: 15,
-    marginBottom: 20,
+    marginVertical: 25,
     width: 120,
     height: 40,
     shadowColor: '#000',
@@ -619,16 +584,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   notCompleteButton: {
+    borderColor: 'lightgrey',
     borderRadius: 20,
     paddingHorizontal: 17,
     borderWidth: 1,
-    borderColor: 'grey',
     marginTop: 15,
     marginBottom: 20,
     width: 120,
@@ -641,7 +606,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#D1D1D1',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
