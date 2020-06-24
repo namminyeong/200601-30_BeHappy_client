@@ -5,14 +5,17 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Modal
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import Modal from 'react-native-modal';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import DeviceStorage from '../../service/DeviceStorage';
 import { Specialties, States, KindOfCenters } from '../../Data/Preference';
+import CompleteModal from '../../Modal/CompleteModal';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 class MyInfo extends React.Component {
   constructor(props) {
@@ -23,7 +26,8 @@ class MyInfo extends React.Component {
       currentSpecialties: [],
       currentKindOfCenters: [],
       isModify: false,
-      alertModal: false,
+      showCompleteModal: false,
+      showModalText: '',
       userSpecialties: [],
       userKindOfCenters: [],
     };
@@ -40,7 +44,9 @@ class MyInfo extends React.Component {
   }
 
   getUserPreference(token) {
-    fetch('http://13.209.16.103:4000/preference', {
+    let url = ec2 + '/preference';
+
+    fetch(url, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -72,8 +78,9 @@ class MyInfo extends React.Component {
       currentCity,
       currentStates,
     } = this.state;
+    let url = ec2 + '/preference';
 
-    fetch('http://13.209.16.103:4000/preference', {
+    fetch(url, {
       method: 'PATCH',
       credentials: 'include',
       headers: {
@@ -128,11 +135,12 @@ class MyInfo extends React.Component {
 
   showAlertModal() {
     this.setState({
-      alertModal: true,
+      showCompleteModal: true,
+      showModalText: '시/구/군을 확인해주세요'
     });
     {
       setTimeout(() => {
-        this.setState({ alertModal: false });
+        this.setState({ showCompleteModal: false, showModalText: '' });
       }, 1500);
     }
   }
@@ -145,27 +153,15 @@ class MyInfo extends React.Component {
       currentSpecialties,
       currentKindOfCenters,
       userSpecialties,
+      showModalText,
       userKindOfCenters,
-      alertModal,
+      showCompleteModal,
     } = this.state;
 
     return this.state.isModify ? (
       <View style={styles.container}>
-        <Text
-          style={{
-            paddingTop: 28,
-            paddingBottom: 28,
-            color: '#636E72',
-            alignContent: 'center',
-          }}
-        >
-          * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
-          순서대로 빨간색-주황색-노란색으로 표시합니다.
-        </Text>
-        <View
-          style={{ marginTop: '4%', height: 1, backgroundColor: '#B2BEC3' }}
-        />
-        <View style={styles.preference}>
+       
+        <View>
           <View
             style={{
               alignItems: 'center',
@@ -173,7 +169,7 @@ class MyInfo extends React.Component {
               justifyContent: 'space-between',
             }}
           >
-            <Text style={styles.section}>Preference</Text>
+            <Text style={styles.section}>상세 관심사</Text>
             <Entypo
               name='check'
               size={24}
@@ -201,16 +197,29 @@ class MyInfo extends React.Component {
                 });
               }}
             />
-            <Modal isVisible={alertModal} animationIn='pulse'>
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>시/구/군을 확인해주세요</Text>
-                </View>
-              </View>
-            </Modal>
+          <Modal
+            animationType='none'
+            transparent={true}
+            visible={showCompleteModal}
+          >
+            <CompleteModal showModalText={showModalText} />
+          </Modal>
           </View>
-
-          <Text style={styles.preSection}>관심분야</Text>
+          <View
+          style={{ marginTop: 14, height: 1, backgroundColor: '#B2BEC3' }}
+        />
+        <Text
+          style={{
+            paddingTop: 14,
+            paddingBottom: 14,
+            color: '#636E72',
+            alignContent: 'center',
+          }}
+        >
+          * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
+          순서대로 빨간색-주황색-노란색으로 표시합니다.
+        </Text>
+          <Text style={styles.preSection}>분야</Text>
           <View style={styles.attention}>
             {userSpecialties.map((data, index) => (
               <TouchableOpacity
@@ -227,33 +236,55 @@ class MyInfo extends React.Component {
           </View>
 
           <Text style={styles.preSection}>지역</Text>
-          <View>
+          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+            
             <RNPickerSelect
-              placeholder={{ label: '지역 선택', value: currentCity }}
+              style={{                
+                inputAndroid: {   
+                  color: 'black',
+                  fontSize: 17,
+                  marginLeft: '6%',   
+                  paddingRight: 50,
+                  textAlign: 'center',
+                },  
+              }}
+              useNativeAndroidPickerStyle={ false }
+              placeholder={{ label: currentCity, value: currentCity }}
               onValueChange={(value) => this.setState({ currentCity: value })}
-              items={Object.keys(States).map((ele) => {
+              items={Object.keys(States).sort().map((ele) => {
                 return { label: `${ele}`, value: `${ele}` };
               })}
             />
             {currentCity === '' ? null : (
               <RNPickerSelect
-                placeholder={{ label: '시/구/군 선택', value: currentStates }}
+                style={{                
+                  inputAndroid: {
+                    color: 'black',   
+                    fontSize: 17,
+                    marginLeft: '10%',
+                    paddingRight: 50,
+                    textAlign: 'center',
+                  },  
+                }}
+                useNativeAndroidPickerStyle={ false }
+                placeholder={{ label: currentStates, value: currentStates }}
                 onValueChange={(value) =>
                   this.setState({
                     currentStates: value,
                   })
                 }
-                items={States[currentCity].map((ele) => {
-                  return { label: `${ele}`, value: `${ele}` };
+                items={States[currentCity].sort().map((ele) => {
+                  return { label: `${ele}`, value: `${ele}`};
                 })}
               />
             )}
           </View>
 
-          <Text style={styles.preSection}>선호센터</Text>
+          <Text style={styles.preSection}>센터</Text>
           <View style={styles.favor}>
             {userKindOfCenters.map((data, index) => (
               <TouchableOpacity
+                key={index}
                 onPress={() => {
                   this.changeKindOfCenters(index);
                 }}
@@ -298,7 +329,7 @@ class MyInfo extends React.Component {
               backgroundColor: '#B2BEC3',
             }}
           />
-          <View style={styles.preference}>
+          <View style={{ marginTop: '6%'}}>
             <View
               style={{
                 alignItems: 'center',
@@ -306,7 +337,7 @@ class MyInfo extends React.Component {
                 justifyContent: 'space-between',
               }}
             >
-              <Text style={styles.section}>Preference</Text>
+              <Text style={styles.section}>상세 관심사</Text>
               <SimpleLineIcons
                 name='pencil'
                 size={20}
@@ -326,10 +357,10 @@ class MyInfo extends React.Component {
                 }}
               />
             </View>
-            <Text style={styles.preSection}>관심분야</Text>
+            <Text style={styles.preSection}>분야</Text>
             <View style={styles.attention}>
               {currentSpecialties.length === 0 ? (
-                <Text style={{ margin: 6 }}>선택한 관심분야가 없습니다</Text>
+                <Text style={{ margin: 6 }}>선택한 분야가 없습니다</Text>
               ) : (
                 currentSpecialties.map((data, index) => (
                   <Text key={'Specialties_' + index} style={styles.selected}>
@@ -341,7 +372,7 @@ class MyInfo extends React.Component {
 
             <Text style={styles.preSection}>지역</Text>
             <View style={styles.area}>
-              {currentCity === '' || currentCity === '선택해제' ? (
+              {currentCity === '' || currentCity === '*선택해제' ? (
                 <Text style={{ margin: 6 }}>선택한 지역이 없습니다</Text>
               ) : (
                 <View style={{ flexDirection: 'row' }}>
@@ -351,10 +382,10 @@ class MyInfo extends React.Component {
               )}
             </View>
 
-            <Text style={styles.preSection}>선호센터</Text>
+            <Text style={styles.preSection}>센터</Text>
             <View style={styles.favor}>
               {currentKindOfCenters.length === 0 ? (
-                <Text style={{ margin: 6 }}>선택한 선호센터가 없습니다</Text>
+                <Text style={{ margin: 6 }}>선택한 센터가 없습니다</Text>
               ) : (
                 currentKindOfCenters.map((data, index) => (
                   <Text key={'KindOfCenters_' + index} style={styles.selected}>
@@ -385,15 +416,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   nameStyle: {
-    marginTop: '2%',
+    paddingBottom: 4,
     flexDirection: 'row',
   },
   phoneStyle: {
     height: 40,
     flexDirection: 'row',
-  },
-  preference: {
-    marginTop: '6%',
   },
   preSection: {
     marginTop: '4%',
@@ -499,3 +527,4 @@ const styles = StyleSheet.create({
 });
 
 export default MyInfo;
+

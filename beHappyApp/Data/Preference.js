@@ -32,7 +32,7 @@ const Cities = [
 ];
 
 const States = {
-  선택해제: ['선택해제'],
+  '*선택해제': ['*선택해제'],
   서울특별시: [
     '종로구',
     '중구',
@@ -310,3 +310,4 @@ const States = {
 const KindOfCenters = [['심리상담소', false], ['정신과', false]];
 
 export { Specialties, States, KindOfCenters, Cities };
+
