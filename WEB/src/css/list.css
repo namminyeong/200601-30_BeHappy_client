@@ -1,14 +1,14 @@
 .reqContainer {
-  width: 40vw;
+  width: 80vw;
   height: 10vh;
   flex: 1 1 0%;
   flex-direction: row;
   justify-content: center;
   align-self: center;
-  background-color: #62ccad;
   margin: 10px;
   padding: 10px;
   overflow: hidden;
+  border: 1px solid;
 }
 
 .reqText {
@@ -17,33 +17,32 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .btnContainer {
   display: flex;
-  justify-self: right;
-  /* align-self: flex-end; */
-  align-items: flex-start;
+  justify-content: center;
 }
 
 .acceptBtn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 2px solid #333;
-  background: #ccc;
+  width: 70px;
+  height: 40px;
+  border: none;
+  background: #62ccad;
   margin-right: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+  -webkit-appearance: none;
 }
 
 .refusalBtn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 2px solid #333;
-  background: #ccc;
+  width: 70px;
+  height: 40px;
+  border: none;
+  background: #62ccad;
   margin-right: 10px;
   display: flex;
   justify-content: center;
