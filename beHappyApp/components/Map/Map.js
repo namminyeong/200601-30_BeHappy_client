@@ -52,6 +52,8 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
+    this.props.controlShowDetail(false, null);
+
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -81,7 +83,7 @@ class Map extends React.Component {
   checkSpecialtiesForUrl() {
     const { specialties } = this.props;
     let keys = Object.keys(specialties);
-    if (this.countSpecialties() === (keys.length || 0)) {
+    if (this.countSpecialties() === keys.length) {
       return '';
     }
     let allSpecialties = keys.reduce((acc, cur) => {
@@ -126,8 +128,8 @@ class Map extends React.Component {
             this.handleMapModalShows(true);
           } else {
             this.props.controlCenterData(counseling, psychiatric);
-            this.props.controlShowDetail(false, null);
           }
+          this.props.controlShowDetail(false, null);
         }
       });
   }
@@ -248,7 +250,7 @@ class Map extends React.Component {
     centerInfo.specialties.forEach((centerSpecialty) => {
       keys.forEach((specialtyFilter) => {
         if (
-          centerSpecialty.name === specialtyFilter &&
+          centerSpecialty === specialtyFilter &&
           specialties[specialtyFilter]
         ) {
           result = true;
@@ -354,7 +356,7 @@ class Map extends React.Component {
                 }
               })
             ) : (
-              <Fragment />
+              <Fragment key='fragment' />
             )
           )}
         </MapView>
@@ -415,11 +417,11 @@ const styles = StyleSheet.create({
   searchContainer: {
     borderRadius: 5,
     alignSelf: 'center',
-    height: 54,
+    height: '7%',
     flexDirection: 'row',
     backgroundColor: 'white',
     position: 'absolute',
-    top: 25,
+    top: '4%',
     width: '95%',
     shadowColor: '#000',
     shadowOffset: {
@@ -431,19 +433,18 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   logo: {
-    justifyContent: 'center',
+    alignSelf: 'center',
     width: '25%',
-    height: 32,
-    top: 10,
-    left: 5,
+    height: '60%',
+    left: '13%',
     marginLeft: '2%',
     marginRight: '4%',
   },
   searchButton: {
     backgroundColor: '#ebebeb',
     width: '55%',
-    top: 10,
-    height: 34,
+    alignSelf: 'center',
+    height: '70%',
     borderRadius: 20,
     paddingHorizontal: 5,
   },
@@ -453,9 +454,8 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   filter: {
-    top: 15,
-    position: 'absolute',
-    right: 17,
+    alignSelf: 'center',
+    left: '20%',
     transform: [{ rotate: '90deg' }],
   },
   map: {
@@ -467,14 +467,14 @@ const styles = StyleSheet.create({
   },
   searchNowContainer: {
     position: 'absolute',
-    left: 8,
-    top: 85,
-    padding: 5,
+    left: '4%',
+    top: '12%',
     alignSelf: 'flex-start',
   },
   searchNow: {
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    fontWeight: 'bold',
+    paddingHorizontal: 15,
+    paddingVertical: 4,
     borderRadius: 15,
     color: 'black',
     backgroundColor: 'white',

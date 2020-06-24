@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
 import { Button } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
-import { Specialties } from '../../../Data/Preference';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { SpecialtiesArray } from '../../../Data/Preference';
 
 import getEnvVars from '../../../environment';
 import WriteReviewModal from './WriteReviewModal';
@@ -45,6 +45,9 @@ class BookingReview extends React.Component {
       .then((res) => {
         if (res.status === 200) {
           this.handleWriteReviewModal(true);
+          this.props.route.params.changeBookingState(
+            this.props.route.params.index
+          );
         }
       })
       .catch((error) => {
@@ -54,13 +57,11 @@ class BookingReview extends React.Component {
 
   checkSpecialties(centerSpecialties, filterSpecialties) {
     let result = false;
-
     centerSpecialties.forEach((specialty) => {
       if (filterSpecialties === specialty) {
         result = true;
       }
     });
-
     return result;
   }
 
@@ -73,7 +74,6 @@ class BookingReview extends React.Component {
     } else {
       newState.splice(index, 1);
     }
-
     this.setState({
       specialties: newState,
     });
@@ -92,10 +92,13 @@ class BookingReview extends React.Component {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.review}>
-            <Text>진료일자 : {bookingInfo.date}</Text>
             <Text style={styles.centername}>
               {bookingInfo.center.centerName}
             </Text>
+            <Text style={{ marginBottom: 15 }}>
+              진료일자 : {bookingInfo.date}
+            </Text>
+
             <AirbnbRating
               showRating={false}
               size={40}
@@ -109,7 +112,7 @@ class BookingReview extends React.Component {
               }}
             />
             <View style={styles.SpecialtiesContainer}>
-              {Specialties.map((specialty) => {
+              {SpecialtiesArray.map((specialty) => {
                 let color = this.checkSpecialties(specialties, specialty)
                   ? '#62CCAD'
                   : '#D1D1D1';
@@ -162,7 +165,6 @@ class BookingReview extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
     backgroundColor: 'white',
   },
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
   },
   centername: {
     marginTop: 6,
-    marginBottom: 15,
+    marginBottom: 2,
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -194,13 +196,13 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   content: {
+    height: 150,
     borderWidth: 1,
     borderColor: 'grey',
     padding: 10,
     marginTop: 17,
     marginBottom: 10,
     fontSize: 17,
-    lineHeight: 30,
   },
   completeButton: {
     borderRadius: 20,

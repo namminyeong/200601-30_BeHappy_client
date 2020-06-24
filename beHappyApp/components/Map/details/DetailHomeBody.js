@@ -14,8 +14,8 @@ export default function DetailHomeBody(props) {
           />
           <View style={styles.specialtyContainer}>
             {props.route.params.specialties.map((specialty) => (
-              <Text style={styles.specialty} key={specialty.name}>
-                #{specialty.name}
+              <Text style={styles.specialty} key={specialty}>
+                #{specialty}
               </Text>
             ))}
           </View>

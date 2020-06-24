@@ -34,15 +34,27 @@ const BookmarkList = ({
         }}
         style={{ flexDirection: 'row' }}
       >
-        <Text style={styles.text}>{centerName}</Text>
-        <MaterialCommunityIcons name='map-marker-radius' size={20} />
+        <Text
+          style={
+            centerName.length > 15 ? styles.centerNameLong : styles.centerName
+          }
+        >
+          {centerName}
+        </Text>
+        <MaterialCommunityIcons
+          name='map-marker-radius'
+          size={20}
+          style={styles.icon}
+        />
       </TouchableOpacity>
 
       {specialties.length > 0 ? (
-        <View style={styles.specialtiesInfo}>
+        <View
+          style={specialties.length > 6 ? styles.long : styles.specialtiesInfo}
+        >
           {specialties.map((data) => (
-            <Text key={data.name} style={styles.specialty}>
-              #{data.name}
+            <Text key={data} style={styles.specialty}>
+              #{data}
             </Text>
           ))}
         </View>
@@ -95,12 +107,29 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     position: 'absolute',
   },
-  text: {
+  centerName: {
     textDecorationLine: 'underline',
     fontSize: 18,
     fontWeight: 'bold',
   },
+  centerNameLong: {
+    textDecorationLine: 'underline',
+    letterSpacing: -1,
+    fontSize: 17,
+    fontWeight: 'bold',
+  },
+  icon: {
+    marginLeft: 3,
+    alignSelf: 'center',
+  },
   specialtiesInfo: {
+    marginTop: 5,
+    marginBottom: 15,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  long: {
     marginTop: 5,
     marginBottom: 5,
     flexDirection: 'row',
@@ -109,11 +138,11 @@ const styles = StyleSheet.create({
   },
   specialty: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 5,
-    marginRight: 7,
+    marginRight: 6,
     paddingVertical: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 7,
     backgroundColor: '#62CCAD',
     borderRadius: 10,
   },
@@ -124,8 +153,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   noReview: {
-    marginTop: 8,
-    marginBottom: 5,
+    top: '10%',
   },
   showMapBtn: {
     position: 'absolute',

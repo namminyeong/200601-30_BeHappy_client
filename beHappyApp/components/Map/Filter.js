@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableHighlight,
+} from 'react-native';
 import { Button } from 'native-base';
 import Entypo from 'react-native-vector-icons/Entypo';
 
@@ -10,11 +16,13 @@ class Filter extends React.Component {
     this.state = {
       specialties: this.props.specialties,
       centerTags: this.props.centerTags,
+      modalShown: false,
     };
 
     this.changeSpecialtiesFilter = this.changeSpecialtiesFilter.bind(this);
     this.changeCenterFilter = this.changeCenterFilter.bind(this);
     this.completedModify = this.completedModify.bind(this);
+    this.handleModalShows = this.handleModalShows.bind(this);
   }
 
   changeSpecialtiesFilter(specialty) {
@@ -34,17 +42,31 @@ class Filter extends React.Component {
   }
 
   completedModify() {
-    this.props.controlSpecialties(this.state.specialties);
-    this.props.controlCenterTags(this.state.centerTags);
-    this.props.controlShowDetail(false, null);
-    this.props.navigation.navigate('MapContainer');
+    const { specialties, centerTags } = this.state;
+
+    if (
+      Object.values(specialties).indexOf(true) === -1 ||
+      Object.values(centerTags).indexOf(true) === -1
+    ) {
+      this.handleModalShows(true);
+    } else {
+      this.props.controlSpecialties(this.state.specialties);
+      this.props.controlCenterTags(this.state.centerTags);
+      this.props.controlShowDetail(false, null);
+      this.props.navigation.navigate('MapContainer');
+    }
+  }
+
+  handleModalShows(status) {
+    this.setState({
+      modalShown: status,
+    });
   }
 
   render() {
     const { specialties, centerTags } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>필터 조건을 1개 이상 선택해주세요 :)</Text>
         <Text style={styles.title}>관심분야</Text>
 
         <View style={styles.specialties}>
@@ -78,7 +100,7 @@ class Filter extends React.Component {
                   centerTags[center] ? styles.selected : styles.notSelected
                 }
               >
-                {center === 'psychiatric' ? '정신과' : '심리센터'}
+                {center === 'psychiatric' ? '정신과' : '심리상담소'}
               </Text>
             </Button>
           ))}
@@ -95,6 +117,29 @@ class Filter extends React.Component {
             <Text style={styles.completeText}>완료</Text>
           </Button>
         </View>
+
+        <Modal
+          animationType='none'
+          transparent={true}
+          visible={this.state.modalShown}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                필터를 각각 1개 이상씩 선택해주세요
+              </Text>
+
+              <TouchableHighlight
+                style={styles.closeButton}
+                onPress={() => {
+                  this.handleModalShows(false);
+                }}
+              >
+                <Text style={styles.textStyle}>닫기</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -162,6 +207,45 @@ const styles = StyleSheet.create({
   },
   completeText: {
     fontSize: 18,
+  },
+  centeredView: {
+    flex: 1,
+    top: '33%',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingVertical: 35,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    backgroundColor: '#62CCAD',
+    borderRadius: 2,
+    paddingHorizontal: 13,
+    paddingVertical: 5,
+    elevation: 2,
+  },
+  modalText: {
+    fontSize: 17,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

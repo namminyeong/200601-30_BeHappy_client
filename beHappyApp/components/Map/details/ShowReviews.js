@@ -1,22 +1,21 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import ShowStarRate from './ShowStarRate';
-import { FlatList } from 'react-native-gesture-handler';
 
 export default class ShowReviews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 1,
+      count: 10,
     };
   }
 
-  handleLoadMore = () => {
+  handleLoadMore() {
     this.setState({
-      page: this.state.page + 1,
+      count: this.state.count + 10,
     });
-  };
+  }
 
   render() {
     const { isRateFilter, reviewsData } = this.props;
@@ -28,34 +27,38 @@ export default class ShowReviews extends React.Component {
           });
 
     return (
-      <View
-        style={{
-          marginLeft: '4%',
-          marginRight: '4%',
-        }}
-      >
-        <FlatList
-          keyExtractor={(item, index) => item.id}
-          data={renderableData}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.review}>
-                <ShowStarRate data={item} />
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingBottom: 5,
-                  }}
-                >
-                  <Text>{item.anonymousName}</Text>
-                  <Text style={{ color: '#636E72' }}>{item.date} 방문</Text>
-                </View>
-                <Text>{item.content}</Text>
-              </View>
-            );
-          }}
-        />
+      <View style={{ marginLeft: '4%', marginRight: '4%' }}>
+        {renderableData.slice(0, this.state.count).map((review, index) => (
+          <View style={styles.review} key={index}>
+            <ShowStarRate data={review} />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text style={{ fontWeight: 'bold' }}>{review.anonymousName}</Text>
+              <Text style={{ color: '#636E72' }}>
+                {review.date.slice(0, 4)}.{review.date.slice(5, 7)} 방문
+              </Text>
+            </View>
+            {review.content.length > 0 ?
+              <Text style={styles.content}>{review.content}</Text>
+            :  (
+                  <Text style={{ color: 'lightgrey' }}>no comment</Text>
+                )}
+          </View>
+        ))}
+        {renderableData.length <= this.state.count ? (
+          <></>
+        ) : (
+          <TouchableOpacity
+            style={styles.loadMore}
+            onPress={this.handleLoadMore}
+          >
+            <Text style={styles.loadMoreText}>더보기</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -68,5 +71,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#B2BEC3',
     borderBottomWidth: 2,
   },
-  rateStar: { flexDirection: 'row', alignItems: 'center', paddingBottom: 5 },
+  rateStar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 5,
+  },
+  loadMoreText: {
+    fontSize: 17,
+    color: 'lightgrey',
+  },
 });

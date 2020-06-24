@@ -8,8 +8,6 @@ import {
 } from 'react-native';
 
 export default function WriteReviewModal(props) {
-  console.log('WriteReviewModal 진입');
-  console.log('props: ', props);
   return (
     <Modal
       animationType='none'

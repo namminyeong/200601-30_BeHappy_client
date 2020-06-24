@@ -3,8 +3,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import DetailHomeBody from './DetailHomeBody';
-import DetailReviews from './DetailReviews';
-import DetailBooking from './DetailBooking';
+import DetailReviewsContainer from '../../../containers/DetailReviewsContainer';
+import DetailBookingContainer from '../../../containers/DetailBookingContainer';
+
 import * as Linking from 'expo-linking';
 import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
 
@@ -47,7 +48,15 @@ class DetailsHome extends React.Component {
     return (
       <Fragment>
         <View style={styles.container}>
-          <Text style={styles.centerName}>{theCenterInfo.centerName}</Text>
+          <Text
+            style={
+              theCenterInfo.centerName.length > 15
+                ? styles.centerNameLong
+                : styles.centerName
+            }
+          >
+            {theCenterInfo.centerName}
+          </Text>
 
           {theCenterInfo.rateAvg === 0 ? (
             <View style={styles.noReviewContainer}>
@@ -118,13 +127,12 @@ class DetailsHome extends React.Component {
           />
           <Tab.Screen
             name='리뷰'
-            component={DetailReviews}
+            component={DetailReviewsContainer}
             initialParams={this.props.route.params.theCenterInfo}
-            options={{}}
           />
           <Tab.Screen
             name='예약'
-            component={DetailBooking}
+            component={DetailBookingContainer}
             initialParams={this.props.route.params.theCenterInfo}
           />
         </Tab.Navigator>
@@ -145,12 +153,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
+  centerNameLong: {
+    letterSpacing: -1,
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
   noReviewContainer: {
     marginTop: '4%',
     fontSize: 17,
   },
   reviewContainer: {
-    width: 220,
+    width: 260,
     marginTop: '2%',
     fontSize: 17,
     flexDirection: 'row',
@@ -158,7 +171,7 @@ const styles = StyleSheet.create({
   rate: {
     fontWeight: 'bold',
     fontSize: 20,
-    width: 30,
+    width: 40,
     textAlign: 'right',
   },
   text: {

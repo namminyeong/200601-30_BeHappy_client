@@ -2,32 +2,23 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import MyBooking from '../components/Mypage/MyBookings';
-import {
-  controlCenterData,
-  controlBookmarkClicked,
-  controlCoordinate,
-} from '../modules(reducers)/currentOnMap';
+import DetailBooking from '../components/Map/details/DetailBooking';
 import { controlmyBookings } from '../modules(reducers)/userInfo';
 
-const MyBookingContainer = ({
+const DetailBookingContainer = ({
   token,
   navigation,
-  controlCenterData,
-  controlBookmarkClicked,
-  controlCoordinate,
   controlmyBookings,
   myBookings,
+  route,
 }) => {
   return (
-    <MyBooking
+    <DetailBooking
       token={token}
       navigation={navigation}
-      controlCenterData={controlCenterData}
-      controlBookmarkClicked={controlBookmarkClicked}
-      controlCoordinate={controlCoordinate}
       controlmyBookings={controlmyBookings}
       myBookings={myBookings}
+      CenterInfo={route.params}
     />
   );
 };
@@ -35,14 +26,12 @@ const MyBookingContainer = ({
 const mapStateToProps = (state) => ({
   token: state.handleLogin.token,
   myBookings: state.handleUserInfo.myBookings,
+  CenterInfo: state.handleCenterInfo.CenterInfo,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
-      controlCenterData,
-      controlBookmarkClicked,
-      controlCoordinate,
       controlmyBookings,
     },
     dispatch
@@ -52,4 +41,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MyBookingContainer);
+)(DetailBookingContainer);

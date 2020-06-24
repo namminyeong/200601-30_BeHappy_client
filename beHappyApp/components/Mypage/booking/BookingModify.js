@@ -6,9 +6,9 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import Modal from 'react-native-modal';
 import Moment from 'moment';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,10 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import DeviceStorage from '../../../service/DeviceStorage';
-import ModifyBookingModal from './ModifyBookingModal';
 import CompleteModal from '../../../Modal/CompleteModal';
-
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 const checkNumber = /^[0-9]{10,11}$/;
@@ -29,20 +26,17 @@ export default class BookingModify extends React.Component {
     super(props);
 
     this.state = {
-      token: this.props.route.params.token,
       centerName: this.props.route.params.booking.center.centerName,
       centerId: this.props.route.params.booking.center.id,
       bookingId: this.props.route.params.booking.id,
       date: this.props.route.params.booking.date,
       time: this.props.route.params.booking.time.slice(0, 5),
       name: this.props.route.params.booking.name,
-      phone: this.props.route.params.booking.phone
-        .split('-')
-        .reduce((a, b) => a + b, ''),
+      phone: this.props.route.params.booking.phone.split('-').join(''),
       content: this.props.route.params.booking.content,
       isSelectDate: true,
       isSelectTime: true,
-      isUserInfo: true,
+      isChanged: false,
       showCompleteModal: false,
       showModalText: '',
       bookingTime: [
@@ -71,7 +65,7 @@ export default class BookingModify extends React.Component {
   }
 
   getCenterBooking() {
-    const { token, centerId, date, centerBookingData } = this.state;
+    const { centerId, date, centerBookingData } = this.state;
 
     this.resetTime();
 
@@ -80,7 +74,7 @@ export default class BookingModify extends React.Component {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.route.params.token}`,
       },
     })
       .then((res) => {
@@ -105,16 +99,8 @@ export default class BookingModify extends React.Component {
   }
 
   updateBookingInfo() {
-    const {
-      centerName,
-      token,
-      bookingId,
-      date,
-      name,
-      phone,
-      content,
-    } = this.state;
-    const { index, modifyBookingState } = this.props.route.params;
+    const { centerName, bookingId, date, name, phone, content } = this.state;
+    const { index, modifyBookingState, token } = this.props.route.params;
 
     let time = this.state.time[0];
 
@@ -140,6 +126,11 @@ export default class BookingModify extends React.Component {
             name,
             phone,
             content,
+          });
+          this.props.navigation.navigate('MyBookingContainer');
+          this.setState({
+            showCompleteModal: true,
+            showModalText: '수정이 완료되었습니다',
           });
         }
       })
@@ -189,6 +180,7 @@ export default class BookingModify extends React.Component {
     this.setState({
       bookingTime: newState,
     });
+    this.checkUserInfo();
   }
 
   backTime(time) {
@@ -203,10 +195,14 @@ export default class BookingModify extends React.Component {
 
     name === '' || phone === '' || content === ''
       ? this.setState({
-          isUserInfo: false,
+          isChanged: false,
+        })
+      : checkNumber.test(phone)
+      ? this.setState({
+          isChanged: true,
         })
       : this.setState({
-          isUserInfo: true,
+          isChanged: false,
         });
   }
 
@@ -226,7 +222,7 @@ export default class BookingModify extends React.Component {
       phone,
       content,
       bookingTime,
-      isUserInfo,
+      isChanged,
       showCompleteModal,
       showModalText,
     } = this.state;
@@ -243,7 +239,7 @@ export default class BookingModify extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ fontWeight: 'bold' }}>
+                  <Text style={styles.text}>
                     날{'    '}짜{'    '}
                   </Text>
                   <Text>{date}</Text>
@@ -267,10 +263,7 @@ export default class BookingModify extends React.Component {
                   this.setState({
                     date: selectDate.dateString,
                   });
-
-                  DeviceStorage.loadJWT().then(() => {
-                    this.getCenterBooking();
-                  });
+                  this.getCenterBooking(this.props.route.params.token);
                 }}
               />
               <View
@@ -321,7 +314,7 @@ export default class BookingModify extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={{ fontWeight: 'bold' }}>
+                  <Text style={styles.text}>
                     시{'    '}간{'    '}
                   </Text>
                   <Text>{time}</Text>
@@ -334,24 +327,24 @@ export default class BookingModify extends React.Component {
               </TouchableOpacity>
               <View style={styles.userinfo}>
                 <View style={styles.textArea}>
-                  <Text style={{ fontWeight: 'bold' }}>이{'    '}름</Text>
+                  <Text style={styles.text}>이{'    '}름</Text>
                   <TextInput
                     style={styles.textBox}
                     value={name}
                     onChangeText={(name) => {
-                      this.setState({ name: name });
+                      this.setState({ name });
                       this.checkUserInfo();
                     }}
                   />
                 </View>
                 <View style={styles.textArea}>
-                  <Text style={{ fontWeight: 'bold' }}>연락처</Text>
+                  <Text style={styles.text}>연락처</Text>
                   <TextInput
                     style={styles.textBox}
                     value={phone}
                     placeholder={` ' - '를 제외한 숫자를 입력해주세요.`}
                     onChangeText={(phone) => {
-                      this.setState({ phone: phone });
+                      this.setState({ phone });
                       this.checkUserInfo();
                     }}
                   />
@@ -378,7 +371,7 @@ export default class BookingModify extends React.Component {
                     value={content}
                     multiline={true}
                     onChangeText={(content) => {
-                      this.setState({ content: content });
+                      this.setState({ content });
                       this.checkUserInfo();
                     }}
                   />
@@ -386,24 +379,14 @@ export default class BookingModify extends React.Component {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity
-                  disabled={!isUserInfo}
+                  disabled={!isChanged}
                   onPress={() => {
-                    this.props.navigation.navigate('MyBookingContainer');
-                    this.setState({
-                      showCompleteModal: true,
-                      showModalText: '수정이 완료되었습니다',
-                      phone:
-                        phone.slice(0, 3) +
-                        '-' +
-                        phone.slice(3, 7) +
-                        '-' +
-                        phone.slice(7),
-                    });
+                    this.updateBookingInfo(this.props.route.params.token);
                   }}
                 >
                   <View
                     style={
-                      !isUserInfo
+                      !isChanged
                         ? styles.notCompleteButton
                         : styles.completeButton
                     }
@@ -412,16 +395,16 @@ export default class BookingModify extends React.Component {
                       name='check'
                       size={24}
                       style={{
-                        color: !isUserInfo ? '#FFFFFF' : '#000000',
+                        color: !isChanged ? 'lightgrey' : 'black',
                       }}
                     />
                     <Text
                       style={{
-                        color: !isUserInfo ? '#FFFFFF' : '#000000',
+                        color: !isChanged ? 'lightgrey' : 'black',
                         fontSize: 16,
                       }}
                     >
-                      예약 수정
+                      변경 완료
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -436,11 +419,6 @@ export default class BookingModify extends React.Component {
           >
             <CompleteModal showModalText={showModalText} />
           </Modal>
-          {/* <ModifyBookingModal
-            navigation={this.props.navigation}
-            modifyBookingModal={this.state.modifyBookingModal}
-            handleModifyBookingModal={this.handleModifyBookingModal}
-          /> */}
         </ScrollView>
       </View>
     );
@@ -449,15 +427,16 @@ export default class BookingModify extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   time: {
     marginTop: '2%',
-    marginLeft: '2%',
-    marginRight: '2%',
+    marginHorizontal: '2%',
     paddingBottom: 10,
     flexWrap: 'wrap',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   selectBox: {
     backgroundColor: 'white',
@@ -479,26 +458,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   blocked: {
-    marginTop: 9,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 9,
+    marginHorizontal: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 13,
     backgroundColor: '#62CCAD',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 18,
+    borderRadius: 10,
   },
   notblocked: {
-    marginTop: 9,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 9,
+    marginHorizontal: 10,
     padding: 3,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 13,
     backgroundColor: '#D1D1D1',
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 18,
+    borderRadius: 10,
   },
   userinfo: {
     backgroundColor: 'white',
@@ -528,7 +505,11 @@ const styles = StyleSheet.create({
     width: '80%',
     borderBottomWidth: 1,
   },
+  text: {
+    fontWeight: 'bold',
+  },
   textBoxContent: {
+    padding: 10,
     width: '98%',
     height: 200,
     padding: 4,
@@ -539,9 +520,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 17,
     borderWidth: 1,
-    borderColor: 'grey',
-    marginTop: 15,
-    marginBottom: 20,
+    marginVertical: 25,
     width: 120,
     height: 40,
     shadowColor: '#000',
@@ -552,16 +531,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   notCompleteButton: {
+    borderColor: 'lightgrey',
     borderRadius: 20,
     paddingHorizontal: 17,
     borderWidth: 1,
-    borderColor: 'grey',
     marginTop: 15,
     marginBottom: 20,
     width: 120,
@@ -574,7 +553,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#D1D1D1',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

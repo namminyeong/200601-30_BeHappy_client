@@ -57,8 +57,9 @@ export default function MyBookmarks({
     <View style={styles.container}>
       {bookmark.length > 0 ? (
         <ScrollView>
-          {bookmark.map((eachBookmark) => (
+          {bookmark.map((eachBookmark, index) => (
             <BookMarkList
+              key={index}
               bookmark={eachBookmark}
               deleteBookmark={deleteBookmark}
               navigation={navigation}
