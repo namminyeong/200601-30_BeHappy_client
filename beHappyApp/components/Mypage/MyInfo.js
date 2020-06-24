@@ -5,13 +5,12 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Modal
+  Modal,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-import DeviceStorage from '../../service/DeviceStorage';
 import { Specialties, States, KindOfCenters } from '../../Data/Preference';
 import CompleteModal from '../../Modal/CompleteModal';
 import getEnvVars from '../../environment';
@@ -38,9 +37,7 @@ class MyInfo extends React.Component {
   }
 
   componentDidMount() {
-    DeviceStorage.loadJWT().then((value) => {
-      this.getUserPreference(value);
-    });
+    this.getUserPreference(this.props.route.params.token);
   }
 
   getUserPreference(token) {
@@ -136,7 +133,7 @@ class MyInfo extends React.Component {
   showAlertModal() {
     this.setState({
       showCompleteModal: true,
-      showModalText: '시/구/군을 확인해주세요'
+      showModalText: '시/구/군을 확인해주세요',
     });
     {
       setTimeout(() => {
@@ -160,7 +157,6 @@ class MyInfo extends React.Component {
 
     return this.state.isModify ? (
       <View style={styles.container}>
-       
         <View>
           <View
             style={{
@@ -187,38 +183,36 @@ class MyInfo extends React.Component {
                         .map((data) => (data[1] ? data[0] : null))
                         .filter((el) => el !== null),
                     });
-                DeviceStorage.loadJWT().then((value) => {
-                  this.modifyPreference(
-                    currentSpecialties,
-                    currentKindOfCenters,
-                    currentCity,
-                    currentStates
-                  );
-                });
+                this.modifyPreference(
+                  currentSpecialties,
+                  currentKindOfCenters,
+                  currentCity,
+                  currentStates
+                );
               }}
             />
-          <Modal
-            animationType='none'
-            transparent={true}
-            visible={showCompleteModal}
-          >
-            <CompleteModal showModalText={showModalText} />
-          </Modal>
+            <Modal
+              animationType='none'
+              transparent={true}
+              visible={showCompleteModal}
+            >
+              <CompleteModal showModalText={showModalText} />
+            </Modal>
           </View>
           <View
-          style={{ marginTop: 14, height: 1, backgroundColor: '#B2BEC3' }}
-        />
-        <Text
-          style={{
-            paddingTop: 14,
-            paddingBottom: 14,
-            color: '#636E72',
-            alignContent: 'center',
-          }}
-        >
-          * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
-          순서대로 빨간색-주황색-노란색으로 표시합니다.
-        </Text>
+            style={{ marginTop: 14, height: 1, backgroundColor: '#B2BEC3' }}
+          />
+          <Text
+            style={{
+              paddingTop: 14,
+              paddingBottom: 14,
+              color: '#636E72',
+              alignContent: 'center',
+            }}
+          >
+            * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
+            순서대로 빨간색-주황색-노란색으로 표시합니다.
+          </Text>
           <Text style={styles.preSection}>분야</Text>
           <View style={styles.attention}>
             {userSpecialties.map((data, index) => (
@@ -237,36 +231,37 @@ class MyInfo extends React.Component {
 
           <Text style={styles.preSection}>지역</Text>
           <View style={{ flexDirection: 'row', marginTop: 10 }}>
-            
             <RNPickerSelect
-              style={{                
-                inputAndroid: {   
+              style={{
+                inputAndroid: {
                   color: 'black',
                   fontSize: 17,
-                  marginLeft: '6%',   
+                  marginLeft: '6%',
                   paddingRight: 50,
                   textAlign: 'center',
-                },  
+                },
               }}
-              useNativeAndroidPickerStyle={ false }
+              useNativeAndroidPickerStyle={false}
               placeholder={{ label: currentCity, value: currentCity }}
               onValueChange={(value) => this.setState({ currentCity: value })}
-              items={Object.keys(States).sort().map((ele) => {
-                return { label: `${ele}`, value: `${ele}` };
-              })}
+              items={Object.keys(States)
+                .sort()
+                .map((ele) => {
+                  return { label: `${ele}`, value: `${ele}` };
+                })}
             />
             {currentCity === '' ? null : (
               <RNPickerSelect
-                style={{                
+                style={{
                   inputAndroid: {
-                    color: 'black',   
+                    color: 'black',
                     fontSize: 17,
                     marginLeft: '10%',
                     paddingRight: 50,
                     textAlign: 'center',
-                  },  
+                  },
                 }}
-                useNativeAndroidPickerStyle={ false }
+                useNativeAndroidPickerStyle={false}
                 placeholder={{ label: currentStates, value: currentStates }}
                 onValueChange={(value) =>
                   this.setState({
@@ -274,7 +269,7 @@ class MyInfo extends React.Component {
                   })
                 }
                 items={States[currentCity].sort().map((ele) => {
-                  return { label: `${ele}`, value: `${ele}`};
+                  return { label: `${ele}`, value: `${ele}` };
                 })}
               />
             )}
@@ -329,7 +324,7 @@ class MyInfo extends React.Component {
               backgroundColor: '#B2BEC3',
             }}
           />
-          <View style={{ marginTop: '6%'}}>
+          <View style={{ marginTop: '6%' }}>
             <View
               style={{
                 alignItems: 'center',
@@ -527,4 +522,3 @@ const styles = StyleSheet.create({
 });
 
 export default MyInfo;
-

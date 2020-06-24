@@ -8,12 +8,11 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import logo from '../../assets/behappy.png';
 
-import deviceStorage from '../../service/DeviceStorage';
 import CompleteModal from '../../Modal/CompleteModal';
 import AlarmModal from '../../Modal/CheckModal';
 import getEnvVars from '../../environment';
@@ -33,16 +32,19 @@ class Login extends React.Component {
       showAlarmModal: false,
       showCompleteModal: false,
       showModalText: '',
+      isLoading: false,
     };
 
     this.loginUser = this.loginUser.bind(this);
     this.showPass = this.showPass.bind(this);
     this.handleShowAlarmModal = this.handleShowAlarmModal.bind(this);
+    this.getCenterInfo = this.getCenterInfo.bind(this);
+    this.changeLoading = this.changeLoading.bind(this);
+    this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
   }
 
   loginUser() {
     const { username, password } = this.state;
-
     fetch(ec2 + '/user/login', {
       method: 'POST',
       credentials: 'include',
@@ -60,16 +62,12 @@ class Login extends React.Component {
       .then((payload) => {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
+            this.changeLoading(true);
             if (payload.adminState === 0 || payload.adminState === -1) {
-              this.props.controlLogin(0, payload.token);
+              this.getUserBasicInfo(payload.token);
             } else if (payload.adminState === 1) {
-              this.props.controlLogin(1, payload.token);
+              this.getCenterInfo(payload.token);
             }
-            this.props.controlBasicUserInfo(
-              payload.userInfo.name,
-              payload.userInfo.phone
-            );
-            deviceStorage.saveKey('id_token', payload.token);
           } else if (payload.errorCode === 1) {
             this.setState({
               showAlarmModal: true,
@@ -85,6 +83,55 @@ class Login extends React.Component {
       })
       .catch((error) => {
         console.log(error);
+      });
+  }
+
+  getCenterInfo(token) {
+    fetch(ec2 + '/user/admin', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        if (typeof data === 'object') {
+          this.props.controlCenterInfo(data);
+          this.props.controlLogin(1, token);
+          this.changeLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  getUserBasicInfo(token) {
+    fetch(ec2 + '/user', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        this.props.controlBasicUserInfo(data.nickname, data.phone);
+        this.props.controlLogin(0, token);
+        this.changeLoading(false);
       });
   }
 
@@ -108,6 +155,12 @@ class Login extends React.Component {
     });
   }
 
+  changeLoading(status) {
+    this.setState({
+      isLoading: status,
+    });
+  }
+
   render() {
     const {
       username,
@@ -120,79 +173,91 @@ class Login extends React.Component {
     } = this.state;
 
     return (
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image source={logo} style={styles.logo} />
-        </View>
-        <View style={styles.inputContainer}>
-          <Icon
-            style={styles.inputIcon}
-            name={'ios-person'}
-            size={28}
-            color={'rgba(0,0,0,0.7)'}
-          />
-          <TextInput
-            style={styles.inputBox}
-            placeholder={'username'}
-            placeholderTextColor={'gray'}
-            underlineColorAndroid='transparent'
-            value={username}
-            onChangeText={(username) => this.setState({ username })}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Icon
-            style={styles.inputIcon}
-            name={'ios-lock'}
-            size={28}
-            color={'rgba(0,0,0,0.7)'}
-          />
-          <TextInput
-            style={styles.inputBox}
-            placeholder={'password'}
-            secureTextEntry={showPass}
-            placeholderTextColor={'gray'}
-            underlineColorAndroid='transparent'
-            value={password}
-            onChangeText={(password) => this.setState({ password })}
-          />
-          <TouchableOpacity style={styles.btnEye} onPress={this.showPass}>
-            <Icon
-              name={press === true ? 'ios-eye' : 'ios-eye-off'}
-              size={26}
-              color={'rgba(0,0,0,0.7)'}
-            />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.btnLogin}>
-          <Text style={styles.text} onPress={this.loginUser}>
-            Login
-          </Text>
-        </TouchableOpacity>
-        <View style={styles.signEntry}>
-          <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('Signup')}
-        >
-          <Text style={styles.signUpBtn}>회원가입</Text>
-        </TouchableOpacity>
+      <>
+        {this.state.isLoading ? (
+          <View style={styles.container}>
+            <ActivityIndicator size='large' color='#0000ff' />
+          </View>
+        ) : (
+          <View style={styles.container}>
+            <View style={styles.logoContainer}>
+              <Image source={logo} style={styles.logo} />
+            </View>
+            <View style={styles.inputContainer}>
+              <Icon
+                style={styles.inputIcon}
+                name={'ios-person'}
+                size={28}
+                color={'rgba(0,0,0,0.7)'}
+              />
+              <TextInput
+                style={styles.inputBox}
+                placeholder={'username'}
+                placeholderTextColor={'gray'}
+                underlineColorAndroid='transparent'
+                value={username}
+                onChangeText={(username) => this.setState({ username })}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Icon
+                style={styles.inputIcon}
+                name={'ios-lock'}
+                size={28}
+                color={'rgba(0,0,0,0.7)'}
+              />
+              <TextInput
+                style={styles.inputBox}
+                placeholder={'password'}
+                secureTextEntry={showPass}
+                placeholderTextColor={'gray'}
+                underlineColorAndroid='transparent'
+                value={password}
+                onChangeText={(password) => this.setState({ password })}
+              />
+              <TouchableOpacity style={styles.btnEye} onPress={this.showPass}>
+                <Icon
+                  name={press === true ? 'ios-eye' : 'ios-eye-off'}
+                  size={26}
+                  color={'rgba(0,0,0,0.7)'}
+                />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.btnLogin}>
+              <Text style={styles.text} onPress={this.loginUser}>
+                Login
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.signEntry}>
+              <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Signup')}
+            >
+              <Text style={styles.signUpBtn}>회원가입</Text>
+            </TouchableOpacity>
 
-        <Modal
-          animationType='none'
-          transparent={true}
-          visible={showCompleteModal}
-        >
-          <CompleteModal showModalText={showModalText} />
-        </Modal>
+            <Modal
+              animationType='none'
+              transparent={true}
+              visible={showCompleteModal}
+            >
+              <CompleteModal showModalText={showModalText} />
+            </Modal>
 
-        <Modal animationType='none' transparent={true} visible={showAlarmModal}>
-          <AlarmModal
-            showModalText={showModalText}
-            handleShowAlarmModal={this.handleShowAlarmModal}
-          />
-        </Modal>
-      </View>
+            <Modal
+              animationType='none'
+              transparent={true}
+              visible={showAlarmModal}
+            >
+              <AlarmModal
+                showModalText={showModalText}
+                handleShowAlarmModal={this.handleShowAlarmModal}
+              />
+            </Modal>
+          </View>
+        )}
+      </>
     );
   }
 }

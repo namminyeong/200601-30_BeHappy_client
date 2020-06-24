@@ -4,11 +4,13 @@ import { bindActionCreators } from 'redux';
 
 import Home from '../components/Home';
 import { controlLogin } from '../modules(reducers)/auth';
+import { controlBasicUserInfo } from '../modules(reducers)/userInfo';
 import { controlCenterInfo } from '../modules(reducers)/centerInfo';
 
 const HomeContainer = ({
   authState,
   controlLogin,
+  controlBasicUserInfo,
   controlCenterInfo,
   token,
 }) => {
@@ -16,6 +18,7 @@ const HomeContainer = ({
     <Home
       authState={authState}
       controlLogin={controlLogin}
+      controlBasicUserInfo={controlBasicUserInfo}
       controlCenterInfo={controlCenterInfo}
       token={token}
     />
@@ -32,6 +35,7 @@ const mapDispatchToProps = (dispatch) => {
     {
       controlLogin,
       controlCenterInfo,
+      controlBasicUserInfo,
     },
     dispatch
   );

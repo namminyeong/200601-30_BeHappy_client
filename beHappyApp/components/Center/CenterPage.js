@@ -9,8 +9,8 @@ import {
 import { Calendar } from 'react-native-calendars';
 import Moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-import DeviceStorage from '../../service/DeviceStorage';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 export default class CenterPage extends React.Component {
   constructor(props) {
@@ -24,31 +24,19 @@ export default class CenterPage extends React.Component {
   }
 
   componentDidMount() {
-    DeviceStorage.loadJWT().then((value) => {
-      this.getCenterBooking(value);
-    });
-  }
-
-  componentDidUpdate() {
-    DeviceStorage.loadJWT().then((value) => {
-      this.getCenterBooking(value);
-    });
+    this.getCenterBooking(this.props.token);
   }
 
   getCenterBooking(token) {
     const { currentDate, centerId } = this.state;
-
-    fetch(
-      `http://13.209.16.103:4000/booking/center?centerId=${centerId}&date=${currentDate}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    fetch(ec2 + `/booking/center?centerId=${centerId}&date=${currentDate}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
@@ -83,9 +71,7 @@ export default class CenterPage extends React.Component {
               this.setState({
                 currentDate: selectDate.dateString,
               });
-              DeviceStorage.loadJWT().then((value) => {
-                this.getCenterBooking(value);
-              });
+              this.getCenterBooking(this.props.token);
             }}
           />
 
@@ -119,6 +105,7 @@ export default class CenterPage extends React.Component {
                   onPress={() => {
                     this.props.navigation.navigate('BookingDetail', {
                       bookingData: data,
+                      token: this.props.token,
                     });
                   }}
                 >

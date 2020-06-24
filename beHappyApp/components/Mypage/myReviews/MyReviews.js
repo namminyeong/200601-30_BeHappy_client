@@ -45,7 +45,7 @@ class MyReviews extends React.Component {
 
   componentDidMount() {
     this.handleLoading(true);
-    fetch('http://13.209.16.103:4000/review', {
+    fetch(ec2 + '/review', {
       method: 'GET',
       credentials: 'include',
       headers: {

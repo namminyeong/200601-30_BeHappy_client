@@ -19,9 +19,9 @@ export default class CenterReviews extends React.Component {
     };
   }
 
-  handleRateFilter = (value) => {
+  handleRateFilter(value) {
     this.setState({ isRateFilter: value });
-  };
+  }
 
   render() {
     const { isRateFilter } = this.state;

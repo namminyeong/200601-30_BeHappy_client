@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 
 export default function AlarmModal(props) {
   const { showModalText, handleShowAlarmModal } = props;
-  console.log(props);
   return (
     <View style={styles.centeredView}>
       <View style={styles.modalView}>

@@ -42,7 +42,11 @@ export default class ShowReviews extends React.Component {
                 {review.date.slice(0, 4)}.{review.date.slice(5, 7)} 방문
               </Text>
             </View>
-            <Text style={styles.content}>{review.content}</Text>
+            {review.content.length > 0 ?
+              <Text style={styles.content}>{review.content}</Text>
+            :  (
+                  <Text style={{ color: 'lightgrey' }}>no comment</Text>
+                )}
           </View>
         ))}
         {renderableData.length <= this.state.count ? (

@@ -14,8 +14,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import DeviceStorage from '../../../service/DeviceStorage';
 import ModifyBookingModal from './ModifyBookingModal';
 
 import getEnvVars from '../../../environment';
@@ -27,7 +25,6 @@ export default class BookingModify extends React.Component {
     super(props);
 
     this.state = {
-      token: this.props.route.params.token,
       centerName: this.props.route.params.booking.center.centerName,
       centerId: this.props.route.params.booking.center.id,
       bookingId: this.props.route.params.booking.id,
@@ -68,7 +65,7 @@ export default class BookingModify extends React.Component {
   }
 
   getCenterBooking() {
-    const { token, centerId, date, centerBookingData } = this.state;
+    const { centerId, date, centerBookingData } = this.state;
 
     this.resetTime();
 
@@ -77,7 +74,7 @@ export default class BookingModify extends React.Component {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.route.params.token}`,
       },
     })
       .then((res) => {
@@ -102,16 +99,8 @@ export default class BookingModify extends React.Component {
   }
 
   updateBookingInfo() {
-    const {
-      centerName,
-      token,
-      bookingId,
-      date,
-      name,
-      phone,
-      content,
-    } = this.state;
-    const { index, modifyBookingState } = this.props.route.params;
+    const { centerName, bookingId, date, name, phone, content } = this.state;
+    const { index, modifyBookingState, token } = this.props.route.params;
 
     let time = this.state.time[0];
 
@@ -246,9 +235,7 @@ export default class BookingModify extends React.Component {
                         date: selectDate.dateString,
                       });
 
-                      DeviceStorage.loadJWT().then(() => {
-                        this.getCenterBooking();
-                      });
+                      this.getCenterBooking(this.props.route.params.token);
                     }}
                   />
                   <View
@@ -456,9 +443,7 @@ export default class BookingModify extends React.Component {
                 disabled={!isAgree}
                 style={{ alignItems: 'center' }}
                 onPress={() => {
-                  DeviceStorage.loadJWT().then(() => {
-                    this.updateBookingInfo();
-                  });
+                  this.updateBookingInfo(this.props.route.params.token);
                 }}
               >
                 <View style={styles.completeButton}>

@@ -13,33 +13,27 @@ const { ec2 } = getEnvVars();
 
 import ShowStarRateAvg from './ShowStarRateAvg';
 import ShowReviews from './ShowReviews';
-import DeviceStorage from '../../../service/DeviceStorage';
 
-export default class DetailsReviews extends React.Component {
+export default class DetailReviews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rateAvg: this.props.route.params.rateAvg,
       isRateFilter: 0,
       reviewsData: [],
     };
     this.getCenterReviews = this.getCenterReviews.bind(this);
   }
 
-  handleRateFilter = (value) => {
+  handleRateFilter(value) {
     this.setState({ isRateFilter: value });
-  };
+  }
 
   componentDidMount() {
-    DeviceStorage.loadJWT().then((value) => {
-      this.getCenterReviews(value);
-    });
+    this.getCenterReviews(this.props.token);
   }
 
   getCenterReviews(token) {
-    let url = ec2 + '0/review/center?centerId=' + this.props.route.params.id;
-
-    fetch(url, {
+    fetch(ec2 + '/review/center?centerId=' + this.props.theCenterInfo.id, {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -64,7 +58,8 @@ export default class DetailsReviews extends React.Component {
 
   render() {
     const stars = [5, 4, 3, 2, 1];
-    const { isRateFilter, rateAvg } = this.state;
+    const { isRateFilter } = this.state;
+    const rateAvg = this.props.theCenterInfo.rateAvg;
     const reviewsData = this.state?.reviewsData || [];
     let reviewCountOfEachRate = stars.map((rate) => {
       let count = 0;
