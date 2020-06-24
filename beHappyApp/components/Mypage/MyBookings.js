@@ -33,7 +33,7 @@ class MyBookings extends React.Component {
   }
 
   deleteBookingState(index) {
-    let newState = this.state.bookings;
+    let newState = Object.assign([], this.props.myBookings);
     newState.splice(index, 1);
     this.props.controlmyBookings(newState);
   }
@@ -91,7 +91,6 @@ class MyBookings extends React.Component {
 
   render() {
     const { isLoading } = this.state;
-    const { myBookings } = this.props;
 
     return (
       <Fragment>
@@ -101,23 +100,22 @@ class MyBookings extends React.Component {
           </View>
         ) : (
           <View style={styles.container}>
-            {myBookings.length > 0 ? (
+            {this.props.myBookings.length > 0 ? (
               <ScrollView>
-                {myBookings.map((booking, index) => (
-                  <View style={styles.booking} key={index}>
-                    <MyBookingList
-                      token={this.props.token}
-                      navigation={this.props.navigation}
-                      booking={booking}
-                      deleteBookingState={this.deleteBookingState}
-                      modifyBookingState={this.modifyBookingState}
-                      index={index}
-                      controlCenterData={this.props.controlCenterData}
-                      controlBookmarkClicked={this.props.controlBookmarkClicked}
-                      controlCoordinate={this.props.controlCoordinate}
-                      changeBookingState={this.changeBookingState}
-                    />
-                  </View>
+                {this.props.myBookings.map((booking, index) => (
+                  <MyBookingList
+                    key={index}
+                    token={this.props.token}
+                    navigation={this.props.navigation}
+                    booking={booking}
+                    deleteBookingState={this.deleteBookingState}
+                    modifyBookingState={this.modifyBookingState}
+                    index={index}
+                    controlCenterData={this.props.controlCenterData}
+                    controlBookmarkClicked={this.props.controlBookmarkClicked}
+                    controlCoordinate={this.props.controlCoordinate}
+                    changeBookingState={this.changeBookingState}
+                  />
                 ))}
               </ScrollView>
             ) : (
@@ -142,23 +140,6 @@ const styles = StyleSheet.create({
   loading: {
     flex: 1,
     justifyContent: 'center',
-  },
-  booking: {
-    backgroundColor: 'white',
-    padding: 10,
-    paddingTop: 15,
-    left: '2%',
-    width: '96%',
-    marginTop: 15,
-    marginBottom: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   noList: {
     top: '45%',

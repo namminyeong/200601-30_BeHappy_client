@@ -65,14 +65,17 @@ export default class Booking extends React.Component {
     this.addBookingState = this.addBookingState.bind(this);
   }
 
-  getCenterBooking(token) {
-    const { date } = this.state;
+  getCenterBooking(selectDate) {
+    this.setState({
+      date: selectDate,
+    });
+
     let url =
       ec2 +
       '/booking/center?centerId=' +
       this.props.CenterInfo.id +
       '&date=' +
-      date;
+      selectDate;
 
     this.resetTime();
     fetch(url, {
@@ -80,7 +83,7 @@ export default class Booking extends React.Component {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -90,6 +93,7 @@ export default class Booking extends React.Component {
         return '';
       })
       .then((payload) => {
+        console.log('getCenterBooking', payload);
         let centerBookingData = payload === 'string' ? [] : payload;
         this.blockTime(centerBookingData);
       })
@@ -164,20 +168,23 @@ export default class Booking extends React.Component {
     const { date, time, username, phone, content } = this.state;
 
     let newState = Object.assign([], this.props.myBookings);
-    let newBooking = {};
-    let center = {};
-    newBooking.date = date;
-    newBooking.time = time;
-    newBooking.name = username;
-    newBooking.phone = phone;
-    newBooking.content = content;
-    newBooking.bookingState = 'booked';
-    center.centerName = this.props.CenterInfo.centerName;
-    center.id = this.props.CenterInfo.id;
+    let newBooking = {
+      date,
+      time,
+      name: username,
+      phone,
+      content,
+      bookingState: 'booked',
+    };
+    let center = {
+      centerName: this.props.CenterInfo.centerName,
+      id: this.props.CenterInfo.id,
+    };
     newBooking.center = center;
     newState.push(newBooking);
-    console.log(newState);
-    this.props.controlmyBookings(newState);
+    let sortData = newState.sort((a, b) => a.date < b.date);
+
+    this.props.controlmyBookings(sortData);
     this.completeBooking();
   }
 
@@ -302,10 +309,7 @@ export default class Booking extends React.Component {
                     ).format('YYYY-MM-DD')}
                     monthFormat={'yyyy-MM'}
                     onDayPress={(selectDate) => {
-                      this.setState({
-                        date: selectDate.dateString,
-                      });
-                      this.getCenterBooking(this.props.token);
+                      this.getCenterBooking(selectDate.dateString);
                     }}
                   />
                   <View
