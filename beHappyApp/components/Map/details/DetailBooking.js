@@ -239,7 +239,7 @@ export default class Booking extends React.Component {
   }
 
   blockTime(centerBookingData) {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
 
     for (let i = 0; i < centerBookingData.length; i++) {
       bookingTime.map((time) =>
@@ -247,19 +247,24 @@ export default class Booking extends React.Component {
           ? (time[1] = true)
           : null
       );
+      this.setState({ bookingTime });
     }
   }
 
   resetTime() {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
+
     bookingTime.map((data) => (data[1] = false));
+    this.setState({ bookingTime });
   }
 
   backTime(time) {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
+
     bookingTime.map((data) =>
       data.includes(time[0]) ? (data[1] = false) : data
     );
+    this.setState({ bookingTime });
   }
 
   checkUserInfo() {
