@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import getEnvVars from '../../../environment';
+const { ec2 } = getEnvVars();
 
 import ShowStarRateAvg from './ShowStarRateAvg';
 import ShowReviews from './ShowReviews';
@@ -35,18 +37,16 @@ export default class DetailsReviews extends React.Component {
   }
 
   getCenterReviews(token) {
-    fetch(
-      'http://13.209.16.103:4000/review/center?centerId=' +
-        this.props.route.params.id,
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    let url = ec2 + '0/review/center?centerId=' + this.props.route.params.id;
+
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status === 200) {
           return res.json();
