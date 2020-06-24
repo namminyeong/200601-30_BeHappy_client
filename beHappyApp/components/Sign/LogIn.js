@@ -229,13 +229,12 @@ class Login extends React.Component {
               </Text>
             </TouchableOpacity>
             <View style={styles.signEntry}>
-              <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Signup')}
+              >
+                <Text style={styles.signUpText}>아직 회원이 아니신가요?</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Signup')}
-            >
-              <Text style={styles.signUpBtn}>회원가입</Text>
-            </TouchableOpacity>
 
             <Modal
               animationType='none'
@@ -317,6 +316,7 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
   signUpBtn: {
     color: '#000000',
