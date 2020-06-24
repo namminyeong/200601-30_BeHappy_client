@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableHighlight,
 } from 'react-native';
+import { SpecialtiesArray } from '../../Data/Preference';
 
 class SpecialtyPreference extends React.Component {
   constructor(props) {
@@ -14,18 +15,6 @@ class SpecialtyPreference extends React.Component {
     this.state = {
       centerId: this.props.route.params.centerId,
       specialties: [],
-      specialtyData: [
-        '스트레스',
-        '가족',
-        '식이',
-        '부부',
-        '우울증',
-        '불면증',
-        '학교폭력',
-        '아동',
-        '불안',
-        '강박',
-      ],
       showAlertModal: false,
       showAlertModalText: '',
     };
@@ -75,7 +64,7 @@ class SpecialtyPreference extends React.Component {
   }
 
   render() {
-    const { specialties, specialtyData } = this.state;
+    const { specialties } = this.state;
 
     return (
       <View style={styles.container}>
@@ -87,7 +76,7 @@ class SpecialtyPreference extends React.Component {
           <Text style={styles.section}>Preference</Text>
           <Text style={styles.preSection}>전문 분야</Text>
           <View style={styles.attention}>
-            {specialtyData.map((data, index) => (
+            {SpecialtiesArray.map((data, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => this.handleSpecialty(data)}

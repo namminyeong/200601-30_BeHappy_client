@@ -11,6 +11,18 @@ const Specialties = [
   ['강박', false],
 ];
 
+const SpecialtiesArray = [
+  '불면증',
+  '우울증',
+  '불안',
+  '가족',
+  '부부',
+  '아동·청소년',
+  '공황',
+  '중독',
+  '자해·자살',
+];
+
 const Cities = [
   '서울특별시',
   '부산광역시',
@@ -309,5 +321,5 @@ const States = {
 
 const KindOfCenters = [['심리상담소', false], ['정신과', false]];
 
-export { Specialties, States, KindOfCenters, Cities };
+export { Specialties, States, KindOfCenters, Cities, SpecialtiesArray };
 

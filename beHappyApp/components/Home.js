@@ -90,10 +90,13 @@ export default class Home extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
+          console.log('datat', data);
           this.props.controlCenterInfo(data);
+          return '';
         }
       })
       .then(() => {
+        console.log('??');
         this.props.controlLogin(1, this.props.token);
         this.changeLoading(false);
       })
