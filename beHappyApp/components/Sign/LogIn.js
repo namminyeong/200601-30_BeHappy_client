@@ -16,6 +16,8 @@ import logo from '../../assets/behappy.png';
 import deviceStorage from '../../service/DeviceStorage';
 import CompleteModal from '../../Modal/CompleteModal';
 import AlarmModal from '../../Modal/CheckModal';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -41,7 +43,7 @@ class Login extends React.Component {
   loginUser() {
     const { username, password } = this.state;
 
-    fetch('http://13.209.16.103:4000/user/login', {
+    fetch(ec2 + '/user/login', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -58,13 +60,6 @@ class Login extends React.Component {
       .then((payload) => {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
-            // this.setState({
-            //   showCompleteModal: true,
-            //   showModalText: '로그인이 완료됐습니다.',
-            // });
-            // setTimeout(() => {
-            //   this.setState({ showCompleteModal: false });
-            // }, 2000);
             if (payload.adminState === 0 || payload.adminState === -1) {
               this.props.controlLogin(0, payload.token);
             } else if (payload.adminState === 1) {
@@ -163,7 +158,7 @@ class Login extends React.Component {
           />
           <TouchableOpacity style={styles.btnEye} onPress={this.showPass}>
             <Icon
-              name={press === false ? 'ios-eye' : 'ios-eye-off'}
+              name={press === true ? 'ios-eye' : 'ios-eye-off'}
               size={26}
               color={'rgba(0,0,0,0.7)'}
             />

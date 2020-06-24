@@ -17,6 +17,7 @@ const CenterList = ({
   selectCenter,
   setCenterName,
   closeModal,
+  showView,
 }) => (
   <Fragment>
     <View style={styles.centerInfo}>
@@ -29,6 +30,7 @@ const CenterList = ({
           setAddressName(addressName);
           setRoadAddressName(roadAddressName);
           selectCenter(false);
+          showView(true);
           closeModal();
         }}
       >

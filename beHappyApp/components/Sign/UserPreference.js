@@ -1,14 +1,10 @@
 import React from 'react';
-import {
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Modal,
-  TouchableHighlight,
-} from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Cities, States, SpecialtiesArray } from '../../Data/Preference';
+
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 class UserPreference extends React.Component {
   constructor(props) {
@@ -44,7 +40,7 @@ class UserPreference extends React.Component {
     let kindOfCenters = favorCenter;
     let city = favorCity;
 
-    fetch('http://13.209.16.103:4000/preference', {
+    fetch(ec2 + '/preference', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -54,17 +50,11 @@ class UserPreference extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          this.setState({
-            showAlertModal: true,
-            showAlertModalText: '제출에 성공했습니다.',
-          });
+          this.props.navigation.navigate('LoginContainer');
         }
       })
       .catch((error) => {
-        this.setState({
-          showAlertModal: true,
-          showAlertModalText: '제출에 실패했습니다.',
-        });
+        console.log('error: ', error);
       });
   }
 
@@ -163,12 +153,12 @@ class UserPreference extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <Text style={{ marginTop: '2%' }}>
-            * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
-            순서대로 빨간색-주황색-노란색으로 표시합니다.
-          </Text>
           <View style={styles.preference}>
-            <Text style={styles.section}>Preference</Text>
+            <Text style={styles.section}>선호도 조사</Text>
+            <Text style={{ marginTop: '2%' }}>
+              * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
+              순서대로 빨간색-주황색-노란색으로 표시합니다.
+            </Text>
             <Text style={styles.preSection}>관심 분야</Text>
             <View style={styles.attention}>
               {SpecialtiesArray.map((data, index) => (
@@ -237,7 +227,7 @@ class UserPreference extends React.Component {
                 onPress={this.inputFavorCity}
                 style={{ alignSelf: 'center' }}
               >
-                <Text style={styles.add}>추가</Text>
+                <Text style={styles.add}>선택</Text>
               </TouchableOpacity>
             ) : (
               <View />
@@ -292,32 +282,6 @@ class UserPreference extends React.Component {
             </View>
           </View>
         </ScrollView>
-        <Modal
-          animationType='none'
-          transparent={true}
-          visible={this.state.showAlertModal}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>
-                {this.state.showAlertModalText}
-              </Text>
-
-              <TouchableHighlight
-                style={styles.closeButton}
-                onPress={() => {
-                  this.setState({
-                    showAlertModal: false,
-                    showAlertModalText: '',
-                  });
-                  this.props.navigation.navigate('LoginContainer');
-                }}
-              >
-                <Text style={styles.textStyle}>닫기</Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-        </Modal>
       </View>
     );
   }
@@ -423,45 +387,6 @@ const styles = {
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-  },
-  centeredView: {
-    flex: 1,
-    top: '33%',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    paddingVertical: 35,
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  closeButton: {
-    backgroundColor: '#62CCAD',
-    borderRadius: 2,
-    paddingHorizontal: 13,
-    paddingVertical: 5,
-    elevation: 2,
-  },
-  modalText: {
-    fontSize: 17,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
 };
 
