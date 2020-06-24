@@ -110,7 +110,7 @@ export default class BookingModify extends React.Component {
       },
       body: JSON.stringify({ bookingId, date, time, name, phone, content }),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.status === 200) {
           this.handleModifyBookingModal(true);
           modifyBookingState(index, {
@@ -122,11 +122,14 @@ export default class BookingModify extends React.Component {
             phone,
             content,
           });
-          this.props.navigation.navigate('MyBookingContainer');
           this.setState({
             showCompleteModal: true,
             showModalText: '수정이 완료되었습니다',
           });
+          setTimeout(() => {
+            this.setState({ showCompleteModal: false });
+            this.props.navigation.navigate('MyBookingContainer');
+          }, 1500);
         }
       })
       .catch((error) => console.log('error', error));
