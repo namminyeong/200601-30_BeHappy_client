@@ -192,7 +192,14 @@ export default class CenterMain extends React.Component {
             <Text style={styles.centerName}>
               {this.props.CenterInfo.centerName}
             </Text>
-            {<Entypo name='chevron-right' size={26} color={'black'} />}
+            {
+              <Entypo
+                name='chevron-right'
+                size={26}
+                color={'black'}
+                style={{ alignSelf: 'center' }}
+              />
+            }
           </View>
         </TouchableOpacity>
 
@@ -225,22 +232,10 @@ export default class CenterMain extends React.Component {
               height: 83,
             }}
           />
-          <View
-            style={{
-              paddingLeft: 15,
-              width: 150,
-              marginRight: -30,
-            }}
-          >
+          <View style={styles.barGraphContainer}>
             {stars.map((rate) => {
               return (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    height: 16,
-                  }}
-                  key={'point' + rate}
-                >
+                <View style={styles.barRow} key={'point' + rate}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -262,7 +257,7 @@ export default class CenterMain extends React.Component {
                       }}
                     />
                   </View>
-                  <Text style={{ top: -2 }}>
+                  <Text style={{ top: -2, fontSize: 12 }}>
                     {this.state.reviewCountOfEachRate[rate]}
                   </Text>
                 </View>
@@ -316,6 +311,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 3,
     marginBottom: 10,
+  },
+  barGraphContainer: {
+    paddingLeft: 15,
+    width: 150,
+    marginRight: -30,
+  },
+  barRow: {
+    flexDirection: 'row',
+    height: 16,
   },
   rateColumn: {
     fontSize: 12,

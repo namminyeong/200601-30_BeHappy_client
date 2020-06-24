@@ -52,6 +52,8 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
+    this.props.controlShowDetail(false, null);
+
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status === 'granted') {
@@ -248,7 +250,7 @@ class Map extends React.Component {
     centerInfo.specialties.forEach((centerSpecialty) => {
       keys.forEach((specialtyFilter) => {
         if (
-          centerSpecialty.name === specialtyFilter &&
+          centerSpecialty === specialtyFilter &&
           specialties[specialtyFilter]
         ) {
           result = true;
@@ -354,7 +356,7 @@ class Map extends React.Component {
                 }
               })
             ) : (
-              <Fragment />
+              <Fragment key='fragment' />
             )
           )}
         </MapView>
@@ -470,8 +472,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   searchNow: {
+    fontWeight: 'bold',
     paddingHorizontal: 15,
-    paddingVertical: 5,
+    paddingVertical: 4,
     borderRadius: 15,
     color: 'black',
     backgroundColor: 'white',

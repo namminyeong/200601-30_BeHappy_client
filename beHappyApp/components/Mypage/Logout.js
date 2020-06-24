@@ -2,10 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import deviceStorage from '../../service/DeviceStorage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 export default function Logout({ controlLogin, token }) {
   let logoutUser = () => {
-    fetch('http://13.209.16.103:4000/user/logout', {
+    fetch(ec2 + '/user/logout', {
       method: 'GET',
       credentials: 'include',
       headers: {

@@ -51,7 +51,12 @@ export default class ShowReviews extends React.Component {
                   <Text>{item.anonymousName}</Text>
                   <Text style={{ color: '#636E72' }}>{item.date} 방문</Text>
                 </View>
-                <Text>{item.content}</Text>
+
+                {item.content.length > 0 ? (
+                  <Text>{item.content}</Text>
+                ) : (
+                  <Text style={{ color: 'lightgrey' }}>no comment</Text>
+                )}
               </View>
             );
           }}

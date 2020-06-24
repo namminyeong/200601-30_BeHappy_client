@@ -53,8 +53,8 @@ const BookmarkList = ({
           style={specialties.length > 6 ? styles.long : styles.specialtiesInfo}
         >
           {specialties.map((data) => (
-            <Text key={data.name} style={styles.specialty}>
-              #{data.name}
+            <Text key={data} style={styles.specialty}>
+              #{data}
             </Text>
           ))}
         </View>

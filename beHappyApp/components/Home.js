@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import DeviceStorage from '../service/DeviceStorage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import getEnvVars from '../environment';
@@ -23,13 +22,12 @@ export default class Home extends React.Component {
     this.checkUser = this.checkUser.bind(this);
     this.changeLoading = this.changeLoading.bind(this);
     this.getCenterInfo = this.getCenterInfo.bind(this);
+    this.getUserBasicInfo = this.getUserBasicInfo.bind(this);
   }
 
   componentDidMount() {
     this.changeLoading(true);
-    DeviceStorage.loadJWT().then((value) => {
-      this.checkUser(value);
-    });
+    this.checkUser(this.props.token);
   }
 
   changeLoading(status) {
@@ -38,13 +36,13 @@ export default class Home extends React.Component {
     });
   }
 
-  checkUser(token) {
+  checkUser() {
     fetch(ec2 + '/auth', {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -57,10 +55,9 @@ export default class Home extends React.Component {
         if (typeof payload === 'object') {
           if (payload.isAdmin !== undefined) {
             if (payload.isAdmin) {
-              this.getCenterInfo();
+              this.getCenterInfo(this.props.token);
             } else {
-              this.props.controlLogin(0, token);
-              this.changeLoading(false);
+              this.getUserBasicInfo(this.props.token);
             }
           } else {
             this.props.controlLogin(-1, null);
@@ -90,18 +87,35 @@ export default class Home extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          console.log('datat', data);
           this.props.controlCenterInfo(data);
-          return '';
+          this.props.controlLogin(1, this.props.token);
+          this.changeLoading(false);
         }
-      })
-      .then(() => {
-        console.log('??');
-        this.props.controlLogin(1, this.props.token);
-        this.changeLoading(false);
       })
       .catch((error) => {
         console.log(error);
+      });
+  }
+
+  getUserBasicInfo() {
+    fetch(ec2 + '/user', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.props.token}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        return '';
+      })
+      .then((data) => {
+        this.props.controlBasicUserInfo(data.nickname, data.phone);
+        this.props.controlLogin(0, this.props.token);
+        this.changeLoading(false);
       });
   }
 
@@ -137,8 +151,10 @@ export default class Home extends React.Component {
                 </>
               ) : this.props.authState === 0 ? (
                 <Stack.Screen name='Main' component={Main} />
-              ) : (
+              ) : this.props.authState === 1 ? (
                 <Stack.Screen name='EntryCenter' component={EntryCenter} />
+              ) : (
+                <Stack.Screen name='Home' component={Home} />
               )}
             </Stack.Navigator>
           </NavigationContainer>

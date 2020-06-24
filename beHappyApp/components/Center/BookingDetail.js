@@ -7,7 +7,8 @@ import {
   ScrollView,
 } from 'react-native';
 
-import DeviceStorage from '../../service/DeviceStorage';
+import getEnvVars from '../../environment';
+const { ec2 } = getEnvVars();
 
 export default class BookingDetail extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ export default class BookingDetail extends React.Component {
   patchBookingCheck(token, isCheck) {
     const { id } = this.props.route.params.bookingData;
 
-    fetch('http://13.209.16.103:4000/booking/check', {
+    fetch(ec2 + '/booking/check', {
       method: 'PATCH',
       credentials: 'include',
       headers: {
@@ -92,9 +93,7 @@ export default class BookingDetail extends React.Component {
                 : styles.Button
             }
             onPress={() => {
-              DeviceStorage.loadJWT().then((value) => {
-                this.patchBookingCheck(value, true);
-              });
+              this.patchBookingCheck(this.props.route.params.token, true);
             }}
           >
             <Text
@@ -115,9 +114,7 @@ export default class BookingDetail extends React.Component {
                 : styles.Button
             }
             onPress={() => {
-              DeviceStorage.loadJWT().then((value) => {
-                this.patchBookingCheck(value, false);
-              });
+              this.patchBookingCheck(this.props.route.params.token, false);
             }}
           >
             <Text

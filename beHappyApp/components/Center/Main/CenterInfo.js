@@ -35,6 +35,7 @@ export default class CenterInfo extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
+          console.log(data.specialties);
           this.saveSpecialties(data.specialties);
         }
       })
@@ -46,7 +47,7 @@ export default class CenterInfo extends React.Component {
   saveSpecialties(centerSpeicialties) {
     let newState = {};
     centerSpeicialties.forEach((specialtyObj) => {
-      newState[specialtyObj.name] = true;
+      newState[specialtyObj] = true;
     });
     this.setState({
       centerSpeicialties: newState,
