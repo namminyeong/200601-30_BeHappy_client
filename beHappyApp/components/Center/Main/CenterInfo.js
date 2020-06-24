@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import deviceStorage from '../../../service/DeviceStorage';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -75,7 +74,6 @@ export default class CenterInfo extends React.Component {
       .then((payload) => {
         if (payload.token === '') {
           controlLogin(-1, null);
-          deviceStorage.deleteJWT();
         }
       })
       .catch((error) => {

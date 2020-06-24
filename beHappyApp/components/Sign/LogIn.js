@@ -13,7 +13,6 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import logo from '../../assets/behappy.png';
 
-import deviceStorage from '../../service/DeviceStorage';
 import CompleteModal from '../../Modal/CompleteModal';
 import AlarmModal from '../../Modal/CheckModal';
 import getEnvVars from '../../environment';
@@ -69,7 +68,6 @@ class Login extends React.Component {
             } else if (payload.adminState === 1) {
               this.getCenterInfo(payload.token);
             }
-            deviceStorage.saveKey('id_token', payload.token);
           } else if (payload.errorCode === 1) {
             this.setState({
               showAlarmModal: true,
