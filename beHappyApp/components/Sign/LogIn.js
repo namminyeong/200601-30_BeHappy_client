@@ -131,7 +131,6 @@ class Login extends React.Component {
         return '';
       })
       .then((data) => {
-        console.log(134, data);
         this.props.controlBasicUserInfo(data.nickname, data.phone);
         this.props.controlLogin(0, token);
         this.changeLoading(false);

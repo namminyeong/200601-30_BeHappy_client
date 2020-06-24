@@ -58,7 +58,6 @@ class MyInfo extends React.Component {
         return '';
       })
       .then((payload) => {
-        console.log('specialtiesspecialties', payload.specialties);
         this.setState({
           currentCity: payload.city.name.split(' ')[0],
           currentStates: payload.city.name.split(' ')[1],
