@@ -63,8 +63,13 @@ class Login extends React.Component {
         if (typeof payload === 'object') {
           if (!payload.errorCode) {
             this.changeLoading(true);
-            if (payload.adminState === 0 || payload.adminState === -1) {
+            if (payload.adminState === 0) {
               this.getUserBasicInfo(payload.token);
+            } else if (payload.adminState === -1) {
+              this.setState({
+                showAlarmModal: true,
+                showModalText: '아직 승인되지 않았습니다.',
+              });
             } else if (payload.adminState === 1) {
               this.getCenterInfo(payload.token);
             }

@@ -22,15 +22,16 @@ class SpecialtyPreference extends React.Component {
   }
 
   submitPreference() {
-    const { centerId, specialties } = this.state;
-
     fetch(ec2 + '/preference/center', {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ centerId, specialties }),
+      body: JSON.stringify({
+        centerId: this.state.centerId,
+        specialties: this.state.specialties,
+      }),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -43,14 +44,17 @@ class SpecialtyPreference extends React.Component {
   }
 
   handleSpecialty(value) {
-    const { specialties } = this.state;
-    if (specialties.indexOf(value) === -1) {
+    const newState = Object.assign(this.state.specialties);
+    let index = newState.indexOf(value);
+    if (index === -1) {
+      newState.push(value);
       this.setState({
-        specialties: [...specialties, value],
+        specialties: newState,
       });
     } else {
+      newState.splice(index, 1);
       this.setState({
-        specialties: specialties.filter((specialty) => specialty !== value),
+        specialties: newState,
       });
     }
   }
