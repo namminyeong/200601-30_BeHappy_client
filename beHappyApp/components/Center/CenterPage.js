@@ -24,17 +24,17 @@ export default class CenterPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getCenterBooking(this.props.token);
+    this.getCenterBooking(this.state.currentDate);
   }
 
-  getCenterBooking(token) {
-    const { currentDate, centerId } = this.state;
-    fetch(ec2 + `/booking/center?centerId=${centerId}&date=${currentDate}`, {
+  getCenterBooking(date) {
+    const { centerId } = this.state;
+    fetch(ec2 + `/booking/center?centerId=${centerId}&date=${date}`, {
       method: 'GET',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.token}`,
       },
     })
       .then((res) => {
@@ -71,7 +71,7 @@ export default class CenterPage extends React.Component {
               this.setState({
                 currentDate: selectDate.dateString,
               });
-              this.getCenterBooking(this.props.token);
+              this.getCenterBooking(selectDate.dateString);
             }}
           />
 
@@ -99,43 +99,43 @@ export default class CenterPage extends React.Component {
               .sort((a, b) => {
                 return a.time > b.time ? 1 : -1;
               })
-              .map((data, index) => (
+              .map((booking, index) => (
                 <TouchableOpacity
-                  key={'bookingData' + index}
+                  key={'booking' + index}
                   onPress={() => {
                     this.props.navigation.navigate('BookingDetail', {
-                      bookingData: data,
+                      bookingData: booking,
                       token: this.props.token,
                     });
                   }}
                 >
                   <View
                     style={
-                      data.bookingState === 'booked'
+                      booking.bookingState === 'booked'
                         ? styles.bookingData
                         : styles.bookedData
                     }
                   >
                     <View style={{ flexDirection: 'row' }}>
                       <Text style={{ paddingRight: 20 }}>
-                        {data.time.slice(0, 5)}
+                        {booking.time.slice(0, 5)}
                       </Text>
-                      <Text>{data.name}</Text>
+                      <Text>{booking.name}</Text>
                     </View>
                     <Text
                       style={
-                        data.bookingState === 'booked'
+                        booking.bookingState === 'booked'
                           ? styles.onGoing
                           : styles.finished
                       }
                     >
-                      {data.bookingState === 'booked'
+                      {booking.bookingState === 'booked'
                         ? '예약중'
-                        : data.bookingState === 'used'
+                        : booking.bookingState === 'used'
                         ? '완료'
-                        : data.bookingState === 'notUsed'
+                        : booking.bookingState === 'notUsed'
                         ? '미완료'
-                        : data.bookingState === 'reviewed'
+                        : booking.bookingState === 'reviewed'
                         ? '리뷰'
                         : null}
                     </Text>
