@@ -19,6 +19,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CompleteModal from '../../../Modal/CompleteModal';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
+
+const checkNickname = /^[ㄱ-ㅎ|가-힣]+$/;
 const checkNumber = /^[0-9]{10,11}$/;
 
 export default class BookingModify extends React.Component {
@@ -49,7 +51,6 @@ export default class BookingModify extends React.Component {
         ['16:00', false],
         ['17:00', false],
       ],
-      modifyBookingModal: false,
     };
 
     this.getCenterBooking = this.getCenterBooking.bind(this);
@@ -61,7 +62,6 @@ export default class BookingModify extends React.Component {
     this.resetTime = this.resetTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
-    this.handleModifyBookingModal = this.handleModifyBookingModal.bind(this);
   }
 
   getCenterBooking(date) {
@@ -112,7 +112,6 @@ export default class BookingModify extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          this.handleModifyBookingModal(true);
           modifyBookingState(index, {
             centerName,
             bookingId,
@@ -122,11 +121,14 @@ export default class BookingModify extends React.Component {
             phone,
             content,
           });
-          this.props.navigation.navigate('MyBookingContainer');
           this.setState({
             showCompleteModal: true,
             showModalText: '수정이 완료되었습니다',
           });
+          setTimeout(() => {
+            this.setState({ showCompleteModal: false });
+            this.props.navigation.navigate('MyBookingContainer');
+          }, 1500);
         }
       })
       .catch((error) => console.log('error', error));
@@ -134,10 +136,9 @@ export default class BookingModify extends React.Component {
 
   resetTime() {
     const bookingTime = Object.assign([], this.state.bookingTime);
+
     bookingTime.map((data) => (data[1] = false));
-    this.setState({
-      bookingTime,
-    });
+    this.setState({ bookingTime });
   }
 
   blockTime(centerBookingData) {
@@ -149,9 +150,7 @@ export default class BookingModify extends React.Component {
           ? (time[1] = true)
           : null
       );
-      this.setState({
-        bookingTime,
-      });
+      this.setState({ bookingTime });
     }
   }
 
@@ -178,9 +177,7 @@ export default class BookingModify extends React.Component {
     let newState = this.state.bookingTime;
     let present = newState[index][1];
     newState[index][1] = !present;
-    this.setState({
-      bookingTime: newState,
-    });
+    this.setState({ bookingTime: newState });
     this.checkUserInfo();
   }
 
@@ -190,9 +187,7 @@ export default class BookingModify extends React.Component {
     bookingTime.map((data) =>
       data.includes(time[0]) ? (data[1] = false) : data
     );
-    this.setState({
-      bookingTime,
-    });
+    this.setState({ bookingTime });
   }
 
   checkUserInfo() {
@@ -202,19 +197,13 @@ export default class BookingModify extends React.Component {
       ? this.setState({
           isChanged: false,
         })
-      : checkNumber.test(phone)
+      : checkNickname.test(name) && checkNumber.test(phone)
       ? this.setState({
           isChanged: true,
         })
       : this.setState({
           isChanged: false,
         });
-  }
-
-  handleModifyBookingModal(status) {
-    this.setState({
-      modifyBookingModal: status,
-    });
   }
 
   render() {
@@ -244,10 +233,10 @@ export default class BookingModify extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.text}>
+                  <Text style={styles.section}>
                     날{'    '}짜{'    '}
                   </Text>
-                  <Text>{date}</Text>
+                  <Text style={styles.info}>{date}</Text>
                 </View>
                 <AntDesign
                   name='calendar'
@@ -319,10 +308,10 @@ export default class BookingModify extends React.Component {
                 }}
               >
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.text}>
+                  <Text style={styles.section}>
                     시{'    '}간{'    '}
                   </Text>
-                  <Text>{time}</Text>
+                  <Text style={styles.info}>{time}</Text>
                 </View>
                 <MaterialIcons
                   name='access-time'
@@ -332,7 +321,7 @@ export default class BookingModify extends React.Component {
               </TouchableOpacity>
               <View style={styles.userinfo}>
                 <View style={styles.textArea}>
-                  <Text style={styles.text}>이{'    '}름</Text>
+                  <Text style={styles.section}>이{'    '}름</Text>
                   <TextInput
                     style={styles.textBox}
                     value={name}
@@ -341,9 +330,21 @@ export default class BookingModify extends React.Component {
                       this.checkUserInfo();
                     }}
                   />
+                  {name === '' || checkNickname.test(name) ? null : (
+                    <MaterialCommunityIcons
+                      name='alert-circle-outline'
+                      size={18}
+                      style={{ color: '#941818', right: 20 }}
+                    />
+                  )}
                 </View>
+                {name === '' || checkNickname.test(name) ? null : (
+                  <Text style={{ color: '#941818', left: 60, fontSize: 10 }}>
+                    한글만 입력해주세요.
+                  </Text>
+                )}
                 <View style={styles.textArea}>
-                  <Text style={styles.text}>연락처</Text>
+                  <Text style={styles.section}>연락처</Text>
                   <TextInput
                     style={styles.textBox}
                     value={phone}
@@ -354,7 +355,7 @@ export default class BookingModify extends React.Component {
                     }}
                   />
                   {phone === '' || checkNumber.test(phone) ? null : (
-                    <MaterialIcons
+                    <MaterialCommunityIcons
                       name='alert-circle-outline'
                       size={18}
                       style={{ color: '#941818', right: 20 }}
@@ -363,7 +364,7 @@ export default class BookingModify extends React.Component {
                 </View>
                 {phone === '' || checkNumber.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 60, fontSize: 10 }}>
-                    숫자만 입력해주세요.
+                    핸드폰 번호를 확인해주세요.
                   </Text>
                 )}
 
@@ -499,6 +500,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  section: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  sectionContent: {
+    marginBottom: 6,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  info: {
+    fontSize: 15,
+  },
   textArea: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -509,17 +522,15 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     width: '80%',
     borderBottomWidth: 1,
-  },
-  text: {
-    fontWeight: 'bold',
+    fontSize: 15,
   },
   textBoxContent: {
-    padding: 10,
     width: '98%',
-    height: 200,
+    height: 100,
     padding: 4,
     borderWidth: 1,
     textAlignVertical: 'top',
+    fontSize: 15,
   },
   completeButton: {
     borderRadius: 20,

@@ -17,11 +17,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import CompleteModal from '../../../Modal/CompleteModal';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 
-import CompleteModal from '../../../Modal/CompleteModal';
-
+const checkNickname = /^[ㄱ-ㅎ|가-힣]+$/;
 const checkNumber = /^[0-9]{10,11}$/;
 
 export default class Booking extends React.Component {
@@ -239,7 +239,7 @@ export default class Booking extends React.Component {
   }
 
   blockTime(centerBookingData) {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
 
     for (let i = 0; i < centerBookingData.length; i++) {
       bookingTime.map((time) =>
@@ -247,19 +247,24 @@ export default class Booking extends React.Component {
           ? (time[1] = true)
           : null
       );
+      this.setState({ bookingTime });
     }
   }
 
   resetTime() {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
+
     bookingTime.map((data) => (data[1] = false));
+    this.setState({ bookingTime });
   }
 
   backTime(time) {
-    const { bookingTime } = this.state;
+    const bookingTime = Object.assign([], this.state.bookingTime);
+
     bookingTime.map((data) =>
       data.includes(time[0]) ? (data[1] = false) : data
     );
+    this.setState({ bookingTime });
   }
 
   checkUserInfo() {
@@ -269,7 +274,7 @@ export default class Booking extends React.Component {
       ? this.setState({
           isUserInfo: false,
         })
-      : checkNumber.test(phone)
+      : checkNickname.test(username) && checkNumber.test(phone)
       ? this.setState({
           isUserInfo: true,
         })
@@ -340,10 +345,10 @@ export default class Booking extends React.Component {
                     }}
                   >
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={{ fontWeight: 'bold' }}>
+                      <Text style={styles.section}>
                         날{'    '}짜{'    '}
                       </Text>
-                      <Text>{date}</Text>
+                      <Text style={styles.info}>{date}</Text>
                     </View>
                     <AntDesign
                       name='calendar'
@@ -385,10 +390,10 @@ export default class Booking extends React.Component {
                     }}
                   >
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={{ fontWeight: 'bold' }}>
+                      <Text style={styles.section}>
                         시{'    '}간{'    '}
                       </Text>
-                      <Text>{time}</Text>
+                      <Text style={styles.info}>{time}</Text>
                     </View>
                     <MaterialIcons
                       name='access-time'
@@ -398,18 +403,34 @@ export default class Booking extends React.Component {
                   </TouchableOpacity>
                   <View style={styles.userinfo}>
                     <View style={styles.textArea}>
-                      <Text style={{ fontWeight: 'bold' }}>이{'    '}름</Text>
+                      <Text style={styles.section}>이{'    '}름</Text>
                       <TextInput
                         style={styles.textBox}
+                        placeholder='이름을 써주세요. ex) 김아름'
                         value={username}
                         onChangeText={(username) => {
                           this.setState({ username });
                           this.checkUserInfo();
                         }}
                       />
+                      {username === '' ||
+                      checkNickname.test(username) ? null : (
+                        <MaterialCommunityIcons
+                          name='alert-circle-outline'
+                          size={18}
+                          style={{ color: '#941818', right: 20 }}
+                        />
+                      )}
                     </View>
+                    {username === '' || checkNickname.test(username) ? null : (
+                      <Text
+                        style={{ color: '#941818', left: 60, fontSize: 10 }}
+                      >
+                        한글만 입력해주세요.
+                      </Text>
+                    )}
                     <View style={styles.textArea}>
-                      <Text style={{ fontWeight: 'bold' }}>연락처</Text>
+                      <Text style={styles.section}>연락처</Text>
                       <TextInput
                         style={styles.textBox}
                         value={phone}
@@ -431,7 +452,7 @@ export default class Booking extends React.Component {
                       <Text
                         style={{ color: '#941818', left: 60, fontSize: 10 }}
                       >
-                        숫자만 입력해주세요
+                        핸드폰 번호를 확인해주세요.
                       </Text>
                     )}
                     <View
@@ -539,32 +560,30 @@ export default class Booking extends React.Component {
           ) : (
             <View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>
+                <Text style={styles.section}>
                   날{'    '}짜{'    '}
                 </Text>
-                <Text>{date}</Text>
+                <Text style={styles.info}>{date}</Text>
               </View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>
+                <Text style={styles.section}>
                   시{'    '}간{'    '}
                 </Text>
-                <Text>{time}</Text>
+                <Text style={styles.info}>{time}</Text>
               </View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>
+                <Text style={styles.section}>
                   이{'    '}름{'    '}
                 </Text>
-                <Text>{username}</Text>
+                <Text style={styles.info}>{username}</Text>
               </View>
               <View style={styles.lastBox}>
-                <Text style={{ fontWeight: 'bold' }}>연락처{'    '}</Text>
-                <Text>{phone}</Text>
+                <Text style={styles.section}>연락처{'    '}</Text>
+                <Text style={styles.info}>{phone}</Text>
               </View>
               <View style={styles.userinfo}>
-                <Text style={{ marginBottom: 6, fontWeight: 'bold' }}>
-                  상담 이유
-                </Text>
-                <Text>{content}</Text>
+                <Text style={styles.sectionContent}>상담 이유</Text>
+                <Text style={styles.info}>{content}</Text>
               </View>
               <TouchableOpacity
                 disabled={!isAgree}
@@ -663,6 +682,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  section: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  sectionContent: {
+    marginBottom: 6,
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  info: {
+    fontSize: 15,
+  },
   textArea: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -673,6 +704,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     width: '80%',
     borderBottomWidth: 1,
+    fontSize: 15,
   },
   textBoxContent: {
     width: '98%',
@@ -680,6 +712,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     textAlignVertical: 'top',
+    fontSize: 15,
   },
   completeButton: {
     borderRadius: 20,
