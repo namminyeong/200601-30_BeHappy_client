@@ -5,7 +5,6 @@ import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
 import SearchGeoContainer from '../../containers/SearchGeoContainer';
 import NameModal from './NameModal';
-import SpecialtiesArray from '../../Data/Preference';
 
 class SearchName extends React.Component {
   constructor(props) {
