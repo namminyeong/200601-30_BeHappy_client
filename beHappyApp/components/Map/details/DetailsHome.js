@@ -15,36 +15,22 @@ class DetailsHome extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { bookmark: this.props.route.params.bookmark };
-
     this.call = this.call.bind(this);
     this.bookmark = this.bookmark.bind(this);
-    this.handleBookmarkColor = this.handleBookmarkColor.bind(this);
   }
 
   call() {
-    Linking.openURL(`tel:${this.props.route.params.theCenterInfo.phone}`);
+    Linking.openURL(`tel:${this.props.theCenterInfo.phone}`);
   }
 
   bookmark() {
-    const {
-      postDeletebookmark,
-      bookmark,
-      theCenterInfo,
-    } = this.props.route.params;
-    postDeletebookmark(bookmark, theCenterInfo.id);
-    this.handleBookmarkColor();
-  }
-
-  handleBookmarkColor() {
-    this.setState({
-      bookmark: !this.state.bookmark,
-    });
+    const { postDeletebookmark, theCenterInfo } = this.props;
+    postDeletebookmark(this.props.bookmark, theCenterInfo.id);
   }
 
   render() {
-    const { theCenterInfo } = this.props.route.params;
-    const { bookmark } = this.state;
+    const { theCenterInfo } = this.props;
+
     return (
       <Fragment>
         <View style={styles.container}>
@@ -95,7 +81,7 @@ class DetailsHome extends React.Component {
             <View style={styles.iconSet}>
               <MaterialCommunityIcons
                 name='bookmark'
-                color={bookmark ? 'black' : 'lightgrey'}
+                color={this.props.bookmark ? '#62CCAD' : 'lightgrey'}
                 size={40}
                 onPress={this.bookmark}
               />
@@ -111,29 +97,30 @@ class DetailsHome extends React.Component {
           </View>
         </View>
 
+        <View style={{ borderBottomWidth: 0.5, borderColor: 'lightgrey' }} />
+
         <Tab.Navigator
           tabBarOptions={{
-            labelStyle: { fontSize: 17, color: 'white' },
+            labelStyle: { fontSize: 17, color: 'black', fontWeight: 'bold' },
             tabStyle: { width: 70 },
-            style: { backgroundColor: '#62CCAD' },
             activeTintColor: 'white',
-            indicatorStyle: { backgroundColor: 'white' },
+            indicatorStyle: { backgroundColor: '#62CCAD' },
           }}
         >
           <Tab.Screen
             name='홈'
             component={DetailHomeBody}
-            initialParams={this.props.route.params.theCenterInfo}
+            initialParams={theCenterInfo}
           />
           <Tab.Screen
             name='리뷰'
             component={DetailReviewsContainer}
-            initialParams={this.props.route.params.theCenterInfo}
+            initialParams={theCenterInfo}
           />
           <Tab.Screen
             name='예약'
             component={DetailBookingContainer}
-            initialParams={this.props.route.params.theCenterInfo}
+            initialParams={theCenterInfo}
           />
         </Tab.Navigator>
       </Fragment>
@@ -162,6 +149,11 @@ const styles = StyleSheet.create({
     marginTop: '4%',
     fontSize: 17,
   },
+  noReview: {
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
+  },
   reviewContainer: {
     width: 260,
     marginTop: '2%',
@@ -180,13 +172,8 @@ const styles = StyleSheet.create({
   star: {
     left: 3,
   },
-  noReview: {
-    fontSize: 16,
-    width: '100%',
-    textAlign: 'center',
-  },
   iconBox: {
-    marginTop: '2%',
+    marginTop: '4%',
     flexDirection: 'row',
   },
   iconSet: {

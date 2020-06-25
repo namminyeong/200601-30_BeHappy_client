@@ -28,9 +28,10 @@ export default function DetailHomeBody(props) {
         <MaterialCommunityIcons name='city' size={25} />
         <Text style={styles.text}>
           {'    '}
-          {props.route.params.roadAddressName}
+          {props.route.params.roadAddressName || props.route.params.addressName}
         </Text>
       </View>
+
       {props.route.params.phone ? (
         <View style={styles.lineBox}>
           <MaterialCommunityIcons name='phone-classic' size={25} />

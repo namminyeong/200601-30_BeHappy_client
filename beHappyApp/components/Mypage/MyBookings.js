@@ -39,7 +39,6 @@ class MyBookings extends React.Component {
   }
 
   modifyBookingState(index, booking) {
-    console.log('modifyBookingState', booking);
     let newState = Object.assign([], this.props.myBookings);
     newState[index].date = booking.date;
     newState[index].time = booking.time;

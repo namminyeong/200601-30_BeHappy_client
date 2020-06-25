@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MapContainer from '../../containers/MapContainer';
 import SearchNameContainer from '../../containers/SearchNameContainer';
 import Details from './details/Details';
-import DetailsHome from './details/DetailsHome';
+import DetailHomeContainer from '../../containers/DetailHomeContainer';
 import FilterContainer from '../../containers/FilterContainer';
 
 const Stack = createStackNavigator();
@@ -45,8 +45,8 @@ function MapStack() {
         }}
       />
       <Stack.Screen
-        name='DetailsHome'
-        component={DetailsHome}
+        name='DetailHomeContainer'
+        component={DetailHomeContainer}
         options={{
           headerShown: false,
         }}

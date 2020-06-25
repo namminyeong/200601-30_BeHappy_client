@@ -212,7 +212,11 @@ class Map extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          this.postBookmarkState(data);
+          if (method === 'POST') {
+            this.postBookmarkState(data);
+          } else if (method === 'DELETE') {
+            this.deleteBookmarkState(centerId);
+          }
         }
       })
       .catch((error) => {
