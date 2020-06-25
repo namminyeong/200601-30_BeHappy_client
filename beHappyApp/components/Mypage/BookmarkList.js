@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   centerName: {
-    textDecorationLine: 'underline',
     fontSize: 18,
     fontWeight: 'bold',
   },

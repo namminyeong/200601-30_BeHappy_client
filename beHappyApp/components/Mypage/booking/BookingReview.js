@@ -22,12 +22,14 @@ class BookingReview extends React.Component {
       specialties: [],
       bookingInfo: this.props.route.params.booking,
       writeReviewModal: false,
+      isRating: false,
     };
 
     this.submitReview = this.submitReview.bind(this);
     this.checkSpecialties = this.checkSpecialties.bind(this);
     this.handleSpecialties = this.handleSpecialties.bind(this);
     this.handleWriteReviewModal = this.handleWriteReviewModal.bind(this);
+    this.isRating = this.isRating.bind(this);
   }
 
   submitReview() {
@@ -85,6 +87,12 @@ class BookingReview extends React.Component {
     });
   }
 
+  isRating(status) {
+    this.setState({
+      isRating: status,
+    });
+  }
+
   render() {
     const { bookingInfo, specialties } = this.state;
 
@@ -106,6 +114,7 @@ class BookingReview extends React.Component {
               fractions={1}
               defaultRating={0}
               onFinishRating={(rating) => {
+                this.isRating(true);
                 this.setState({
                   rate: rating,
                 });
@@ -144,11 +153,27 @@ class BookingReview extends React.Component {
               <Button
                 small
                 transparent
-                style={styles.completeButton}
-                onPress={this.submitReview}
+                style={
+                  this.state.isRating
+                    ? styles.completeButton
+                    : [styles.completeButton, styles.notCompleteButton]
+                }
+                onPress={this.state.isRating ? this.submitReview : ''}
               >
-                <Entypo name='check' size={27} />
-                <Text style={styles.completeText}>완료</Text>
+                <Entypo
+                  name='check'
+                  size={27}
+                  color={this.state.isRating ? 'black' : 'lightgrey'}
+                />
+                <Text
+                  style={
+                    this.state.isRating
+                      ? styles.completeText
+                      : styles.notCompleteText
+                  }
+                >
+                  완료
+                </Text>
               </Button>
             </View>
           </View>
@@ -222,8 +247,15 @@ const styles = StyleSheet.create({
     elevation: 4,
     backgroundColor: 'white',
   },
+  notCompleteButton: {
+    borderColor: 'lightgrey',
+  },
   completeText: {
     fontSize: 20,
+  },
+  notCompleteText: {
+    fontSize: 20,
+    color: 'lightgrey',
   },
   selected: {
     backgroundColor: '#62ccad',

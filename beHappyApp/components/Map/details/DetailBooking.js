@@ -182,9 +182,7 @@ export default class Booking extends React.Component {
     };
     newBooking.center = center;
     newState.push(newBooking);
-    let sortData = newState
-      .sort((a, b) => a.time < b.time)
-      .sort((a, b) => a.date < b.date);
+    let sortData = newState.sort((a, b) => a.date < b.date);
 
     this.props.controlmyBookings(sortData);
     this.completeBooking();

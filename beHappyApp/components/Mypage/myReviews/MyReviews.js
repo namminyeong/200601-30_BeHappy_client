@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import { Button } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -14,6 +15,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 import DeleteReviewModal from './DeleteReviewModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class MyReviews extends React.Component {
   constructor(props) {
@@ -222,16 +224,31 @@ class MyReviews extends React.Component {
                           <FontAwesome name='trash-o' size={23} />
                         </Button>
                       </View>
-                      <Text
-                        style={
-                          review.centerName.length > 16
-                            ? styles.centernameLong
-                            : styles.centername
-                        }
-                        onPress={() => this.goToMarker(review.centerId)}
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.goToMarker(review.centerId);
+                        }}
+                        style={{
+                          flexDirection: 'row',
+                          alignSelf: 'flex-start',
+                        }}
                       >
-                        {review.centerName}
-                      </Text>
+                        <Text
+                          style={
+                            review.centerName.length > 16
+                              ? styles.centernameLong
+                              : styles.centername
+                          }
+                          onPress={() => this.goToMarker(review.centerId)}
+                        >
+                          {review.centerName}
+                        </Text>
+                        <MaterialCommunityIcons
+                          name='map-marker-radius'
+                          size={20}
+                          style={styles.icon}
+                        />
+                      </TouchableOpacity>
                       <Text>진료일자 : {review.date}</Text>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={styles.rate}>
@@ -353,16 +370,14 @@ const styles = StyleSheet.create({
   },
   centername: {
     alignSelf: 'flex-start',
-    textDecorationLine: 'underline',
     marginBottom: 2,
     fontSize: 18,
     fontWeight: 'bold',
   },
   centernameLong: {
     alignSelf: 'flex-start',
-    textDecorationLine: 'underline',
     marginBottom: 2,
-    fontSize: 17,
+    fontSize: 16,
     letterSpacing: -2,
     fontWeight: 'bold',
   },

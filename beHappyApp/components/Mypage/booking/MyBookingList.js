@@ -9,6 +9,7 @@ import {
 import Moment from 'moment';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import BookingDeleteModal from './BookingDeleteModal';
 
@@ -68,9 +69,17 @@ const MyBookingList = ({
   return (
     <View style={styles.container}>
       <View style={styles.bookingInfo}>
-        <Text style={styles.bookingCenter} onPress={getCenterInfo}>
-          {booking.center.centerName}
-        </Text>
+        <TouchableOpacity
+          onPress={getCenterInfo}
+          style={{ flexDirection: 'row' }}
+        >
+          <Text style={styles.bookingCenter}>{booking.center.centerName}</Text>
+          <MaterialCommunityIcons
+            name='map-marker-radius'
+            size={20}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
         <Text style={styles.bookingDate}>
           예약 일시 : {booking.date} / {booking.time.slice(0, 5)}
         </Text>
@@ -177,7 +186,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 19,
     marginBottom: 10,
-    textDecorationLine: 'underline',
   },
   bookingDate: {
     fontWeight: 'bold',
