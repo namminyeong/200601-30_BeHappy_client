@@ -6,6 +6,8 @@ import SearchName from '../components/Map/SearchName';
 import {
   controlCenterData,
   controlShowDetail,
+  controlCenterTags,
+  controlSpecialties,
 } from '../modules(reducers)/currentOnMap';
 
 const SearchNameContainer = ({
@@ -14,6 +16,8 @@ const SearchNameContainer = ({
   token,
   controlShowDetail,
   route,
+  controlCenterTags,
+  controlSpecialties,
 }) => {
   return (
     <SearchName
@@ -22,6 +26,8 @@ const SearchNameContainer = ({
       token={token}
       controlShowDetail={controlShowDetail}
       goSpecificLocationAfterSearch={route.params.goSpecificLocationAfterSearch}
+      controlCenterTags={controlCenterTags}
+      controlSpecialties={controlSpecialties}
     />
   );
 };
@@ -35,6 +41,8 @@ const mapDispatchToProps = (dispatch) => {
     {
       controlCenterData,
       controlShowDetail,
+      controlCenterTags,
+      controlSpecialties,
     },
     dispatch
   );
