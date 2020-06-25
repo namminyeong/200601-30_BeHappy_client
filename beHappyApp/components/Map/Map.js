@@ -230,7 +230,6 @@ class Map extends React.Component {
   }
 
   postBookmarkState(centerInfo) {
-    console.log('postBookmarkState');
     let newBookmarkState = Object.assign([], this.props.bookmark);
     newBookmarkState.unshift(centerInfo);
     this.props.controlBookmark(newBookmarkState);
