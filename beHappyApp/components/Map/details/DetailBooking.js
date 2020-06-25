@@ -93,16 +93,13 @@ export default class Booking extends React.Component {
         return '';
       })
       .then((payload) => {
-        console.log('getCenterBooking', payload);
         let centerBookingData = payload === 'string' ? [] : payload;
         this.blockTime(centerBookingData);
-      })
-      .then(() =>
         this.setState({
           isSelectDate: true,
           isSelectTime: false,
-        })
-      )
+        });
+      })
       .catch((error) => ('error', error));
   }
 

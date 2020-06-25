@@ -48,11 +48,8 @@ export default class DetailReviews extends React.Component {
         return '';
       })
       .then((payload) => {
-        console.log('getCenterReviews', payload);
         this.setState({
-          reviewsData: payload.sort((a, b) => {
-            return a.time > b.time;
-          }),
+          reviewsData: payload.reverse(),
         });
       });
   }
