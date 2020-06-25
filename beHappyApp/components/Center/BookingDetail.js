@@ -79,25 +79,25 @@ export default class BookingDetail extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.bucket}>
-          <Text style={styles.section}>날짜</Text>
-          <Text>{date}</Text>
+          <Text style={styles.section}>날{'    '}짜 :</Text>
+          <Text style={styles.info}>{date}</Text>
         </View>
         <View style={styles.bucket}>
-          <Text style={styles.section}>시간</Text>
-          <Text>{time.slice(0, 5)}</Text>
+          <Text style={styles.section}>시{'    '}간 :</Text>
+          <Text style={styles.info}>{time.slice(0, 5)}</Text>
         </View>
         <View style={styles.bucket}>
-          <Text style={styles.section}>이름</Text>
-          <Text>{name}</Text>
+          <Text style={styles.section}>이{'    '}름 :</Text>
+          <Text style={styles.info}>{name}</Text>
         </View>
         <View style={styles.bucket}>
-          <Text style={styles.section}>연락처</Text>
-          <Text>{phone}</Text>
+          <Text style={styles.section}>연락처 :</Text>
+          <Text style={styles.info}>{phone}</Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.section}>상담 이유</Text>
           <ScrollView showsHorizontalScrollIndicator={false}>
-            <Text style={{ padding: 10 }}>{content}</Text>
+            <Text style={styles.infoContent}>{content}</Text>
           </ScrollView>
         </View>
         <View
@@ -158,12 +158,24 @@ export default class BookingDetail extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: '4%',
+    padding: '4%',
+    backgroundColor: 'white',
   },
   section: {
-    color: '#62CCAD',
-    paddingRight: 20,
+    paddingRight: 6,
+    fontSize: 20,
     fontWeight: 'bold',
+  },
+  info: {
+    fontSize: 20,
+  },
+  infoContent: {
+    fontSize: 20,
+    padding: 10,
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: 'lightgrey',
+    height: 200,
   },
   bucket: {
     paddingTop: 10,

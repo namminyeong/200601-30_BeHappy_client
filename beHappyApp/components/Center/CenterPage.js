@@ -132,11 +132,11 @@ export default class CenterPage extends React.Component {
                       {booking.bookingState === 'booked'
                         ? '예약중'
                         : booking.bookingState === 'used'
-                        ? '완료'
+                        ? '진료완료'
                         : booking.bookingState === 'notUsed'
-                        ? '미완료'
+                        ? '진료미완료'
                         : booking.bookingState === 'reviewed'
-                        ? '리뷰'
+                        ? '리뷰완료'
                         : null}
                     </Text>
                   </View>
