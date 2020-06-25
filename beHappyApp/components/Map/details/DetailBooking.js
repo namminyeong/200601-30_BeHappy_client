@@ -78,6 +78,7 @@ export default class Booking extends React.Component {
       selectDate;
 
     this.resetTime();
+
     fetch(url, {
       method: 'GET',
       credentials: 'include',
