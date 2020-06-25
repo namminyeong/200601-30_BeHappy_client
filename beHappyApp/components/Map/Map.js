@@ -271,7 +271,6 @@ class Map extends React.Component {
 
     const { myLatitude, myLongitude } = this.state;
     const { centerTags, showDetailsIndex, showDetails } = this.props;
-
     return (
       <View style={{ width: '100%', height: '100%', flex: 1 }}>
         <View style={styles.searchContainer}>
@@ -336,9 +335,7 @@ class Map extends React.Component {
             centerTags[center] === true && this.props[center] ? (
               this.props[center].map((centerInfo, index) => {
                 if (
-                  (centerInfo.specialties.length === 0 &&
-                    this.countSpecialties() > 0) ||
-                  this.countSpecialties() === 10 ||
+                  this.countSpecialties() === 9 ||
                   this.filterMarkerBySpecialties(centerInfo) === true
                 ) {
                   return (

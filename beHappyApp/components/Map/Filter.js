@@ -43,7 +43,6 @@ class Filter extends React.Component {
 
   completedModify() {
     const { specialties, centerTags } = this.state;
-
     if (
       Object.values(specialties).indexOf(true) === -1 ||
       Object.values(centerTags).indexOf(true) === -1

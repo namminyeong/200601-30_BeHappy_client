@@ -265,8 +265,8 @@ class MyReviews extends React.Component {
                   <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                       <Text style={styles.modalText}>
-                        리뷰를 삭제하면 다시 해당 예약건에 대해 다시 리뷰를 쓰실
-                        수 없습니다.
+                        리뷰를 삭제하면 해당 예약건에 대해 리뷰를 쓰실 수
+                        없습니다.
                       </Text>
                       <Text style={styles.confirmText}>
                         리뷰를 정말 삭제하시겠습니까?

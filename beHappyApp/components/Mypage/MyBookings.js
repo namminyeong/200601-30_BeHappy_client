@@ -66,7 +66,10 @@ class MyBookings extends React.Component {
       .then((data) => {
         if (typeof data === 'object') {
           if (!data.errorCode) {
-            let sortData = data.sort((a, b) => a.date < b.date);
+            let sortData = data
+              .sort((a, b) => a.time < b.time)
+              .sort((a, b) => a.date < b.date);
+
             this.props.controlmyBookings(sortData);
           }
           this.handleLoading(false);
