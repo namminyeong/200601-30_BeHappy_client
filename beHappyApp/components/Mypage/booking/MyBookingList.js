@@ -33,7 +33,6 @@ const MyBookingList = ({
 
   const date = Moment(new Date()).format('yyyy-MM-DD');
   const time = Moment(new Date()).format('HH:mm');
-  const bookingTime = booking.time.slice(0, 5);
 
   const getCenterInfo = () => {
     let url = ec2 + '/center?centerId=' + booking.center.id;
@@ -110,15 +109,13 @@ const MyBookingList = ({
             <Text style={styles.blockText}>예약 수정</Text>
             <Text style={styles.blockText}>예약 취소</Text>
           </Fragment>
-        ) : booking.bookingState === 'booked' &&
-          booking.date <= date &&
-          bookingTime <= time ? (
+        ) : booking.bookingState === 'booked' && booking.date <= date ? (
           <Fragment>
             <Text style={styles.blockText}>리뷰 쓰기</Text>
             <Text style={styles.blockText}>예약 수정</Text>
             <Text style={styles.blockText}>예약 취소</Text>
           </Fragment>
-        ) : (booking.bookingState === 'booked' && booking.date !== date) ||
+        ) : booking.bookingState === 'booked' ||
           booking.time.slice(0, 5) !== time ? (
           <Fragment>
             <Text style={styles.blockText}>리뷰 쓰기</Text>

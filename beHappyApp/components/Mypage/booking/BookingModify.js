@@ -97,8 +97,7 @@ export default class BookingModify extends React.Component {
     const { centerName, bookingId, date, name, phone, content } = this.state;
     const { index, modifyBookingState, token } = this.props.route.params;
 
-    let time = this.state.time[0];
-
+    let newTime = this.state.time + ':00';
     this.resetTime();
 
     fetch(ec2 + '/booking', {
@@ -108,7 +107,14 @@ export default class BookingModify extends React.Component {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ bookingId, date, time, name, phone, content }),
+      body: JSON.stringify({
+        bookingId,
+        date,
+        time: newTime,
+        name,
+        phone,
+        content,
+      }),
     })
       .then((res) => {
         if (res.status === 200) {
@@ -117,7 +123,7 @@ export default class BookingModify extends React.Component {
             centerName,
             bookingId,
             date,
-            time,
+            time: newTime,
             name,
             phone,
             content,
