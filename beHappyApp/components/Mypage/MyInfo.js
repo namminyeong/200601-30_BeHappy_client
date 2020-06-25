@@ -68,13 +68,12 @@ class MyInfo extends React.Component {
       });
   }
 
-  modifyPreference(token) {
-    const {
-      currentSpecialties,
-      currentKindOfCenters,
-      currentCity,
-      currentStates,
-    } = this.state;
+  modifyPreference(
+    currentSpecialties,
+    currentKindOfCenters,
+    currentCity,
+    currentStates
+  ) {
     let url = ec2 + '/preference';
 
     fetch(url, {
@@ -82,7 +81,7 @@ class MyInfo extends React.Component {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${this.props.route.params.token}`,
       },
       body: JSON.stringify({
         specialties: currentSpecialties,
@@ -184,8 +183,12 @@ class MyInfo extends React.Component {
                         .filter((el) => el !== null),
                     });
                 this.modifyPreference(
-                  currentSpecialties,
-                  currentKindOfCenters,
+                  userSpecialties
+                    .map((data) => (data[1] ? data[0] : null))
+                    .filter((el) => el !== null),
+                  userKindOfCenters
+                    .map((data) => (data[1] ? data[0] : null))
+                    .filter((el) => el !== null),
                   currentCity,
                   currentStates
                 );
