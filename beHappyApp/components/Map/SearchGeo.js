@@ -136,7 +136,9 @@ class SearchGeo extends React.Component {
     }
     if (value !== null) {
       this.selectState(true);
-      this.getCoordinate(value);
+      if (value !== 'ㄱ~ㅅ' && value !== 'ㅇ~ㅎ') {
+        this.getCoordinate(value);
+      }
     } else {
       this.selectState(false);
     }
