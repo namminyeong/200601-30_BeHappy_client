@@ -49,9 +49,7 @@ export default class DetailReviews extends React.Component {
       })
       .then((payload) => {
         this.setState({
-          reviewsData: payload.sort((a, b) => {
-            return a.time > b.time ? 1 : -1;
-          }),
+          reviewsData: payload.reverse(),
         });
       });
   }

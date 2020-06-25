@@ -1,14 +1,13 @@
 const Specialties = [
-  ['스트레스', false],
-  ['가족', false],
-  ['우울증', false],
-  ['식이', false],
-  ['부부', false],
   ['불면증', false],
-  ['학교폭력', false],
-  ['아동', false],
+  ['우울증', false],
   ['불안', false],
-  ['강박', false],
+  ['가족', false],
+  ['부부', false],
+  ['아동·청소년', false],
+  ['공황', false],
+  ['중독', false],
+  ['자해·자살', false],
 ];
 
 const SpecialtiesArray = [
@@ -322,4 +321,3 @@ const States = {
 const KindOfCenters = [['심리상담소', false], ['정신과', false]];
 
 export { Specialties, States, KindOfCenters, Cities, SpecialtiesArray };
-

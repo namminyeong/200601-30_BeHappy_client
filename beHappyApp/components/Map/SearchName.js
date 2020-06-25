@@ -45,7 +45,6 @@ class SearchName extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          let keys = Object.keys(data);
           if (data.counseling.length + data.psychiatric.length === 0) {
             this.handleModalNameShown(true);
             this.props.controlShowDetail(false, null);
@@ -73,21 +72,8 @@ class SearchName extends React.Component {
           } else {
             let lat = [];
             let lon = [];
-            keys.map((key) => {
-              lat.push(
-                data[key].reduce(
-                  (acc, cur) => {
-                    if (cur.latitude > acc.maxLat) {
-                      return Object.assign({}, acc, { maxLat: cur.latitude });
-                    } else if (cur.latitude < acc.minLat) {
-                      return Object.assign({}, acc, { minLat: cur.latitude });
-                    }
-                    return acc;
-                  },
-                  { maxLat: 33, minLat: 38.6 }
-                )
-              );
-            });
+            let keys = Object.keys(data);
+
             keys.map((key) => {
               lon.push(
                 data[key].reduce(
@@ -99,21 +85,44 @@ class SearchName extends React.Component {
                     }
                     return acc;
                   },
-                  { maxLon: 125, minLon: 131.4 }
+                  {
+                    maxLon: data[key].length > 0 ? data[key][0].longitude : 125,
+                    minLon: data[key].length > 0 ? data[key][0].longitude : 132,
+                  }
+                )
+              );
+
+              lat.push(
+                data[key].reduce(
+                  (acc, cur) => {
+                    if (cur.latitude > acc.maxLat) {
+                      return Object.assign({}, acc, { maxLat: cur.latitude });
+                    } else if (cur.latitude < acc.minLat) {
+                      return Object.assign({}, acc, { minLat: cur.latitude });
+                    }
+                    return acc;
+                  },
+                  {
+                    maxLat: data[key].length > 0 ? data[key][0].latitude : 33,
+                    minLat: data[key].length > 0 ? data[key][0].latitude : 39,
+                  }
                 )
               );
             });
+
             let maxLon = Math.max(lon[0].maxLon, lon[1].maxLon);
             let minLon = Math.min(lon[0].minLon, lon[1].minLon);
             let maxLat = Math.max(lat[0].maxLat, lat[1].maxLat);
             let minLat = Math.min(lat[0].minLat, lat[1].minLat);
+
             this.props.goSpecificLocationAfterSearch({
               longitude: (maxLon + minLon) / 2,
               latitude: (maxLat + minLat) / 2,
-              longitudeDelta: maxLon - minLon,
-              latitudeDelta: maxLat - minLat + 2,
+              longitudeDelta: (maxLon - minLon) * 1.2,
+              latitudeDelta: (maxLat - minLat) * 1,
             });
             this.props.controlCenterData(data.counseling, data.psychiatric);
+            this.props.controlShowDetail(false, null);
             this.goBack();
           }
         }

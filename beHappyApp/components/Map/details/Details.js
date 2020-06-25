@@ -6,7 +6,7 @@ import DetailsMiniStarRateAvg from './DetailsMiniStarRateAvg';
 
 function Details({ navigation, centerInfo, bookmark, postBookmark }) {
   const showDetailHome = () => {
-    navigation.navigate('DetailsHome', {
+    navigation.navigate('DetailHomeContainer', {
       theCenterInfo: centerInfo,
       bookmark: bookmark,
       postDeletebookmark: postDeletebookmark,
@@ -53,7 +53,7 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
       <View style={{ flexDirection: 'row' }}>
         <MaterialCommunityIcons
           name='bookmark'
-          color={bookmark ? 'black' : 'lightgrey'}
+          color={bookmark ? '#62CCAD' : 'lightgrey'}
           size={40}
           style={{ marginHorizontal: 2 }}
           onPress={() => postDeletebookmark(bookmark, centerInfo.id)}

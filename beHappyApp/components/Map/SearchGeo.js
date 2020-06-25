@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button } from 'native-base';
 import getEnvVars from '../../environment';
 const { ec2, kakaoApi } = getEnvVars();
@@ -16,6 +16,7 @@ class SearchGeo extends React.Component {
       stateSelected: false,
       range: null,
       modalShown: false,
+      isLoading: false,
     };
     this.inputCity = this.inputCity.bind(this);
     this.inputState = this.inputState.bind(this);
@@ -24,15 +25,11 @@ class SearchGeo extends React.Component {
     this.getCoordinate = this.getCoordinate.bind(this);
     this.getCenterWithCoordinate = this.getCenterWithCoordinate.bind(this);
     this.inputRange = this.inputRange.bind(this);
-  }
-
-  componentDidUpdate() {
-    if (this.state.state) {
-      this.getCoordinate();
-    }
+    this.handleLoading = this.handleLoading.bind(this);
   }
 
   getCoordinate() {
+    this.handleLoading(true);
     let url =
       'https://dapi.kakao.com/v2/local/search/address.json?query=' +
       this.state.city +
@@ -59,8 +56,8 @@ class SearchGeo extends React.Component {
           this.props.goSpecificLocationAfterSearch({
             latitude: Number(lat),
             longitude: Number(lon),
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.1,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
           });
         }
       });
@@ -97,6 +94,7 @@ class SearchGeo extends React.Component {
           this.props.controlShowDetail(false, null);
           this.props.controlCenterData(counseling, psychiatric);
         }
+        this.handleLoading(false);
         this.props.goBack();
       });
   }
@@ -137,6 +135,7 @@ class SearchGeo extends React.Component {
     }
     if (value !== null) {
       this.selectState(true);
+      this.getCoordinate();
     } else {
       this.selectState(false);
     }
@@ -154,154 +153,174 @@ class SearchGeo extends React.Component {
     });
   }
 
+  handleLoading(status) {
+    this.setState({
+      isLoading: status,
+    });
+  }
+
   render() {
     return (
       <View>
-        <View style={styles.cities}>
-          {Cities.map((city) => (
-            <Button
-              key={city}
-              transparent
-              style={styles.citiesBtn}
-              onPress={() => this.inputCity(city)}
-            >
-              <Text
-                style={
-                  this.state.city !== city
-                    ? styles.citiesText
-                    : [styles.citiesText, styles.citiesTextSelcted]
-                }
-              >
-                {city}
-              </Text>
-            </Button>
-          ))}
-        </View>
-        <View style={styles.statesStart}>
-          {this.state.citySelected ? (
-            this.state.city !== '경기도' ? (
-              <>
-                <Text>시/군/구도 선택해주세요</Text>
-                <View style={styles.states}>
-                  {States[this.state.city].sort().map((state) => (
-                    <Button
-                      key={state}
-                      transparent
-                      style={styles.citiesBtn}
-                      onPress={() => this.inputState(state)}
-                    >
-                      <Text
-                        style={
-                          this.state.state !== state
-                            ? styles.citiesText
-                            : [styles.citiesText, styles.citiesTextSelcted]
-                        }
-                      >
-                        {state}
-                      </Text>
-                    </Button>
-                  ))}
-                </View>
-              </>
-            ) : (
-              <>
-                <Text>
-                  선택하실 경기도 내의 시/군/구가 포함된 자음을 선택해주세요
-                </Text>
-                <View style={styles.states}>
-                  <Button
-                    key='before'
-                    transparent
-                    style={styles.citiesBtn}
-                    onPress={() => this.inputState('ㄱ~ㅅ')}
-                  >
-                    <Text
-                      style={
-                        this.state.range !== 'ㄱ~ㅅ'
-                          ? styles.citiesText
-                          : [styles.citiesText, styles.citiesTextSelcted]
-                      }
-                    >
-                      ㄱ~ㅅ
-                    </Text>
-                  </Button>
-                  <Button
-                    key='after'
-                    transparent
-                    style={styles.citiesBtn}
-                    onPress={() => this.inputState('ㅇ~ㅎ')}
-                  >
-                    <Text
-                      style={
-                        this.state.range !== 'ㅇ~ㅎ'
-                          ? styles.citiesText
-                          : [styles.citiesText, styles.citiesTextSelcted]
-                      }
-                    >
-                      ㅇ~ㅎ
-                    </Text>
-                  </Button>
-                </View>
-              </>
-            )
-          ) : (
-            <></>
-          )}
-        </View>
-        <View style={styles.statesStart}>
-          {this.state.stateSelected && this.state.range ? (
-            <>
-              <Text>시/군/구를 선택해주세요</Text>
-              <View style={styles.states}>
-                {States[this.state.city]
-                  .sort()
-                  .filter((state) => {
-                    let code = state.charCodeAt(0);
-                    if (
-                      this.state.range === 'ㄱ~ㅅ' &&
-                      Number(code.toString().slice(0, 2)) <= 49
-                    ) {
-                      return true;
-                    } else if (
-                      this.state.range === 'ㅇ~ㅎ' &&
-                      Number(code.toString().slice(0, 2)) > 49
-                    ) {
-                      return true;
+        {this.state.isLoading ? (
+          <View style={styles.loading}>
+            <ActivityIndicator size='large' color='#0000ff' />
+          </View>
+        ) : (
+          <>
+            <View style={styles.cities}>
+              {Cities.map((city) => (
+                <Button
+                  key={city}
+                  transparent
+                  style={styles.citiesBtn}
+                  onPress={() => this.inputCity(city)}
+                >
+                  <Text
+                    style={
+                      this.state.city !== city
+                        ? styles.citiesText
+                        : [styles.citiesText, styles.citiesTextSelcted]
                     }
-                    return false;
-                  })
-                  .map((state) => {
-                    return (
+                  >
+                    {city}
+                  </Text>
+                </Button>
+              ))}
+            </View>
+            <View style={styles.statesStart}>
+              {this.state.citySelected ? (
+                this.state.city !== '경기도' ? (
+                  <>
+                    <Text>시/군/구도 선택해주세요</Text>
+                    <View style={styles.states}>
+                      {States[this.state.city].sort().map((state) => (
+                        <Button
+                          key={state}
+                          transparent
+                          style={styles.citiesBtn}
+                          onPress={() => this.inputState(state)}
+                        >
+                          <Text
+                            style={
+                              this.state.state !== state
+                                ? styles.citiesText
+                                : [styles.citiesText, styles.citiesTextSelcted]
+                            }
+                          >
+                            {state}
+                          </Text>
+                        </Button>
+                      ))}
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <Text>
+                      선택하실 경기도 내의 시/군/구가 포함된 자음을 선택해주세요
+                    </Text>
+                    <View style={styles.states}>
                       <Button
-                        key={state}
+                        key='before'
                         transparent
                         style={styles.citiesBtn}
-                        onPress={() => this.inputState(state)}
+                        onPress={() => this.inputState('ㄱ~ㅅ')}
                       >
                         <Text
                           style={
-                            this.state.state !== state
+                            this.state.range !== 'ㄱ~ㅅ'
                               ? styles.citiesText
                               : [styles.citiesText, styles.citiesTextSelcted]
                           }
                         >
-                          {state}
+                          ㄱ~ㅅ
                         </Text>
                       </Button>
-                    );
-                  })}
-              </View>
-            </>
-          ) : (
-            <></>
-          )}
-        </View>
+                      <Button
+                        key='after'
+                        transparent
+                        style={styles.citiesBtn}
+                        onPress={() => this.inputState('ㅇ~ㅎ')}
+                      >
+                        <Text
+                          style={
+                            this.state.range !== 'ㅇ~ㅎ'
+                              ? styles.citiesText
+                              : [styles.citiesText, styles.citiesTextSelcted]
+                          }
+                        >
+                          ㅇ~ㅎ
+                        </Text>
+                      </Button>
+                    </View>
+                  </>
+                )
+              ) : (
+                <></>
+              )}
+            </View>
+            <View style={styles.statesStart}>
+              {this.state.stateSelected && this.state.range ? (
+                <>
+                  <Text>시/군/구를 선택해주세요</Text>
+                  <View style={styles.states}>
+                    {States[this.state.city]
+                      .sort()
+                      .filter((state) => {
+                        let code = state.charCodeAt(0);
+                        if (
+                          this.state.range === 'ㄱ~ㅅ' &&
+                          Number(code.toString().slice(0, 2)) <= 49
+                        ) {
+                          return true;
+                        } else if (
+                          this.state.range === 'ㅇ~ㅎ' &&
+                          Number(code.toString().slice(0, 2)) > 49
+                        ) {
+                          return true;
+                        }
+                        return false;
+                      })
+                      .map((state) => {
+                        return (
+                          <Button
+                            key={state}
+                            transparent
+                            style={styles.citiesBtn}
+                            onPress={() => this.inputState(state)}
+                          >
+                            <Text
+                              style={
+                                this.state.state !== state
+                                  ? styles.citiesText
+                                  : [
+                                      styles.citiesText,
+                                      styles.citiesTextSelcted,
+                                    ]
+                              }
+                            >
+                              {state}
+                            </Text>
+                          </Button>
+                        );
+                      })}
+                  </View>
+                </>
+              ) : (
+                <></>
+              )}
+            </View>
+          </>
+        )}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    top: 200,
+  },
   cities: {
     flexDirection: 'row',
     flexWrap: 'wrap',

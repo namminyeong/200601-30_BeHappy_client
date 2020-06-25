@@ -9,6 +9,7 @@ import {
 import Moment from 'moment';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import BookingDeleteModal from './BookingDeleteModal';
 
@@ -32,7 +33,6 @@ const MyBookingList = ({
 
   const date = Moment(new Date()).format('yyyy-MM-DD');
   const time = Moment(new Date()).format('HH:mm');
-  const bookingTime = booking.time.slice(0, 5);
 
   const getCenterInfo = () => {
     let url = ec2 + '/center?centerId=' + booking.center.id;
@@ -68,9 +68,17 @@ const MyBookingList = ({
   return (
     <View style={styles.container}>
       <View style={styles.bookingInfo}>
-        <Text style={styles.bookingCenter} onPress={getCenterInfo}>
-          {booking.center.centerName}
-        </Text>
+        <TouchableOpacity
+          onPress={getCenterInfo}
+          style={{ flexDirection: 'row' }}
+        >
+          <Text style={styles.bookingCenter}>{booking.center.centerName}</Text>
+          <MaterialCommunityIcons
+            name='map-marker-radius'
+            size={20}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
         <Text style={styles.bookingDate}>
           예약 일시 : {booking.date} / {booking.time.slice(0, 5)}
         </Text>
@@ -101,15 +109,13 @@ const MyBookingList = ({
             <Text style={styles.blockText}>예약 수정</Text>
             <Text style={styles.blockText}>예약 취소</Text>
           </Fragment>
-        ) : booking.bookingState === 'booked' &&
-          booking.date <= date &&
-          bookingTime <= time ? (
+        ) : booking.bookingState === 'booked' && booking.date <= date ? (
           <Fragment>
             <Text style={styles.blockText}>리뷰 쓰기</Text>
             <Text style={styles.blockText}>예약 수정</Text>
             <Text style={styles.blockText}>예약 취소</Text>
           </Fragment>
-        ) : (booking.bookingState === 'booked' && booking.date !== date) ||
+        ) : booking.bookingState === 'booked' ||
           booking.time.slice(0, 5) !== time ? (
           <Fragment>
             <Text style={styles.blockText}>리뷰 쓰기</Text>
@@ -177,7 +183,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 19,
     marginBottom: 10,
-    textDecorationLine: 'underline',
   },
   bookingDate: {
     fontWeight: 'bold',
