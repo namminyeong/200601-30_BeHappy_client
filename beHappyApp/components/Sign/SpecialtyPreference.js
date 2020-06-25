@@ -6,7 +6,6 @@ const { ec2 } = getEnvVars();
 
 import { SpecialtiesArray } from '../../Data/Preference';
 
-
 class SpecialtyPreference extends React.Component {
   constructor(props) {
     super(props);
@@ -62,7 +61,7 @@ class SpecialtyPreference extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.preference}>
-          <Text style={styles.section}>선호도 조사</Text>
+          <Text style={styles.section}>상세 관심사</Text>
           <Text style={{ marginTop: '2%' }}>
             * 아래의 내용을 바탕으로 상담소를 사용자의 관심사에 따라 추천하는
             순서대로 빨간색-주황색-노란색으로 표시합니다.
@@ -121,6 +120,9 @@ const styles = {
     fontSize: 22,
     marginBottom: 10,
     fontWeight: 'bold',
+    paddingBottom: 10,
+    borderBottomColor: '#199187',
+    borderBottomWidth: 1,
   },
   preference: {
     marginTop: '4%',
