@@ -466,7 +466,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='username'
+                  placeholder='id'
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
@@ -563,7 +563,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='username'
+                  placeholder='id'
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
