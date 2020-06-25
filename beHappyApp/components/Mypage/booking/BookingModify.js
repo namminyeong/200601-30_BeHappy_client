@@ -19,6 +19,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CompleteModal from '../../../Modal/CompleteModal';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
+
+const checkNickname = /^[ㄱ-ㅎ|가-힣]+$/;
 const checkNumber = /^[0-9]{10,11}$/;
 
 export default class BookingModify extends React.Component {
@@ -49,7 +51,6 @@ export default class BookingModify extends React.Component {
         ['16:00', false],
         ['17:00', false],
       ],
-      modifyBookingModal: false,
     };
 
     this.getCenterBooking = this.getCenterBooking.bind(this);
@@ -61,7 +62,6 @@ export default class BookingModify extends React.Component {
     this.resetTime = this.resetTime.bind(this);
     this.backTime = this.backTime.bind(this);
     this.checkUserInfo = this.checkUserInfo.bind(this);
-    this.handleModifyBookingModal = this.handleModifyBookingModal.bind(this);
   }
 
   getCenterBooking(date) {
@@ -112,7 +112,6 @@ export default class BookingModify extends React.Component {
     })
       .then((res) => {
         if (res.status === 200) {
-          this.handleModifyBookingModal(true);
           modifyBookingState(index, {
             centerName,
             bookingId,
@@ -198,19 +197,13 @@ export default class BookingModify extends React.Component {
       ? this.setState({
           isChanged: false,
         })
-      : checkNumber.test(phone)
+      : checkNickname.test(name) && checkNumber.test(phone)
       ? this.setState({
           isChanged: true,
         })
       : this.setState({
           isChanged: false,
         });
-  }
-
-  handleModifyBookingModal(status) {
-    this.setState({
-      modifyBookingModal: status,
-    });
   }
 
   render() {
@@ -337,7 +330,19 @@ export default class BookingModify extends React.Component {
                       this.checkUserInfo();
                     }}
                   />
+                  {name === '' || checkNickname.test(name) ? null : (
+                    <MaterialCommunityIcons
+                      name='alert-circle-outline'
+                      size={18}
+                      style={{ color: '#941818', right: 20 }}
+                    />
+                  )}
                 </View>
+                {name === '' || checkNickname.test(name) ? null : (
+                  <Text style={{ color: '#941818', left: 60, fontSize: 10 }}>
+                    한글만 입력해주세요.
+                  </Text>
+                )}
                 <View style={styles.textArea}>
                   <Text style={styles.section}>연락처</Text>
                   <TextInput
@@ -359,7 +364,7 @@ export default class BookingModify extends React.Component {
                 </View>
                 {phone === '' || checkNumber.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 60, fontSize: 10 }}>
-                    10-11자리 숫자만 입력해주세요
+                    핸드폰 번호를 확인해주세요.
                   </Text>
                 )}
 

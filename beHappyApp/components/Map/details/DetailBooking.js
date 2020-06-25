@@ -17,11 +17,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import CompleteModal from '../../../Modal/CompleteModal';
 import getEnvVars from '../../../environment';
 const { ec2 } = getEnvVars();
 
-import CompleteModal from '../../../Modal/CompleteModal';
-
+const checkNickname = /^[ㄱ-ㅎ|가-힣]+$/;
 const checkNumber = /^[0-9]{10,11}$/;
 
 export default class Booking extends React.Component {
@@ -274,7 +274,7 @@ export default class Booking extends React.Component {
       ? this.setState({
           isUserInfo: false,
         })
-      : checkNumber.test(phone)
+      : checkNickname.test(username) && checkNumber.test(phone)
       ? this.setState({
           isUserInfo: true,
         })
@@ -406,13 +406,29 @@ export default class Booking extends React.Component {
                       <Text style={styles.section}>이{'    '}름</Text>
                       <TextInput
                         style={styles.textBox}
+                        placeholder='이름을 써주세요. ex) 김아름'
                         value={username}
                         onChangeText={(username) => {
                           this.setState({ username });
                           this.checkUserInfo();
                         }}
                       />
+                      {username === '' ||
+                      checkNickname.test(username) ? null : (
+                        <MaterialCommunityIcons
+                          name='alert-circle-outline'
+                          size={18}
+                          style={{ color: '#941818', right: 20 }}
+                        />
+                      )}
                     </View>
+                    {username === '' || checkNickname.test(username) ? null : (
+                      <Text
+                        style={{ color: '#941818', left: 60, fontSize: 10 }}
+                      >
+                        한글만 입력해주세요.
+                      </Text>
+                    )}
                     <View style={styles.textArea}>
                       <Text style={styles.section}>연락처</Text>
                       <TextInput
@@ -436,7 +452,7 @@ export default class Booking extends React.Component {
                       <Text
                         style={{ color: '#941818', left: 60, fontSize: 10 }}
                       >
-                        10-11자리 숫자만 입력해주세요
+                        핸드폰 번호를 확인해주세요.
                       </Text>
                     )}
                     <View
