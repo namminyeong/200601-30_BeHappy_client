@@ -171,7 +171,7 @@ class Map extends React.Component {
       })
       .then((data) => {
         if (typeof data === 'object') {
-          this.props.controlBookmark(data.centers);
+          this.props.controlBookmark(data.centers.reverse());
         }
       })
       .catch((error) => {
@@ -214,8 +214,6 @@ class Map extends React.Component {
         if (typeof data === 'object') {
           if (method === 'POST') {
             this.postBookmarkState(data);
-          } else if (method === 'DELETE') {
-            this.deleteBookmarkState(centerId);
           }
         }
       })
@@ -232,8 +230,9 @@ class Map extends React.Component {
   }
 
   postBookmarkState(centerInfo) {
+    console.log('postBookmarkState');
     let newBookmarkState = Object.assign([], this.props.bookmark);
-    newBookmarkState.push(centerInfo);
+    newBookmarkState.unshift(centerInfo);
     this.props.controlBookmark(newBookmarkState);
   }
 
