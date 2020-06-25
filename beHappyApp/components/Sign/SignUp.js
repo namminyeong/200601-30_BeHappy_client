@@ -210,7 +210,7 @@ export default class SignUp extends React.Component {
     } else if (businessNumber.length !== 10) {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '사업자 번호는 10자리입니다.',
+        showAlertModalText: '사업자 번호를 확인해주세요.',
       });
     } else if (centerName === '') {
       this.setState({
@@ -257,15 +257,10 @@ export default class SignUp extends React.Component {
                 showAlertModal: true,
                 showAlertModalText: '이미 존재하는 id입니다.',
               });
-            } else if (payload.errorCode === 4) {
+            } else if (payload.errorCode === 4 || payload.errorCode === 5) {
               this.setState({
                 showAlertModal: true,
-                showAlertModalText: '이미 존재하는 center입니다.',
-              });
-            } else if (payload.errorCode === 5) {
-              this.setState({
-                showAlertModal: true,
-                showAlertModalText: '이미 존재하는 사업자 번호입니다.',
+                showAlertModalText: '이미 가입되어 있습니다.',
               });
             }
           }
