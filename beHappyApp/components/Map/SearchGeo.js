@@ -171,6 +171,7 @@ class SearchGeo extends React.Component {
           </View>
         ) : (
           <>
+            <Text>지역으로 검색하려면</Text>
             <View style={styles.cities}>
               {Cities.map((city) => (
                 <Button

@@ -184,7 +184,6 @@ class SearchName extends React.Component {
           </Header>
 
           <View style={styles.geoSearch}>
-            <Text>지역으로 검색하려면</Text>
             <SearchGeoContainer
               goSpecificLocationAfterSearch={
                 this.props.goSpecificLocationAfterSearch
