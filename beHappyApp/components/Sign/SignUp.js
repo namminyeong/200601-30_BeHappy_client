@@ -104,7 +104,7 @@ export default class SignUp extends React.Component {
     if (username === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: 'id를 입력해주세요.',
+        showAlertModalText: '아이디를 입력해주세요.',
       });
     } else if (password === '') {
       this.setState({
@@ -114,22 +114,22 @@ export default class SignUp extends React.Component {
     } else if (password.length < 8) {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '비밀번호는 8자리 이상이어야 합니다.',
+        showAlertModalText: '비밀번호는 8~20자리로 입력해주세요.',
       });
     } else if (nickname === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '이름을 입력해주세요.',
+        showAlertModalText: '성함을 입력해주세요.',
       });
     } else if (phone === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '핸드폰 번호를 입력해주세요.',
+        showAlertModalText: '연락처를 입력해주세요.',
       });
     } else if (phone.length < 10 || phone.length > 11) {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '핸드폰 번호를 확인해주세요.',
+        showAlertModalText: '연락처를 확인해주세요.',
       });
     } else {
       fetch(ec2 + '/user/signup', {
@@ -159,7 +159,7 @@ export default class SignUp extends React.Component {
             } else if (payload.errorCode === 3) {
               this.setState({
                 showAlertModal: true,
-                showAlertModalText: '이미 존재하는 id입니다.',
+                showAlertModalText: '이미 존재하는 아이디입니다.',
               });
             }
           }
@@ -190,7 +190,7 @@ export default class SignUp extends React.Component {
     if (username === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: 'id를 입력해주세요.',
+        showAlertModalText: '아이디를 입력해주세요.',
       });
     } else if (password === '') {
       this.setState({
@@ -200,7 +200,7 @@ export default class SignUp extends React.Component {
     } else if (password.length < 8) {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '비밀번호는 8자리 이상이어야 합니다.',
+        showAlertModalText: '비밀번호는 8~20자리로 입력해주세요.',
       });
     } else if (businessNumber === '') {
       this.setState({
@@ -255,7 +255,7 @@ export default class SignUp extends React.Component {
             } else if (payload.errorCode === 3) {
               this.setState({
                 showAlertModal: true,
-                showAlertModalText: '이미 존재하는 id입니다.',
+                showAlertModalText: '이미 존재하는 아이디입니다.',
               });
             } else if (payload.errorCode === 4 || payload.errorCode === 5) {
               this.setState({
@@ -334,10 +334,11 @@ export default class SignUp extends React.Component {
       city: value,
     });
     this.resetState();
-    if (value !== null) {
+    if (value) {
       this.selectCity(true);
     } else {
       this.selectCity(false);
+      this.resetState();
     }
   }
 
@@ -461,7 +462,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='id'
+                  placeholder='아이디'
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
@@ -481,7 +482,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='password'
+                  placeholder='비밀번호'
                   secureTextEntry={showPass}
                   placeholderTextColor={'gray'}
                   onChangeText={(password) => this.setState({ password })}
@@ -495,7 +496,7 @@ export default class SignUp extends React.Component {
                 </TouchableOpacity>
                 {password === '' || checkPassword.test(password) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    비밀번호는 8자리 이상이어야합니다.
+                    비밀번호는 8~20자리로 입력해주세요.
                   </Text>
                 )}
               </View>
@@ -509,7 +510,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='이름을 써주세요. ex) 김아름'
+                  placeholder='성함'
                   placeholderTextColor={'gray'}
                   onChangeText={(nickname) => this.setState({ nickname })}
                 />
@@ -529,13 +530,13 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='phone'
+                  placeholder='연락처'
                   placeholderTextColor={'gray'}
                   onChangeText={(phone) => this.setState({ phone })}
                 />
                 {phone === '' || checkPhone.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    핸드폰 번호를 확인해주세요.
+                    연락처를 확인해주세요.
                   </Text>
                 )}
               </View>
@@ -558,7 +559,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='id'
+                  placeholder='아이디'
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
@@ -578,7 +579,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='password'
+                  placeholder='비밀번호'
                   secureTextEntry={showPass}
                   placeholderTextColor={'gray'}
                   onChangeText={(password) => this.setState({ password })}
@@ -592,7 +593,7 @@ export default class SignUp extends React.Component {
                 </TouchableOpacity>
                 {password === '' || checkPassword.test(password) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    비밀번호는 8자리 이상이어야합니다.
+                    비밀번호는 8~20자리로 입력해주세요.
                   </Text>
                 )}
               </View>
@@ -857,7 +858,7 @@ const styles = StyleSheet.create({
   },
   searchAddress: {
     backgroundColor: 'white',
-    fontSize: 17,
+    fontSize: 15,
     marginVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
@@ -875,7 +876,7 @@ const styles = StyleSheet.create({
   notSearchAddress: {
     backgroundColor: 'white',
     color: 'lightgrey',
-    fontSize: 17,
+    fontSize: 15,
     marginVertical: 10,
     borderRadius: 20,
     borderWidth: 1,

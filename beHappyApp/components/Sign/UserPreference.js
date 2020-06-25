@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, Button } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { Cities, States, SpecialtiesArray } from '../../Data/Preference';
 
@@ -11,15 +11,14 @@ class UserPreference extends React.Component {
     super(props);
 
     this.state = {
-      userId: this.props.route.params.userId,
       city: '',
       state: '',
       citySelected: false,
-      stateSelecdted: false,
+      stateSelected: false,
       favorCity: '',
       favorCenter: [],
       specialties: [],
-      favorCenterData: ['정신과', '심리센터'],
+      favorCenterData: ['정신과', '심리상담소'],
       showAlertModal: false,
       showAlertModalText: '',
     };
@@ -36,9 +35,7 @@ class UserPreference extends React.Component {
   }
 
   submitPreference() {
-    const { userId, specialties, favorCenter, favorCity } = this.state;
-    let kindOfCenters = favorCenter;
-    let city = favorCity;
+    const { specialties, favorCenter, favorCity } = this.state;
 
     fetch(ec2 + '/preference', {
       method: 'POST',
@@ -46,7 +43,12 @@ class UserPreference extends React.Component {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userId, specialties, kindOfCenters, city }),
+      body: JSON.stringify({
+        userId: this.props.route.params.userId,
+        specialties,
+        kindOfCenters: favorCenter,
+        city: favorCity,
+      }),
     })
       .then((res) => {
         if (res.status === 200) {
@@ -94,7 +96,7 @@ class UserPreference extends React.Component {
   }
 
   resetState() {
-    if (this.state.stateSelecdted === true) {
+    if (this.state.stateSelected === true) {
       this.inputState('');
       this.selectState(false);
     }
@@ -222,7 +224,7 @@ class UserPreference extends React.Component {
                 <Text />
               )}
             </View>
-            {this.state.citySelected ? (
+            {this.state.stateSelected ? (
               <TouchableOpacity
                 onPress={this.inputFavorCity}
                 style={{ alignSelf: 'center' }}
@@ -258,7 +260,6 @@ class UserPreference extends React.Component {
                 </TouchableOpacity>
               ))}
             </View>
-
             <View
               style={{
                 flexDirection: 'row',

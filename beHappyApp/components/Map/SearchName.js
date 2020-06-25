@@ -18,6 +18,9 @@ class SearchName extends React.Component {
     this.goBack = this.goBack.bind(this);
     this.getCenterWithKeyword = this.getCenterWithKeyword.bind(this);
     this.handleModalNameShown = this.handleModalNameShown.bind(this);
+    this.resetSpecialtiesAndCenters = this.resetSpecialtiesAndCenters.bind(
+      this
+    );
   }
 
   inputKeyword(value) {
@@ -49,6 +52,7 @@ class SearchName extends React.Component {
             this.handleModalNameShown(true);
             this.props.controlShowDetail(false, null);
           } else if (data.counseling.length + data.psychiatric.length === 1) {
+            this.resetSpecialtiesAndCenters();
             if (data.counseling.length === 1) {
               this.props.goSpecificLocationAfterSearch({
                 longitude: data.counseling[0].longitude,
@@ -73,7 +77,7 @@ class SearchName extends React.Component {
             let lat = [];
             let lon = [];
             let keys = Object.keys(data);
-
+            this.resetSpecialtiesAndCenters();
             keys.map((key) => {
               lon.push(
                 data[key].reduce(
@@ -127,6 +131,23 @@ class SearchName extends React.Component {
           }
         }
       });
+  }
+
+  resetSpecialtiesAndCenters() {
+    let newSpecialties = {
+      불면증: true,
+      우울증: true,
+      불안: true,
+      가족: true,
+      부부: true,
+      아동·청소년: true,
+      공황: true,
+      중독: true,
+      자해·자살: true,
+    };
+    this.props.controlSpecialties(newSpecialties);
+    let newCenters = { psychiatric: true, counseling: true };
+    this.props.controlCenterTags(newCenters);
   }
 
   handleModalNameShown(status) {
