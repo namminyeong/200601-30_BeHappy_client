@@ -9,6 +9,7 @@ export default class ShowReviews extends React.Component {
     this.state = {
       count: 10,
     };
+    this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
   handleLoadMore() {
@@ -42,11 +43,11 @@ export default class ShowReviews extends React.Component {
                 {review.date.slice(0, 4)}.{review.date.slice(5, 7)} 방문
               </Text>
             </View>
-            {review.content.length > 0 ?
+            {review.content.length > 0 ? (
               <Text style={styles.content}>{review.content}</Text>
-            :  (
-                  <Text style={{ color: 'lightgrey' }}>no comment</Text>
-                )}
+            ) : (
+              <Text style={{ color: 'lightgrey' }}>no comment</Text>
+            )}
           </View>
         ))}
         {renderableData.length <= this.state.count ? (
@@ -68,13 +69,18 @@ const styles = StyleSheet.create({
   review: {
     paddingBottom: 20,
     paddingTop: 20,
-    borderBottomColor: '#B2BEC3',
-    borderBottomWidth: 2,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 0.5,
   },
   rateStar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 5,
+  },
+  loadMore: {
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loadMoreText: {
     fontSize: 17,
