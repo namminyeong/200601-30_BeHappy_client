@@ -20,8 +20,8 @@ import { Cities, States } from '../../Data/Preference';
 const checkUsername = /^[a-z|A-Z|0-9]+$/;
 const checkPassword = /^[a-z|A-Z|0-9]{8,20}$/;
 const checkNickname = /^[ㄱ-ㅎ|가-힣]+$/;
-const checkPhone = /^[0-9]{1,11}$/;
-const checkBusinessNumbere = /^[0-9]{1,10}$/;
+const checkPhone = /^[0-9]{10,11}$/;
+const checkBusinessNumbere = /^[0-9]{10,10}$/;
 
 export default class SignUp extends React.Component {
   constructor(props) {
@@ -104,7 +104,7 @@ export default class SignUp extends React.Component {
     if (username === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: 'username을 입력해주세요.',
+        showAlertModalText: 'id를 입력해주세요.',
       });
     } else if (password === '') {
       this.setState({
@@ -119,12 +119,17 @@ export default class SignUp extends React.Component {
     } else if (nickname === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: '닉네임을 입력해주세요.',
+        showAlertModalText: '이름을 입력해주세요.',
       });
     } else if (phone === '') {
       this.setState({
         showAlertModal: true,
         showAlertModalText: '핸드폰 번호를 입력해주세요.',
+      });
+    } else if (phone.length < 10 || phone.length > 11) {
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '핸드폰 번호를 확인해주세요.',
       });
     } else {
       fetch(ec2 + '/user/signup', {
@@ -154,7 +159,7 @@ export default class SignUp extends React.Component {
             } else if (payload.errorCode === 3) {
               this.setState({
                 showAlertModal: true,
-                showAlertModalText: '이미 존재하는 username입니다.',
+                showAlertModalText: '이미 존재하는 id입니다.',
               });
             }
           }
@@ -185,7 +190,7 @@ export default class SignUp extends React.Component {
     if (username === '') {
       this.setState({
         showAlertModal: true,
-        showAlertModalText: 'username을 입력해주세요.',
+        showAlertModalText: 'id를 입력해주세요.',
       });
     } else if (password === '') {
       this.setState({
@@ -201,6 +206,11 @@ export default class SignUp extends React.Component {
       this.setState({
         showAlertModal: true,
         showAlertModalText: '사업자 번호를 입력해주세요.',
+      });
+    } else if (businessNumber.length !== 10) {
+      this.setState({
+        showAlertModal: true,
+        showAlertModalText: '사업자 번호를 확인해주세요.',
       });
     } else if (centerName === '') {
       this.setState({
@@ -245,17 +255,12 @@ export default class SignUp extends React.Component {
             } else if (payload.errorCode === 3) {
               this.setState({
                 showAlertModal: true,
-                showAlertModalText: '이미 존재하는 username입니다.',
+                showAlertModalText: '이미 존재하는 id입니다.',
               });
-            } else if (payload.errorCode === 4) {
+            } else if (payload.errorCode === 4 || payload.errorCode === 5) {
               this.setState({
                 showAlertModal: true,
-                showAlertModalText: '이미 존재하는 center입니다.',
-              });
-            } else if (payload.errorCode === 5) {
-              this.setState({
-                showAlertModal: true,
-                showAlertModalText: '이미 존재하는 사업자 번호입니다.',
+                showAlertModalText: '이미 가입되어 있습니다.',
               });
             }
           }
@@ -456,7 +461,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='username'
+                  placeholder='id'
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
@@ -530,7 +535,7 @@ export default class SignUp extends React.Component {
                 />
                 {phone === '' || checkPhone.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    10-11자리 숫자만 입력해주세요
+                    핸드폰 번호를 확인해주세요.
                   </Text>
                 )}
               </View>
@@ -553,7 +558,7 @@ export default class SignUp extends React.Component {
                 <TextInput
                   style={styles.inputBox}
                   underlineColorAndroid={'transparent'}
-                  placeholder='username'
+                  placeholder='id'
                   placeholderTextColor={'gray'}
                   onChangeText={(username) => this.setState({ username })}
                 />
@@ -610,7 +615,7 @@ export default class SignUp extends React.Component {
                 {businessNumber === '' ||
                 checkBusinessNumbere.test(businessNumber) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    10자리 이하 숫자만 입력해주세요.
+                    사업자 번호를 확인해주세요.
                   </Text>
                 )}
               </View>
@@ -687,11 +692,16 @@ export default class SignUp extends React.Component {
                   )}
                 </View>
                 <View style={styles.searchBtnContainer}>
-                  <TouchableHighlight
-                    onPress={() => this.changeModalVisible(true)}
-                  >
-                    <Text style={styles.add}>주소 찾기</Text>
-                  </TouchableHighlight>
+                  {this.state.citySelected === true &&
+                  this.state.stateSelected === true ? (
+                    <TouchableHighlight
+                      onPress={() => this.changeModalVisible(true)}
+                    >
+                      <Text style={styles.searchAddress}>주소 찾기</Text>
+                    </TouchableHighlight>
+                  ) : (
+                    <Text style={styles.notSearchAddress}>주소 찾기</Text>
+                  )}
                   <Modal
                     transparent={true}
                     visible={isModalVisible}
@@ -775,6 +785,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
     paddingLeft: 60,
     paddingRight: 60,
   },
@@ -803,7 +814,6 @@ const styles = StyleSheet.create({
   inputBox: {
     alignSelf: 'stretch',
     height: 30,
-
     borderBottomColor: '#199187',
     borderBottomWidth: 1,
     paddingLeft: 35,
@@ -815,28 +825,28 @@ const styles = StyleSheet.create({
   selectedCity: {
     flex: 1,
     marginTop: 20,
+    position: 'relative',
   },
   selectedCityText: {
     marginBottom: 5,
   },
   submitBtn: {
     backgroundColor: '#62CCAD',
-    alignSelf: 'stretch',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     marginTop: 30,
-    borderRadius: 50,
+    borderRadius: 25,
+    height: 40,
   },
   btnText: {
     fontSize: 16,
     color: 'white',
   },
   searchContainer: {
-    flex: 1,
     flexDirection: 'row',
   },
   pickerContainer: {
-    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
     color: '#000000',
@@ -845,12 +855,31 @@ const styles = StyleSheet.create({
   searchBtnContainer: {
     justifyContent: 'center',
   },
-  add: {
+  searchAddress: {
     backgroundColor: 'white',
     fontSize: 17,
     marginVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  notSearchAddress: {
+    backgroundColor: 'white',
+    color: 'lightgrey',
+    fontSize: 17,
+    marginVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'lightgrey',
     paddingVertical: 3,
     paddingHorizontal: 10,
     shadowColor: '#000',
