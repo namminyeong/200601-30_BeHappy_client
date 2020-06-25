@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import Moment from 'moment';
 
 import getEnvVars from '../../environment';
 const { ec2 } = getEnvVars();
@@ -14,8 +15,13 @@ export default class BookingDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentBookingState: false,
+      isBookingState: false,
     };
+    this.checkTime = this.checkTime.bind(this);
+  }
+
+  componentDidMount() {
+    this.checkTime();
   }
 
   patchBookingCheck(token, isCheck) {
@@ -36,11 +42,27 @@ export default class BookingDetail extends React.Component {
       .then((res) => {
         if (res.status === 200) {
           this.setState({
-            currentBookingState: true,
+            isBookingState: true,
           });
         }
       })
       .catch((error) => console.log('error', error));
+  }
+
+  checkTime() {
+    const { date, time } = this.props.route.params.bookingData;
+    const currentDate = Moment(new Date()).format('YYYY-MM-DD');
+    const currentTime = Moment(new Date()).format('HH:MM');
+
+    if (date > currentDate) {
+      this.setState({
+        isBookingState: true,
+      });
+    } else if (date === currentDate && time > currentTime) {
+      this.setState({
+        isBookingState: true,
+      });
+    }
   }
 
   render() {
@@ -52,30 +74,30 @@ export default class BookingDetail extends React.Component {
       content,
       bookingState,
     } = this.props.route.params.bookingData;
-    const { currentBookingState } = this.state;
+    const { isBookingState } = this.state;
 
     return (
       <View style={styles.container}>
         <View style={styles.bucket}>
-          <Text style={styles.section}>날짜</Text>
-          <Text>{date}</Text>
+          <Text style={styles.section}>날{'    '}짜 :</Text>
+          <Text style={styles.info}>{date}</Text>
         </View>
         <View style={styles.bucket}>
-          <Text style={styles.section}>시간</Text>
-          <Text>{time.slice(0, 5)}</Text>
+          <Text style={styles.section}>시{'    '}간 :</Text>
+          <Text style={styles.info}>{time.slice(0, 5)}</Text>
         </View>
         <View style={styles.bucket}>
-          <Text style={styles.section}>이름</Text>
-          <Text>{name}</Text>
+          <Text style={styles.section}>이{'    '}름 :</Text>
+          <Text style={styles.info}>{name}</Text>
         </View>
         <View style={styles.bucket}>
-          <Text style={styles.section}>연락처</Text>
-          <Text>{phone}</Text>
+          <Text style={styles.section}>연락처 :</Text>
+          <Text style={styles.info}>{phone}</Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.section}>상담 이유</Text>
           <ScrollView showsHorizontalScrollIndicator={false}>
-            <Text style={{ padding: 10 }}>{content}</Text>
+            <Text style={styles.infoContent}>{content}</Text>
           </ScrollView>
         </View>
         <View
@@ -86,9 +108,9 @@ export default class BookingDetail extends React.Component {
           }}
         >
           <TouchableOpacity
-            disabled={bookingState !== 'booked' || currentBookingState}
+            disabled={bookingState !== 'booked' || isBookingState}
             style={
-              bookingState !== 'booked' || currentBookingState
+              bookingState !== 'booked' || isBookingState
                 ? styles.deactivateButton
                 : styles.Button
             }
@@ -98,7 +120,7 @@ export default class BookingDetail extends React.Component {
           >
             <Text
               style={
-                bookingState !== 'booked' || currentBookingState
+                bookingState !== 'booked' || isBookingState
                   ? styles.deactivateButtonText
                   : { fontWeight: 'bold' }
               }
@@ -107,9 +129,9 @@ export default class BookingDetail extends React.Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            disabled={bookingState !== 'booked' || currentBookingState}
+            disabled={bookingState !== 'booked' || isBookingState}
             style={
-              bookingState !== 'booked' || currentBookingState
+              bookingState !== 'booked' || isBookingState
                 ? styles.deactivateButton
                 : styles.Button
             }
@@ -119,7 +141,7 @@ export default class BookingDetail extends React.Component {
           >
             <Text
               style={
-                bookingState !== 'booked' || currentBookingState
+                bookingState !== 'booked' || isBookingState
                   ? styles.deactivateButtonText
                   : { fontWeight: 'bold' }
               }
@@ -136,12 +158,24 @@ export default class BookingDetail extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: '4%',
+    padding: '4%',
+    backgroundColor: 'white',
   },
   section: {
-    color: '#62CCAD',
-    paddingRight: 20,
+    paddingRight: 6,
+    fontSize: 20,
     fontWeight: 'bold',
+  },
+  info: {
+    fontSize: 20,
+  },
+  infoContent: {
+    fontSize: 20,
+    padding: 10,
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: 'lightgrey',
+    height: 200,
   },
   bucket: {
     paddingTop: 10,
@@ -169,7 +203,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -178,7 +212,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 17,
     margin: 10,
     borderWidth: 1,
-    borderColor: 'grey',
+    borderColor: 'lightgrey',
     marginTop: 15,
     marginBottom: 20,
     width: 80,
@@ -191,12 +225,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
-    backgroundColor: '#D1D1D1',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
   deactivateButtonText: {
-    color: '#FFFFFF',
+    color: 'lightgrey',
     fontWeight: 'bold',
   },
 });
