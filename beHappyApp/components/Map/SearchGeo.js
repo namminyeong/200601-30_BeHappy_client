@@ -28,13 +28,13 @@ class SearchGeo extends React.Component {
     this.handleLoading = this.handleLoading.bind(this);
   }
 
-  getCoordinate() {
+  getCoordinate(value) {
     this.handleLoading(true);
     let url =
       'https://dapi.kakao.com/v2/local/search/address.json?query=' +
       this.state.city +
       ' ' +
-      this.state.state;
+      value;
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -53,6 +53,7 @@ class SearchGeo extends React.Component {
           let lon = parseFloat(data.documents[0].address.x).toFixed(6);
           let lat = parseFloat(data.documents[0].address.y).toFixed(6);
           this.getCenterWithCoordinate(lon, lat);
+
           this.props.goSpecificLocationAfterSearch({
             latitude: Number(lat),
             longitude: Number(lon),
@@ -135,7 +136,7 @@ class SearchGeo extends React.Component {
     }
     if (value !== null) {
       this.selectState(true);
-      this.getCoordinate();
+      this.getCoordinate(value);
     } else {
       this.selectState(false);
     }
