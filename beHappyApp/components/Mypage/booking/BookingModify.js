@@ -110,7 +110,7 @@ export default class BookingModify extends React.Component {
       },
       body: JSON.stringify({ bookingId, date, time, name, phone, content }),
     })
-      .then(async (res) => {
+      .then((res) => {
         if (res.status === 200) {
           this.handleModifyBookingModal(true);
           modifyBookingState(index, {
