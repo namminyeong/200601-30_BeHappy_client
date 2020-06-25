@@ -540,7 +540,7 @@ export default class SignUp extends React.Component {
                 />
                 {phone === '' || checkPhone.test(phone) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    핸드폰 번호는 10~11자리 숫자입니다.
+                    핸드폰 번호를 확인해주세요.
                   </Text>
                 )}
               </View>
@@ -620,7 +620,7 @@ export default class SignUp extends React.Component {
                 {businessNumber === '' ||
                 checkBusinessNumbere.test(businessNumber) ? null : (
                   <Text style={{ color: '#941818', left: 30, marginTop: 5 }}>
-                    사업자 번호 10자리를 입력해주세요.
+                    사업자 번호를 확인해주세요.
                   </Text>
                 )}
               </View>
