@@ -20,10 +20,10 @@ class MyInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentCity: '',
-      currentStates: '',
-      currentSpecialties: [],
-      currentKindOfCenters: [],
+      curCity: '',
+      curStates: '',
+      curSpecialties: [],
+      curKindOfCenters: [],
       isModify: false,
       showCompleteModal: false,
       showModalText: '',
@@ -59,22 +59,22 @@ class MyInfo extends React.Component {
       })
       .then((payload) => {
         this.setState({
-          currentCity: payload.city.name.split(' ')[0],
-          currentStates: payload.city.name.split(' ')[1],
-          currentSpecialties: payload.specialties.map((data) => data.name),
-          currentKindOfCenters: payload.kindOfCenters.map((data) => data.name),
+          curCity: payload.city.name.split(' ')[0],
+          curStates: payload.city.name.split(' ')[1],
+          curSpecialties: payload.specialties.map((data) => data.name),
+          curKindOfCenters: payload.kindOfCenters.map((data) => data.name),
         });
         return;
       });
   }
 
-  modifyPreference(
-    currentSpecialties,
-    currentKindOfCenters,
-    currentCity,
-    currentStates
-  ) {
+  modifyPreference(curSpecialties, curKindOfCenters, curCity, curStates) {
     let url = ec2 + '/preference';
+    let body = JSON.stringify({
+      specialties: curSpecialties,
+      kindOfCenters: curKindOfCenters,
+      city: curCity + ' ' + curStates,
+    });
 
     fetch(url, {
       method: 'PATCH',
@@ -83,29 +83,25 @@ class MyInfo extends React.Component {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${this.props.route.params.token}`,
       },
-      body: JSON.stringify({
-        specialties: currentSpecialties,
-        kindOfCenters: currentKindOfCenters,
-        city: currentCity + ' ' + currentStates,
-      }),
+      body: body,
     }).then((res) => {
       return res.status;
     });
   }
 
-  getUserSpecialties(currentSpecialties) {
+  getUserSpecialties(curSpecialties) {
     for (let i = 0; i < Specialties.length; i++) {
       Specialties.map((data) =>
-        data.includes(currentSpecialties[i]) ? (data[1] = true) : data
+        data.includes(curSpecialties[i]) ? (data[1] = true) : data
       );
     }
     return Specialties;
   }
 
-  getUserKindOfCenters(currentKindOfCenters) {
+  getUserKindOfCenters(curKindOfCenters) {
     for (let i = 0; i < KindOfCenters.length; i++) {
       KindOfCenters.map((data) =>
-        data.includes(currentKindOfCenters[i]) ? (data[1] = true) : data
+        data.includes(curKindOfCenters[i]) ? (data[1] = true) : data
       );
     }
     return KindOfCenters;
@@ -144,10 +140,10 @@ class MyInfo extends React.Component {
   render() {
     const { username, phone } = this.props.route.params;
     const {
-      currentCity,
-      currentStates,
-      currentSpecialties,
-      currentKindOfCenters,
+      curCity,
+      curStates,
+      curSpecialties,
+      curKindOfCenters,
       userSpecialties,
       showModalText,
       userKindOfCenters,
@@ -170,15 +166,14 @@ class MyInfo extends React.Component {
               size={24}
               style={{ top: 2, right: 20 }}
               onPress={() => {
-                currentCity !== '' &&
-                !States[currentCity].includes(currentStates)
+                curCity !== '' && !States[curCity].includes(curStates)
                   ? this.showAlertModal()
                   : this.setState({
                       isModify: false,
-                      currentSpecialties: userSpecialties
+                      curSpecialties: userSpecialties
                         .map((data) => (data[1] ? data[0] : null))
                         .filter((el) => el !== null),
-                      currentKindOfCenters: userKindOfCenters
+                      curKindOfCenters: userKindOfCenters
                         .map((data) => (data[1] ? data[0] : null))
                         .filter((el) => el !== null),
                     });
@@ -189,8 +184,8 @@ class MyInfo extends React.Component {
                   userKindOfCenters
                     .map((data) => (data[1] ? data[0] : null))
                     .filter((el) => el !== null),
-                  currentCity,
-                  currentStates
+                  curCity,
+                  curStates
                 );
               }}
             />
@@ -245,15 +240,15 @@ class MyInfo extends React.Component {
                 },
               }}
               useNativeAndroidPickerStyle={false}
-              placeholder={{ label: currentCity, value: currentCity }}
-              onValueChange={(value) => this.setState({ currentCity: value })}
+              placeholder={{ label: curCity, value: curCity }}
+              onValueChange={(value) => this.setState({ curCity: value })}
               items={Object.keys(States)
                 .sort()
                 .map((ele) => {
                   return { label: `${ele}`, value: `${ele}` };
                 })}
             />
-            {currentCity === '' ? null : (
+            {curCity === '' ? null : (
               <RNPickerSelect
                 style={{
                   inputAndroid: {
@@ -265,13 +260,13 @@ class MyInfo extends React.Component {
                   },
                 }}
                 useNativeAndroidPickerStyle={false}
-                placeholder={{ label: currentStates, value: currentStates }}
+                placeholder={{ label: curStates, value: curStates }}
                 onValueChange={(value) =>
                   this.setState({
-                    currentStates: value,
+                    curStates: value,
                   })
                 }
-                items={States[currentCity].sort().map((ele) => {
+                items={States[curCity].sort().map((ele) => {
                   return { label: `${ele}`, value: `${ele}` };
                 })}
               />
@@ -346,21 +341,21 @@ class MyInfo extends React.Component {
                     userSpecialties:
                       Specialties.length === 0
                         ? []
-                        : this.getUserSpecialties(currentSpecialties),
+                        : this.getUserSpecialties(curSpecialties),
                     userKindOfCenters:
                       KindOfCenters.length === 0
                         ? []
-                        : this.getUserKindOfCenters(currentKindOfCenters),
+                        : this.getUserKindOfCenters(curKindOfCenters),
                   });
                 }}
               />
             </View>
             <Text style={styles.preSection}>분야</Text>
             <View style={styles.attention}>
-              {currentSpecialties.length === 0 ? (
+              {curSpecialties.length === 0 ? (
                 <Text style={{ margin: 6 }}>선택한 분야가 없습니다</Text>
               ) : (
-                currentSpecialties.map((data, index) => (
+                curSpecialties.map((data, index) => (
                   <Text key={'Specialties_' + index} style={styles.selected}>
                     #{data}
                   </Text>
@@ -370,22 +365,22 @@ class MyInfo extends React.Component {
 
             <Text style={styles.preSection}>지역</Text>
             <View style={styles.area}>
-              {currentCity === '' || currentCity === '*선택해제' ? (
+              {curCity === '' || curCity === '*선택해제' ? (
                 <Text style={{ margin: 6 }}>선택한 지역이 없습니다</Text>
               ) : (
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.selected}>{currentCity}</Text>
-                  <Text style={styles.selected}>{currentStates}</Text>
+                  <Text style={styles.selected}>{curCity}</Text>
+                  <Text style={styles.selected}>{curStates}</Text>
                 </View>
               )}
             </View>
 
             <Text style={styles.preSection}>센터</Text>
             <View style={styles.favor}>
-              {currentKindOfCenters.length === 0 ? (
+              {curKindOfCenters.length === 0 ? (
                 <Text style={{ margin: 6 }}>선택한 센터가 없습니다</Text>
               ) : (
-                currentKindOfCenters.map((data, index) => (
+                curKindOfCenters.map((data, index) => (
                   <Text key={'KindOfCenters_' + index} style={styles.selected}>
                     {data}
                   </Text>
