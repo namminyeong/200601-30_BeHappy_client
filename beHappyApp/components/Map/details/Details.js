@@ -37,18 +37,7 @@ function Details({ navigation, centerInfo, bookmark, postBookmark }) {
         >
           {centerInfo.centerName}
         </Text>
-        <Text style={styles.address}>
-          {centerInfo.roadAddressName}
-          {centerInfo.distance ? (
-            <Text style={styles.distance}>
-              {'  '}
-              {`(`}
-              {centerInfo.distance.toString()}m{`)`}
-            </Text>
-          ) : (
-            ''
-          )}
-        </Text>
+        <Text style={styles.address}>{centerInfo.roadAddressName}</Text>
       </TouchableOpacity>
       <View style={{ flexDirection: 'row' }}>
         <MaterialCommunityIcons
@@ -130,11 +119,6 @@ const styles = StyleSheet.create({
     left: 10,
     top: 7,
     fontSize: 16,
-    height: 40,
-  },
-  distance: {
-    fontSize: 15,
-    textAlign: 'center',
     height: 40,
   },
   noReview: {
