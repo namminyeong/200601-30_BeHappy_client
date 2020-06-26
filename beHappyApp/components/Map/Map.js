@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Icon, Button } from 'native-base';
 import Markers from './Markers';
@@ -304,6 +304,7 @@ class Map extends React.Component {
         </View>
 
         <MapView
+          provider={PROVIDER_GOOGLE}
           toolbarEnabled={false}
           ref={(component) => (this._map = component)}
           style={styles.map}

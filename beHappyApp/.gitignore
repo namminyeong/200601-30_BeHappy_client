@@ -11,6 +11,8 @@ web-build/
 web-report/
 .env
 environment.js
+environment.example.js
+app.json
 
 # macOS
 .DS_Store

@@ -20,7 +20,7 @@
       "versionCode": 1,
       "config": {
         "googleMaps": {
-          "apiKey": ""
+          "apiKey": "[your_key]"
         }
       }
     },

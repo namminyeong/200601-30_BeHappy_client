@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import rootReducer from './modules(reducers)';
+import { AppRegistry } from 'react-native';
 
 import HomeContainer from './containers/HomeContainer';
 
@@ -16,3 +17,5 @@ export default class App extends React.Component {
     );
   }
 }
+
+AppRegistry.registerComponent('BEHAPPYAPP', () => App);
