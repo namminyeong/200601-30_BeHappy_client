@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: '6%',
-    marginBottom: '2%',
+    paddingBottom: '2%',
     backgroundColor: 'white',
   },
   rateAvg: {
